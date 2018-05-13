@@ -14,3 +14,55 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+.toolbar-background{
+    background: rgb(41, 39, 39) !important;
+    color: white !important;
+}
+
+.toolbar{
+    color: white !important;
+}
+
+ion-header{
+    background: rgb(41, 39, 39) !important;
+    color: white !important;
+}
+
+ion-content{
+    background: rgb(41, 39, 39) !important;
+    color: white !important;
+}
+
+ion-item{
+    background: rgb(41, 39, 39) !important;
+    color: white !important;
+}
+
+ion-menu{
+    background: rgb(41, 39, 39) !important;
+    color: white !important;
+}
+
+ion-list-header{
+    background: rgb(41, 39, 39) !important;
+    color: white !important;
+}
+
+.tab-item.tab-item-active, .tab-item.active, .tab-item.activated{
+    color: #40d647 !important;
+}
+
+.tab-item.tab-item-inactive, .tab-item.iactive{
+    color: white !important;
+}
+
+.menuItem{
+    background: rgb(41, 39, 39);
+    color: white;
+
+}
+
+
+
+

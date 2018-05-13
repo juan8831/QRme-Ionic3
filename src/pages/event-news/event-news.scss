@@ -1,0 +1,21 @@
+page-event-news {
+    ion-content{
+        background: rgb(41, 39, 39) !important;
+        color: white !important;
+    }
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        max-height: 30%;
+    }
+
+    .eventIcon {
+        font-size: 30px !important; 
+    }
+
+    .titleIcon{
+        font-size:30px !important;
+        margin-bottom: 20px;
+    }
+}

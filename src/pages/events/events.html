@@ -1,0 +1,75 @@
+<!--
+  Generated template for the EventsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar no-border-bottom>
+    <ion-buttons start>
+      <button ion-button icon-only menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-segment [(ngModel)]="segment" (ionChange)="updateSchedule()">
+      <ion-segment-button value="managing">
+        Managing
+      </ion-segment-button>
+      <ion-segment-button value="invited">
+        Invited
+      </ion-segment-button>
+    </ion-segment>
+
+
+  </ion-navbar>
+
+    <ion-searchbar color="white" [(ngModel)]="queryText" (ionInput)="updateSchedule()" placeholder="Search">
+    </ion-searchbar>
+
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list>
+      <ion-list-header>Today</ion-list-header>
+      <ion-item *ngFor="let event of events | async" (click)="onLoadEvent(event)">
+          <ion-avatar item-start>
+              <img src="assets/imgs/festival.png">
+            </ion-avatar>
+          <h2>{{event.name}}</h2>
+          <h3>{{event.description}}</h3>
+          <p>{{event.date | date}}</p>
+          <ion-note item-end>{{event.time }}</ion-note>     
+      </ion-item>
+  </ion-list>
+
+  <ion-list>
+      <ion-list-header>Next Week</ion-list-header>
+      <ion-item *ngFor="let event of events | async">
+          <ion-avatar item-start>
+              <img src="assets/imgs/festival.png">
+            </ion-avatar>
+          <h2>{{event.name}}</h2>
+          <h3>{{event.description}}</h3>
+          <p>{{event.date | date}}</p>
+          <ion-note item-end>{{event.time }}</ion-note>     
+      </ion-item>
+  </ion-list>
+
+  <ion-fab bottom right #fab>
+    <button color="secondary" ion-fab (click)="addEvent()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+    <!-- <ion-fab-list side="top">
+          <button ion-fab color="vimeo" (click)="openSocial('Vimeo', fab)"><ion-icon name="logo-vimeo"></ion-icon></button>
+          <button ion-fab color="google" (click)="openSocial('Google+', fab)"><ion-icon name="logo-googleplus"></ion-icon></button>
+          <button ion-fab color="twitter" (click)="openSocial('Twitter', fab)"><ion-icon name="logo-twitter"></ion-icon></button>
+          <button ion-fab color="facebook" (click)="openSocial('Facebook', fab)"><ion-icon name="logo-facebook"></ion-icon></button>
+        </ion-fab-list> -->
+  </ion-fab>
+
+</ion-content>

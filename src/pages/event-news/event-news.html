@@ -1,0 +1,107 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>
+      <ion-buttons start>
+        <button ion-button icon-only>
+          <ion-icon name="home"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button icon-only menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+        <button ion-button icon-only (click)="onOpenInfo()">
+          <ion-icon name="information-circle"></ion-icon>
+        </button>
+    </ion-buttons>
+    <ion-buttons end>
+        <button ion-button icon-only (click)="onOpenEdit()">
+          <ion-icon name="settings"></ion-icon>
+        </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-fab bottom left #fab>
+    <button color="primary" ion-fab mini (click)="onGoHome()">
+      <ion-icon name="home"></ion-icon>
+    </button>
+  </ion-fab>
+ 
+  <ion-grid>
+    <ion-row nowrap align-items-center>
+      <ion-col text-center>
+          <h1 style="margin-right: 3px" >{{event?.name}} </h1>
+          <!-- <ion-icon class="titleIcon"  name="information-circle"></ion-icon>    -->
+      </ion-col>          
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <img src="assets/imgs/festival.png" />
+      </ion-col>
+      <ion-col>
+        <p text-center>{{event?.location}} </p>
+        <p text-center>{{event?.date | date}} | {{event?.time}} </p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <h3 text-center>News</h3>
+  <ion-list>
+    <ion-list-header>
+      <button outline round ion-button style="float: right;">Clear All</button>
+    </ion-list-header>
+    <ion-item-sliding>
+      <ion-item>
+        <ion-avatar item-start>
+          <ion-icon class="eventIcon" name="flag"></ion-icon>
+        </ion-avatar>
+        <h2>New Poll</h2>
+        <h3>What is your Profession?</h3>
+        <p>{{event?.date | date}}</p>
+        <ion-note item-end>{{event?.time }}</ion-note>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button color="primary">
+          <ion-icon name="text"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+    <ion-item-sliding>
+        <ion-item>
+          <ion-avatar item-start>
+            <ion-icon class="eventIcon" name="text"></ion-icon>
+          </ion-avatar>
+          <h2>New Post</h2>
+          <h3>Schedule</h3>
+          <p>{{event?.date | date}}</p>
+          <ion-note item-end>{{event?.time }}</ion-note>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="primary">
+            <ion-icon name="text"></ion-icon>
+            Delete
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+
+
+  </ion-list>
+
+
+
+
+
+
+
+
+</ion-content>

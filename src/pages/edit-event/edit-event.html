@@ -1,0 +1,49 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{isnewEvent? 'Create New' : 'Edit'}} Event</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <ion-list>
+      <ion-item>
+        <ion-label fixed>Event Name</ion-label>
+        <ion-input type="text" name="name" placeholder="Festival of Lights" [ngModel]="event?.name" required>
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Short Description</ion-label>
+        <ion-textarea name="description" [ngModel]="event?.description"></ion-textarea>
+      </ion-item> 
+      <ion-item>
+        <ion-label floating>Location</ion-label>
+        <ion-textarea name="location" [ngModel]="event?.location" required></ion-textarea>
+      </ion-item>
+      <ion-item>
+          <ion-label>Type</ion-label>
+          <ion-select [ngModel]="event?.type" name="type" required>
+            <ion-option selected value="Public">Public</ion-option>
+            <ion-option value="Private">Private</ion-option>
+          </ion-select>
+        </ion-item>
+      <ion-item>    
+        <ion-label>Recurring?</ion-label>
+        <ion-toggle [ngModel]="event?.recurring" name="recurring" required></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>Date</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" [ngModel]="event?.date" name="date"></ion-datetime>
+      </ion-item>
+      <ion-item>
+          <ion-label>Time</ion-label>
+          <ion-datetime displayFormat="hh/m/A" [ngModel]="event?.time" name="time"></ion-datetime>
+        </ion-item>
+    </ion-list>
+    <button ion-button type="submit" block [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
+  </form>
+
+</ion-content>
