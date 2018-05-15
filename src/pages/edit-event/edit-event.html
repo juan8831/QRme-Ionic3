@@ -32,7 +32,7 @@
         </ion-item>
       <ion-item>    
         <ion-label>Recurring?</ion-label>
-        <ion-toggle [ngModel]="event?.recurring" name="recurring" required></ion-toggle>
+        <ion-toggle [ngModel]="event?.recurring" name="recurring"></ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label>Date</ion-label>
@@ -47,7 +47,7 @@
   </form>
 
 
-  <button *ngIf="!isNewEvent" color="danger" ion-button block (click)="onDeleteEvent()">Delete Event</button>
+  <button *ngIf="!isnewEvent" color="danger" ion-button block (click)="showConfirm()">Delete Event</button>
 
   
 

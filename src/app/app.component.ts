@@ -12,6 +12,8 @@ import { EventDetailPage } from '../pages/event-detail/event-detail';
 
 import firebase from 'firebase';
 import { RootPageProvider } from '../providers/root-page/root-page';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { AuthProvider } from '../providers/auth/auth';
 
 @Component({
   templateUrl: 'app.html'
@@ -24,6 +26,7 @@ export class MyApp {
   settings = SettingsPage
 
   isAuthenticated = true;
+  email = "";
   
 
   @ViewChild('nav') nav: NavController;
@@ -33,7 +36,8 @@ export class MyApp {
     statusBar: StatusBar, 
     splashScreen: SplashScreen, 
     private menuCtrl: MenuController,
-    private rootPageProvider : RootPageProvider
+    private rootPageProvider : RootPageProvider,
+    private authProvider: AuthProvider
   ) {
     firebase.initializeApp({
       apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
@@ -41,11 +45,26 @@ export class MyApp {
     databaseURL: "https://qrme-65e1e.firebaseio.com"
     });
 
-    this.rootPageProvider.getPage().subscribe(page => {
-      if(page){
-        this.nav.setRoot(EventsPage);
+    firebase.auth().onAuthStateChanged(user => {
+      if(user){
+        this.isAuthenticated = true;
+        this.email = user.email;
+        this.rootPage = EventsPage;
+        //this.nav.setRoot(this.tabsPage);
+      }
+      else{
+        this.isAuthenticated = false;
+        this.email = "";
+        //this.nav.setRoot(this.signinPage)
+        this.rootPage = SigninUpPage;
       }
     });
+
+    // this.rootPageProvider.getPage().subscribe(page => {
+    //   if(page){
+    //     this.nav.setRoot(EventsPage);
+    //   }
+    // });
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -57,6 +76,12 @@ export class MyApp {
 
   onLoad(page: any){
     this.nav.setRoot(page);
+    this.menuCtrl.close();
+  }
+
+  onLogout(){
+   // this.afAuth.auth.signOut();
+    this.authProvider.logout();
     this.menuCtrl.close();
   }
 

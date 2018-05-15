@@ -54,7 +54,7 @@
     <ion-row text-center>
       <ion-col>
 
-        <button ion-button round (click)="onAttendance()" color="darkRed">
+        <button ion-button round [navPush]="eventAttendancePage" [navParams]="event" color="darkRed">
           <ion-icon item-left name="person" style="margin-right: 4px "></ion-icon>
           Attendance
         </button>
@@ -62,13 +62,13 @@
     </ion-row>
     <ion-row text-center>
       <ion-col>
-        <button round block ion-button color="blue">
+        <button round block ion-button [navPush]='eventBlogPage' [navParams]="event" color="blue">
           <ion-icon item-left name="text" style="margin-right: 4px "></ion-icon>
           Blog
         </button>
       </ion-col>
       <ion-col>
-        <button round block ion-button color="yellow">
+        <button round block ion-button color="yellow" [navPush]='eventPollsPage' [navParams]="event">
           <ion-icon item-left name="flag" style="margin-right: 4px "></ion-icon>
           Polls
         </button>

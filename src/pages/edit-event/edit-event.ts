@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 import { Event } from '../../models/event';
 import { Form, NgForm } from '@angular/forms';
 import { EventProvider } from '../../providers/event/event';
@@ -18,7 +18,8 @@ export class EditEventPage implements OnInit {
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
     private eventProvider: EventProvider,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController
   ) {
   }
 
@@ -38,7 +39,7 @@ export class EditEventPage implements OnInit {
 
   onSubmit(f: NgForm) {
       this.event.name = f.value.name;
-      this.event.recurring = f.value.recurring == null ? false : true;
+      this.event.recurring = f.value.recurring ? f.value.recurring : false ;
       this.event.location = f.value.location;
       this.event.type = f.value.type;
 
@@ -60,14 +61,32 @@ export class EditEventPage implements OnInit {
 
   }
 
-  onDeleteEvent(){
+  deleteEvent(){
     this.eventProvider.deleteEvent(this.event);
     this.toastCtrl.create({
       message : 'Event successfully deleted',
-      duration: 5000
+      duration: 3000
     }).present();
     this.navCtrl.popToRoot();
+  }
 
+  showConfirm() {
+    let confirm = this.alertCtrl.create({
+      title: 'Delete?',
+      message: 'Are you sure you want to delete this event?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.deleteEvent();
+          }
+        },
+        {
+          text: 'No',
+        }
+      ]
+    });
+    confirm.present();
   }
 
 }

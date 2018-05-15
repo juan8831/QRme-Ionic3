@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
+import { auth } from 'firebase';
+import { NgForm } from '@angular/forms';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { AuthProvider } from '../../providers/auth/auth';
+import { firebaseConfig } from '../../app/app.module';
 
-/**
- * Generated class for the SigninUpPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {firebase} from '@firebase/app';
+
 
 @IonicPage()
 @Component({
@@ -15,11 +16,109 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class SigninUpPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  create = false;
+  password : string;
+  confirmPassword : string;
+
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    private authProvider: AuthProvider,
+    private loadingCtrl: LoadingController,
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
+    private afAuth : AngularFireAuth
+  ) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SigninUpPage');
+  }
+
+  onCreate(form: NgForm){
+    const loading = this.loadingCtrl.create({
+      content: 'Creating your account...'
+    });
+    loading.present();
+
+    this.afAuth.auth.createUserWithEmailAndPassword(form.value.email, form.value.password)
+      .then(data => {
+        loading.dismiss();
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alertCtrl.create({
+          title: 'Sign up error',
+          message: error.message,
+          buttons: ['Ok']
+        }).present();
+
+
+
+        });   
+  }
+
+  
+
+  onSignIn(form: NgForm){
+    const loading = this.loadingCtrl.create({
+      content: 'Signing you in...'
+    });
+    loading.present();
+
+    
+    
+    this.afAuth.auth.signInWithEmailAndPassword(form.value.email, form.value.password)
+    .then(data => {
+      loading.dismiss();
+      form.reset();
+      this.toastCtrl.create({
+        message: `Welcome ${this.authProvider.getEmail()}`,
+        duration: 5000,
+        position: 'bottom'
+      }).present();
+    })
+    .catch(error => {
+      loading.dismiss();
+      this.alertCtrl.create({
+        title: 'Sign in error',
+        message: error.message,
+        buttons: ['Ok']
+      }).present();
+
+    });
+    
+  }
+
+  onGoogle(){
+
+    // const loading = this.loadingCtrl.create({
+    //   content: 'Signing you in...'
+    // });
+    //loading.present();
+
+    //this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+
+    this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .then(data => {
+      //loading.dismiss();
+      //form.reset();
+      this.toastCtrl.create({
+        message: `Welcome ${this.authProvider.getEmail()}`,
+        duration: 5000,
+        position: 'bottom'
+      }).present();
+    })
+    .catch(error => {
+      //loading.dismiss();
+      this.alertCtrl.create({
+        title: 'Sign in error',
+        message: error.message,
+        buttons: ['Ok']
+      }).present();
+
+    });
+
   }
 
 }

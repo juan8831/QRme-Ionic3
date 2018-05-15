@@ -30,6 +30,7 @@ import { EventBlogPage } from '../pages/event-blog/event-blog';
 import { EventPollsPage } from '../pages/event-polls/event-polls';
 import { RootPageProvider } from '../providers/root-page/root-page';
 import { SelectedEventProvider } from '../providers/selected-event/selected-event';
+import { AuthProvider } from '../providers/auth/auth';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
@@ -96,7 +97,8 @@ export const firebaseConfig = {
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     EventProvider,
     RootPageProvider,
-    SelectedEventProvider
+    SelectedEventProvider,
+    AuthProvider
   ]
 })
 export class AppModule {}

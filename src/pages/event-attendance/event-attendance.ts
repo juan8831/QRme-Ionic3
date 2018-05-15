@@ -21,7 +21,6 @@ export class EventAttendancePage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad EventAttendancePage');
     //this.event = this.navParams.get('event');
   }
 

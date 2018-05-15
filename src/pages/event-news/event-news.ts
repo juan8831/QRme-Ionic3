@@ -9,6 +9,9 @@ import { RootPageProvider } from '../../providers/root-page/root-page';
 import { MyApp } from '../../app/app.component';
 import { EventsPage } from '../events/events';
 import { EventAttendancePage } from '../event-attendance/event-attendance';
+import { EventPollsPage } from '../event-polls/event-polls';
+import { EventBlogPageModule } from '../event-blog/event-blog.module';
+import { EventBlogPage } from '../event-blog/event-blog';
 
 
 @IonicPage()
@@ -19,6 +22,11 @@ import { EventAttendancePage } from '../event-attendance/event-attendance';
 export class EventNewsPage {
 
   event: Event;
+  eventAttendancePage = EventAttendancePage;
+  eventBlogPage = EventBlogPage;
+  eventPollsPage = EventPollsPage;
+
+
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams, 
