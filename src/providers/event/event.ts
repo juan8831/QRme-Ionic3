@@ -40,6 +40,10 @@ export class EventProvider {
     return this.dbRef.update(event.id, event);
   }
 
+  deleteEvent(event: Event){
+    return this.dbRef.remove(event.id);
+  }
+
 
   
 

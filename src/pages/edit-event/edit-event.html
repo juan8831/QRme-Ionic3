@@ -46,4 +46,10 @@
     <button ion-button type="submit" block [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
   </form>
 
+
+  <button *ngIf="!isNewEvent" color="danger" ion-button block (click)="onDeleteEvent()">Delete Event</button>
+
+  
+
+
 </ion-content>

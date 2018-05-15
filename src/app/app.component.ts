@@ -11,12 +11,13 @@ import { SettingsPage } from '../pages/settings/settings';
 import { EventDetailPage } from '../pages/event-detail/event-detail';
 
 import firebase from 'firebase';
+import { RootPageProvider } from '../providers/root-page/root-page';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = EventsPage;
+  rootPage :any = EventsPage;
   eventsPage = EventsPage;
   publicEventsPage = PublicEventsPage
   signInUpPage = SigninUpPage
@@ -31,7 +32,8 @@ export class MyApp {
     platform: Platform, 
     statusBar: StatusBar, 
     splashScreen: SplashScreen, 
-    private menuCtrl: MenuController
+    private menuCtrl: MenuController,
+    private rootPageProvider : RootPageProvider
   ) {
     firebase.initializeApp({
       apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
@@ -39,7 +41,11 @@ export class MyApp {
     databaseURL: "https://qrme-65e1e.firebaseio.com"
     });
 
-
+    this.rootPageProvider.getPage().subscribe(page => {
+      if(page){
+        this.nav.setRoot(EventsPage);
+      }
+    });
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

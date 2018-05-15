@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { Event } from '../../models/event';
 import { Form, NgForm } from '@angular/forms';
 import { EventProvider } from '../../providers/event/event';
@@ -15,7 +15,11 @@ export class EditEventPage implements OnInit {
   event : Event;
   isnewEvent: boolean;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private eventProvider: EventProvider) {
+  constructor(public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private eventProvider: EventProvider,
+    private toastCtrl: ToastController
+  ) {
   }
 
   ngOnInit() {
@@ -53,6 +57,16 @@ export class EditEventPage implements OnInit {
 
 
     this.navCtrl.pop();
+
+  }
+
+  onDeleteEvent(){
+    this.eventProvider.deleteEvent(this.event);
+    this.toastCtrl.create({
+      message : 'Event successfully deleted',
+      duration: 5000
+    }).present();
+    this.navCtrl.popToRoot();
 
   }
 

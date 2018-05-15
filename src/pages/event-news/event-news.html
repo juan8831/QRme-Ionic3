@@ -14,14 +14,14 @@
       </button>
     </ion-buttons>
     <ion-buttons end>
-        <button ion-button icon-only (click)="onOpenInfo()">
-          <ion-icon name="information-circle"></ion-icon>
-        </button>
+      <button ion-button icon-only (click)="onOpenInfo()">
+        <ion-icon name="information-circle"></ion-icon>
+      </button>
     </ion-buttons>
     <ion-buttons end>
-        <button ion-button icon-only (click)="onOpenEdit()">
-          <ion-icon name="settings"></ion-icon>
-        </button>
+      <button ion-button icon-only (click)="onOpenEdit()">
+        <ion-icon name="settings"></ion-icon>
+      </button>
     </ion-buttons>
   </ion-navbar>
 
@@ -34,13 +34,13 @@
       <ion-icon name="home"></ion-icon>
     </button>
   </ion-fab>
- 
+
   <ion-grid>
     <ion-row nowrap align-items-center>
       <ion-col text-center>
-          <h1 style="margin-right: 3px" >{{event?.name}} </h1>
-          <!-- <ion-icon class="titleIcon"  name="information-circle"></ion-icon>    -->
-      </ion-col>          
+        <h1 style="margin-right: 3px">{{event?.name}} </h1>
+        <!-- <ion-icon class="titleIcon"  name="information-circle"></ion-icon>    -->
+      </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
@@ -49,6 +49,29 @@
       <ion-col>
         <p text-center>{{event?.location}} </p>
         <p text-center>{{event?.date | date}} | {{event?.time}} </p>
+      </ion-col>
+    </ion-row>
+    <ion-row text-center>
+      <ion-col>
+
+        <button ion-button round (click)="onAttendance()" color="darkRed">
+          <ion-icon item-left name="person" style="margin-right: 4px "></ion-icon>
+          Attendance
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row text-center>
+      <ion-col>
+        <button round block ion-button color="blue">
+          <ion-icon item-left name="text" style="margin-right: 4px "></ion-icon>
+          Blog
+        </button>
+      </ion-col>
+      <ion-col>
+        <button round block ion-button color="yellow">
+          <ion-icon item-left name="flag" style="margin-right: 4px "></ion-icon>
+          Polls
+        </button>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -77,31 +100,24 @@
     </ion-item-sliding>
 
     <ion-item-sliding>
-        <ion-item>
-          <ion-avatar item-start>
-            <ion-icon class="eventIcon" name="text"></ion-icon>
-          </ion-avatar>
-          <h2>New Post</h2>
-          <h3>Schedule</h3>
-          <p>{{event?.date | date}}</p>
-          <ion-note item-end>{{event?.time }}</ion-note>
-        </ion-item>
-        <ion-item-options side="right">
-          <button ion-button color="primary">
-            <ion-icon name="text"></ion-icon>
-            Delete
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
+      <ion-item>
+        <ion-avatar item-start>
+          <ion-icon class="eventIcon" name="text"></ion-icon>
+        </ion-avatar>
+        <h2>New Post</h2>
+        <h3>Schedule</h3>
+        <p>{{event?.date | date}}</p>
+        <ion-note item-end>{{event?.time }}</ion-note>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button color="primary">
+          <ion-icon name="text"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
 
 
   </ion-list>
-
-
-
-
-
-
-
 
 </ion-content>

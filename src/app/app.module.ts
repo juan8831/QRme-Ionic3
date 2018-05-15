@@ -28,6 +28,8 @@ import { EventTabsPage } from '../pages/event-tabs/event-tabs';
 import { EventNewsPage } from '../pages/event-news/event-news';
 import { EventBlogPage } from '../pages/event-blog/event-blog';
 import { EventPollsPage } from '../pages/event-polls/event-polls';
+import { RootPageProvider } from '../providers/root-page/root-page';
+import { SelectedEventProvider } from '../providers/selected-event/selected-event';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
@@ -92,7 +94,9 @@ export const firebaseConfig = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    EventProvider
+    EventProvider,
+    RootPageProvider,
+    SelectedEventProvider
   ]
 })
 export class AppModule {}

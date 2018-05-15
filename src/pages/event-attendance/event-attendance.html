@@ -8,13 +8,19 @@
 
   <ion-navbar>
     <ion-title>Attendance</ion-title>
-  </ion-navbar>
+    <ion-buttons start>
+        <button ion-button (click)="onGoToEvent()">
+          Back to Event
+        </button>
+      </ion-buttons>
+    </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
 
+  <h2>Hello Pelican</h2>
   <h2>{{event?.name}}</h2>
 
 </ion-content>
