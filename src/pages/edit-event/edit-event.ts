@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, ToastController, AlertController }
 import { Event } from '../../models/event';
 import { Form, NgForm } from '@angular/forms';
 import { EventProvider } from '../../providers/event/event';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 //used for creating and editing events
 @IonicPage()
@@ -19,7 +20,8 @@ export class EditEventPage implements OnInit {
     public navParams: NavParams, 
     private eventProvider: EventProvider,
     private toastCtrl: ToastController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private afAuth : AngularFireAuth
   ) {
   }
 
@@ -49,7 +51,11 @@ export class EditEventPage implements OnInit {
       this.event.description = f.value.description ? f.value.description : '';
    
     if (this.isnewEvent) {
+      this.event.creator = this.afAuth.auth.currentUser.email;
+      this.event.adminList = [this.afAuth.auth.currentUser.email];
+      this.event.inviteeList = [];
       this.eventProvider.addEvent(this.event);
+
     }
     else{
       this.eventProvider.updateEvent(this.event);

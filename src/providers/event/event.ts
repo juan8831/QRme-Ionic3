@@ -36,6 +36,16 @@ export class EventProvider {
     });
   }
 
+  getEventsForAdmin(){
+    return this.afDB.list('events', ref => ref.orderByChild('size').equalTo(size)).snapshotChanges().map(changes => {
+      return changes.map(action => {
+        const data = action.payload.val() as Event;        
+        data.id = action.payload.key
+        return data;
+      });
+    });
+  }
+
   updateEvent(event: Event){
     return this.dbRef.update(event.id, event);
   }

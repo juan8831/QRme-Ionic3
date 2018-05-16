@@ -9,8 +9,9 @@ export class Event{
     location?: string
     locationLat?: number
     locationLong?: number
-    inviteeList? : User[]
-    adminList?: User[]
+    creator: string
+    inviteeList? : string[] //User[]
+    adminList?: string[]// User[]
     type: string
     blogId?: string
     Attendance: Attendance[]
