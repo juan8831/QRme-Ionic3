@@ -31,6 +31,8 @@ import { EventPollsPage } from '../pages/event-polls/event-polls';
 import { RootPageProvider } from '../providers/root-page/root-page';
 import { SelectedEventProvider } from '../providers/selected-event/selected-event';
 import { AuthProvider } from '../providers/auth/auth';
+import { UserProvider } from '../providers/user/user';
+import { AngularFirestore, AngularFirestoreModule } from 'angularfire2/firestore';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
@@ -66,9 +68,10 @@ export const firebaseConfig = {
     BrowserModule,
     IonicModule.forRoot(MyApp),
     HttpClientModule,
-    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireModule.initializeApp(firebaseConfig, 'qrME'),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFirestoreModule
 
   ],
   bootstrap: [IonicApp],
@@ -98,7 +101,8 @@ export const firebaseConfig = {
     EventProvider,
     RootPageProvider,
     SelectedEventProvider,
-    AuthProvider
+    AuthProvider,
+    UserProvider
   ]
 })
 export class AppModule {}

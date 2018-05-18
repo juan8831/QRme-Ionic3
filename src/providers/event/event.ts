@@ -19,7 +19,11 @@ export class EventProvider {
     //+ 'auth=' + token;
     //return this.http.put(url, event );
 
-    return this.dbRef.push(event);
+    
+
+    //return this.dbRef.push(event);
+    var id = 'juan@gmail.com'.replace(/[.]/g, '%20');
+    return this.afDB.object(`/events/${id}`).set(event);
 
 
     //this.http.put()
@@ -36,15 +40,15 @@ export class EventProvider {
     });
   }
 
-  getEventsForAdmin(){
-    return this.afDB.list('events', ref => ref.orderByChild('size').equalTo(size)).snapshotChanges().map(changes => {
-      return changes.map(action => {
-        const data = action.payload.val() as Event;        
-        data.id = action.payload.key
-        return data;
-      });
-    });
-  }
+  // getEventsForAdmin(){
+  //   return this.afDB.list('events', ref => ref.orderByChild('size').equalTo(size)).snapshotChanges().map(changes => {
+  //     return changes.map(action => {
+  //       const data = action.payload.val() as Event;        
+  //       data.id = action.payload.key
+  //       return data;
+  //     });
+  //   });
+  // }
 
   updateEvent(event: Event){
     return this.dbRef.update(event.id, event);

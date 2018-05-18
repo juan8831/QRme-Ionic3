@@ -7,7 +7,7 @@
   <button block color="yellow" ion-button (click)="create = true;">Create Account</button>
 
   <button block color="danger" ion-button (click)="onGoogle()">Google</button>
-  
+
   <br>
   <br>
 
@@ -24,9 +24,13 @@
     </ion-list>
     <button ion-button block type="submit" [disabled]="!f.valid">Sign In</button>
   </form>
-  
+
   <form *ngIf="create" #f="ngForm" (ngSubmit)="onCreate(f)">
     <ion-list>
+      <ion-item>
+        <ion-label fixed>Name</ion-label>
+        <ion-input type="text" ngModel name="name" required></ion-input>
+      </ion-item>
       <ion-item>
         <ion-label fixed>Email</ion-label>
         <ion-input type="email" ngModel name="email" required></ion-input>
@@ -36,9 +40,9 @@
         <ion-input type="password" [(ngModel)]="password" name="password" required [minlength]="6"></ion-input>
       </ion-item>
       <ion-item>
-          <ion-label floating>Confirm Password</ion-label>
-          <ion-input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required [minlength]="6"></ion-input>
-        </ion-item>
+        <ion-label floating>Confirm Password</ion-label>
+        <ion-input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required [minlength]="6"></ion-input>
+      </ion-item>
     </ion-list>
     <button ion-button block type="submit" [disabled]="!f.valid || password != confirmPassword">Create Account</button>
   </form>

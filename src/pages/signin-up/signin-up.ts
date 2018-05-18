@@ -6,7 +6,9 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthProvider } from '../../providers/auth/auth';
 import { firebaseConfig } from '../../app/app.module';
 
-import {firebase} from '@firebase/app';
+import { firebase } from '@firebase/app';
+import { User } from '../../models/user';
+import { UserProvider } from '../../providers/user/user';
 
 
 @IonicPage()
@@ -17,17 +19,18 @@ import {firebase} from '@firebase/app';
 export class SigninUpPage {
 
   create = false;
-  password : string;
-  confirmPassword : string;
+  password: string;
+  confirmPassword: string;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public navParams: NavParams,
     private authProvider: AuthProvider,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
-    private afAuth : AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private userProvider: UserProvider
   ) {
   }
 
@@ -35,7 +38,11 @@ export class SigninUpPage {
     console.log('ionViewDidLoad SigninUpPage');
   }
 
-  onCreate(form: NgForm){
+  onCreate(form: NgForm) {
+    var user = new User();
+    user.name = form.value.name;
+    user.id = form.value.email;
+
     const loading = this.loadingCtrl.create({
       content: 'Creating your account...'
     });
@@ -43,7 +50,18 @@ export class SigninUpPage {
 
     this.afAuth.auth.createUserWithEmailAndPassword(form.value.email, form.value.password)
       .then(data => {
-        loading.dismiss();
+        this.userProvider.addUser(user)
+          .then(_ =>
+            loading.dismiss()
+          )
+          .catch(error => {
+            loading.dismiss();
+            this.alertCtrl.create({
+              title: 'Sign up error',
+              message: error.message,
+              buttons: ['Ok']
+            }).present();
+          });
       })
       .catch(error => {
         loading.dismiss();
@@ -52,45 +70,42 @@ export class SigninUpPage {
           message: error.message,
           buttons: ['Ok']
         }).present();
-
-
-
-        });   
+      });
   }
 
-  
 
-  onSignIn(form: NgForm){
+
+  onSignIn(form: NgForm) {
     const loading = this.loadingCtrl.create({
       content: 'Signing you in...'
     });
     loading.present();
 
-    
-    
-    this.afAuth.auth.signInWithEmailAndPassword(form.value.email, form.value.password)
-    .then(data => {
-      loading.dismiss();
-      form.reset();
-      this.toastCtrl.create({
-        message: `Welcome ${this.authProvider.getEmail()}`,
-        duration: 5000,
-        position: 'bottom'
-      }).present();
-    })
-    .catch(error => {
-      loading.dismiss();
-      this.alertCtrl.create({
-        title: 'Sign in error',
-        message: error.message,
-        buttons: ['Ok']
-      }).present();
 
-    });
-    
+
+    this.afAuth.auth.signInWithEmailAndPassword(form.value.email, form.value.password)
+      .then(data => {
+        loading.dismiss();
+        //form.reset();
+        this.toastCtrl.create({
+          message: `Welcome ${this.authProvider.getEmail()}`,
+          duration: 5000,
+          position: 'bottom'
+        }).present();
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alertCtrl.create({
+          title: 'Sign in error',
+          message: error.message,
+          buttons: ['Ok']
+        }).present();
+
+      });
+
   }
 
-  onGoogle(){
+  onGoogle() {
 
     // const loading = this.loadingCtrl.create({
     //   content: 'Signing you in...'
@@ -100,24 +115,24 @@ export class SigninUpPage {
     //this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 
     this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-    .then(data => {
-      //loading.dismiss();
-      //form.reset();
-      this.toastCtrl.create({
-        message: `Welcome ${this.authProvider.getEmail()}`,
-        duration: 5000,
-        position: 'bottom'
-      }).present();
-    })
-    .catch(error => {
-      //loading.dismiss();
-      this.alertCtrl.create({
-        title: 'Sign in error',
-        message: error.message,
-        buttons: ['Ok']
-      }).present();
+      .then(data => {
+        //loading.dismiss();
+        //form.reset();
+        this.toastCtrl.create({
+          message: `Welcome ${this.authProvider.getEmail()}`,
+          duration: 5000,
+          position: 'bottom'
+        }).present();
+      })
+      .catch(error => {
+        //loading.dismiss();
+        this.alertCtrl.create({
+          title: 'Sign in error',
+          message: error.message,
+          buttons: ['Ok']
+        }).present();
 
-    });
+      });
 
   }
 

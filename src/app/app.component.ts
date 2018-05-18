@@ -37,7 +37,8 @@ export class MyApp {
     splashScreen: SplashScreen, 
     private menuCtrl: MenuController,
     private rootPageProvider : RootPageProvider,
-    private authProvider: AuthProvider
+    private authProvider: AuthProvider,
+    private afAuth: AngularFireAuth
   ) {
     firebase.initializeApp({
       apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
@@ -45,20 +46,36 @@ export class MyApp {
     databaseURL: "https://qrme-65e1e.firebaseio.com"
     });
 
-    firebase.auth().onAuthStateChanged(user => {
+    afAuth.authState.subscribe(user => {
       if(user){
-        this.isAuthenticated = true;
-        this.email = user.email;
-        this.rootPage = EventsPage;
-        //this.nav.setRoot(this.tabsPage);
-      }
-      else{
-        this.isAuthenticated = false;
-        this.email = "";
-        //this.nav.setRoot(this.signinPage)
-        this.rootPage = SigninUpPage;
-      }
+            this.isAuthenticated = true;
+            //this.email = user.email;
+            this.rootPage = EventsPage;
+            //this.nav.setRoot(this.tabsPage);
+          }
+          else{
+            this.isAuthenticated = false;
+            this.email = "";
+            //this.nav.setRoot(this.signinPage)
+            this.rootPage = SigninUpPage;
+          }
+      
     });
+
+    // firebase.auth().onAuthStateChanged(user => {
+    //   if(user){
+    //     this.isAuthenticated = true;
+    //     //this.email = user.email;
+    //     this.rootPage = EventsPage;
+    //     //this.nav.setRoot(this.tabsPage);
+    //   }
+    //   else{
+    //     this.isAuthenticated = false;
+    //     this.email = "";
+    //     //this.nav.setRoot(this.signinPage)
+    //     this.rootPage = SigninUpPage;
+    //   }
+    // });
 
     // this.rootPageProvider.getPage().subscribe(page => {
     //   if(page){

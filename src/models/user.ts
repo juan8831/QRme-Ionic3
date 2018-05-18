@@ -1,8 +1,8 @@
-export interface User{
-    id: string
+export class User{
+    id: string  //use email as id
     name: string
-    eventAdminList : Event[]
-    eventInviteeList: Event[]
-    pendingInvitationList: Event[]
+    eventAdminList? : string[]
+    eventInviteeList?: string[]
+    pendingInvitationList?: string[]
     //password on firebase
 }

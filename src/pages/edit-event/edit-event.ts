@@ -54,7 +54,10 @@ export class EditEventPage implements OnInit {
       this.event.creator = this.afAuth.auth.currentUser.email;
       this.event.adminList = [this.afAuth.auth.currentUser.email];
       this.event.inviteeList = [];
-      this.eventProvider.addEvent(this.event);
+      this.eventProvider.addEvent(this.event)
+      .then(data => console.log(data));
+      
+      ;
 
     }
     else{
