@@ -8,7 +8,7 @@ export class SelectedEventProvider {
   event: Event;
   scrollPosition: number = 0;
   constructor(public http: HttpClient) {
-    console.log('Hello SelectedEventProvider Provider');
+    //console.log('Hello SelectedEventProvider Provider');
   }
 
   getEvent(){

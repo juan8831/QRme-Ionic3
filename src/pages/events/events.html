@@ -13,7 +13,7 @@
       </button>
     </ion-buttons>
 
-    <ion-segment [(ngModel)]="segment" (ionChange)="updateSchedule()">
+    <ion-segment [(ngModel)]="segment" (ionChange)="changeEventMode()">
       <ion-segment-button value="managing">
         Managing
       </ion-segment-button>
@@ -25,7 +25,7 @@
 
   </ion-navbar>
 
-    <ion-searchbar color="white" [(ngModel)]="queryText" (ionInput)="updateSchedule()" placeholder="Search">
+    <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search">
     </ion-searchbar>
 
 
@@ -34,9 +34,9 @@
 
 <ion-content padding [id]='content'>
 
-  <ion-list>
+  <ion-list *ngIf="(events)?.length > 0" >
       <ion-list-header>Today</ion-list-header>
-      <ion-item *ngFor="let event of events | async" (click)="onLoadEvent(event)">
+      <ion-item  *ngFor="let event of events" (click)="onLoadEvent(event)">
           <ion-avatar item-start>
               <img src="assets/imgs/festival.png">
             </ion-avatar>
@@ -49,7 +49,7 @@
 
   <ion-list>
       <ion-list-header>Next Week</ion-list-header>
-      <ion-item *ngFor="let event of events | async">
+      <ion-item *ngFor="let event of events">
           <ion-avatar item-start>
               <img src="assets/imgs/festival.png">
             </ion-avatar>
@@ -59,6 +59,9 @@
           <ion-note item-end>{{event.time }}</ion-note>     
       </ion-item>
   </ion-list>
+
+
+  <h2 *ngIf="!events$">No Events! Create or Join an Event!</h2>
 
   <ion-fab bottom right #fab>
     <button color="secondary" ion-fab (click)="addEvent()">

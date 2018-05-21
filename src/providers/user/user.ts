@@ -4,10 +4,13 @@ import { User } from '../../models/user';
 import {AngularFireDatabase} from 'angularfire2/database';
 import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import {Observable} from 'rxjs/observable';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { GESTURE_REFRESHER } from 'ionic-angular';
 
 @Injectable()
 export class UserProvider {
 
+  currentEmail: string;
   usersCollection: AngularFirestoreCollection<User>;
   userDoc: AngularFirestoreDocument<User>;
   users: Observable<User[]>;
@@ -16,7 +19,8 @@ export class UserProvider {
   constructor(
     public http: HttpClient,
     private afDB: AngularFireDatabase,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private afAuth: AngularFireAuth
   
   ) { 
     this.usersCollection = this.afs.collection('users', ref => ref.orderBy('name', 'asc'));
@@ -41,6 +45,7 @@ export class UserProvider {
 
    getUser(id: string): Observable<User>{
      this.userDoc = this.afs.doc<User>(`users/${id}`);
+     if(id = null) return null;
      this.user = this.userDoc.snapshotChanges().map(action =>{
         if(action.payload.exists === false){
           return null;
@@ -57,12 +62,28 @@ export class UserProvider {
 
    updateUser(user: User){
      this.userDoc = this.afs.doc(`users/${user.id}`);
-     this.userDoc.update(user);
+     return this.userDoc.update(user)
    }
 
    deleteUser(user: User){
     this.userDoc = this.afs.doc(`users/${user.id}`);
     this.userDoc.delete();
+  }
+
+  //get signed in user
+  getCurrentUser(): Observable<User>  { 
+     return this.getUser(this.afAuth.auth.currentUser.email);
+    //else
+     // return this.getUser("joe@gmail.com");
+  }
+
+   deleteEventForUser (userId: string, eventId: string){
+     return this.getUser(userId).first().switchMap(user => {
+        delete user.eventAdminList[eventId];
+        return this.updateUser(user);   
+    });
+
+   // return promise;
   }
 
 }

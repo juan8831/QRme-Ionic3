@@ -4,6 +4,8 @@ import { Event } from '../../models/event';
 import { Form, NgForm } from '@angular/forms';
 import { EventProvider } from '../../providers/event/event';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { UserProvider } from '../../providers/user/user';
+import { User } from '../../models/user';
 
 //used for creating and editing events
 @IonicPage()
@@ -13,15 +15,17 @@ import { AngularFireAuth } from 'angularfire2/auth';
 })
 export class EditEventPage implements OnInit {
 
-  event : Event;
+  event: Event;
   isnewEvent: boolean;
 
-  constructor(public navCtrl: NavController, 
-    public navParams: NavParams, 
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
     private eventProvider: EventProvider,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private afAuth : AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private userProvider: UserProvider
+
   ) {
   }
 
@@ -30,7 +34,7 @@ export class EditEventPage implements OnInit {
     if (!this.isnewEvent) {
       this.event = this.navParams.get('event');
     }
-    else{
+    else {
       this.event = new Event();
     }
   }
@@ -40,40 +44,75 @@ export class EditEventPage implements OnInit {
   }
 
   onSubmit(f: NgForm) {
-      this.event.name = f.value.name;
-      this.event.recurring = f.value.recurring ? f.value.recurring : false ;
-      this.event.location = f.value.location;
-      this.event.type = f.value.type;
+    this.event.name = f.value.name;
+    this.event.recurring = f.value.recurring ? f.value.recurring : false;
+    this.event.location = f.value.location;
+    this.event.type = f.value.type;
 
-      //optional 
-      this.event.date = f.value.date ? f.value.date : '';
-      this.event.time = f.value.time ? f.value.time : '';
-      this.event.description = f.value.description ? f.value.description : '';
-   
+    //optional 
+    this.event.date = f.value.date ? f.value.date : '';
+    this.event.time = f.value.time ? f.value.time : '';
+    this.event.description = f.value.description ? f.value.description : '';
+
     if (this.isnewEvent) {
       this.event.creator = this.afAuth.auth.currentUser.email;
       this.event.adminList = [this.afAuth.auth.currentUser.email];
       this.event.inviteeList = [];
       this.eventProvider.addEvent(this.event)
-      .then(data => console.log(data));
-      
-      ;
+        .then(data => {
+          var key = data.key;
+          console.log(key);
+          this.userProvider.getCurrentUser().first().subscribe(user => {
+            if (user != null) {
+              //something.unsubscribe();
+              var updateUser: User = user;
+              updateUser.eventAdminList[key] = true;
+              this.userProvider.updateUser(updateUser).then(_ => this.navCtrl.pop());           
+            }
+          });
 
+        });
     }
-    else{
+    //.catch(err => console.log(err, 'You do not have access!'));
+
+    // .then((data) => {
+    //   console.log(data);
+    //   this.userProvider.getUser(this.afAuth.auth.currentUser.email).subscribe(user => {
+    //     var updateUser : User = user;
+    //     console.log(data);
+    //     //updateUser.eventAdminList.push(data);
+
+
+
+
+    //     //this.userProvider.updateUser()
+    //   });
+
+    // });
+
+    else {
       this.eventProvider.updateEvent(this.event);
+      this.navCtrl.pop();
     }
 
 
 
-    this.navCtrl.pop();
+    
 
   }
 
-  deleteEvent(){
+     async deleteEvent() {
+
+      await Promise.all(this.event.adminList.map(async (userId) => {
+        await this.userProvider.deleteEventForUser(userId, this.event.id).toPromise();
+        console.log('deleted for user');
+      }));
+      
     this.eventProvider.deleteEvent(this.event);
+    //todo invitee list delete
+
     this.toastCtrl.create({
-      message : 'Event successfully deleted',
+      message: 'Event successfully deleted',
       duration: 3000
     }).present();
     this.navCtrl.popToRoot();

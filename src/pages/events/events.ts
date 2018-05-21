@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, ViewController, Content } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, ViewController, Content, Events } from 'ionic-angular';
 import { EditEventPage } from '../edit-event/edit-event';
 import { EventProvider } from '../../providers/event/event';
 //import { Observable } from '@firebase/util';
@@ -10,6 +10,13 @@ import { EventDetailPage } from '../event-detail/event-detail';
 import { EventTabsPage } from '../event-tabs/event-tabs';
 import { SelectedEventProvider } from '../../providers/selected-event/selected-event';
 import { EventNewsPage } from '../event-news/event-news';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { of } from 'rxjs/observable/of';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { mergeAll } from 'rxjs/operator/mergeAll';
+import { UserProvider } from '../../providers/user/user';
+import { ISubscription } from 'rxjs/Subscription';
 
 @IonicPage()
 @Component({
@@ -19,76 +26,148 @@ import { EventNewsPage } from '../event-news/event-news';
 
 export class EventsPage implements OnInit {
 
-  events: Observable<any[]>;
-  scrollAmount: number = 0;
-  @ViewChild (Content) content: Content;
+  searchText: string = "";
+  events$: Observable<Event[]>;
+  events: Event[];
+  subscription: ISubscription;
+  //scrollAmount: number = 0;
+  //@ViewChild(Content) content: Content;
+
+  segment = "managing";
 
 
-  constructor(public navCtrl: NavController, 
-    public navParams: NavParams, 
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
     private eventProvider: EventProvider,
     private modalCtrl: ModalController,
     private selectEventProvider: SelectedEventProvider,
-    private viewCtrl: ViewController
+    private viewCtrl: ViewController,
+    private afAuth: AngularFireAuth,
+    private userProvider: UserProvider
   ) {
   }
 
-  ngOnInit(){
-    this.content.ionScroll.subscribe(($event) => {
-      this.scrollAmount = $event.scrollTop;
-  });
+  ngOnInit() {
+    //   // this.content.ionScroll.subscribe(($event) => {
+    //   //   this.scrollAmount = $event.scrollTop;
+    // });
 
-  this.events = this.eventProvider.getEvents();
+    console.log('subscribing');
+    this.loadManagingEvents();
 
+  }
+
+  ngOnDestroy(): void {
+    console.log('unsubscribe destory!');
+    this.subscription.unsubscribe();
+    
   }
 
 
   ionViewDidEnter() {
-
-    // this.eventProvider.getEvents().subscribe(events =>
-    // {
-    //   this.events = events;
-    // });
-
-    
-   // console.log(this.events);
-
-    //this.content.scrollTo(0,this.selectEventProvider.getScrollPosition(), 150);
+    //this.loadEvents();
   }
 
-  addEvent(){
-    this.navCtrl.push(EditEventPage, {type : 'new'});
-    //this.navCtrl.push(EventTabsPage);
-    
-
-    
-
-  console.log(this.scrollAmount);
-    
-    
-
-    //console.log(this.eventProvider.getEvents().);
-    
-
-
+  private loadManagingEventsObservable() {
+    this.events$ = this.afAuth.authState.switchMap(user => {
+      if (user) {
+        return this.userProvider.getCurrentUser().switchMap(user => {
+          return this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
+            .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())));
+          // .switchMap(events)
+          // .subscribe(events => {
+          //   console.log(events);
+          //   if(events){
+          //     this.events = events;
+          //   }           
+          // });
+        });
+      }
+    });
   }
 
-  onLoadEvent(event: Event){
+  private loadInvitedEventsObservable() {
+    this.events$ = this.afAuth.authState.switchMap(user => {
+      if (user) {
+        return this.userProvider.getCurrentUser().switchMap(user => {
+          return this.eventProvider.getEventsForAdmin(Object.keys(user.eventInviteeList))
+            .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())));
+          // .switchMap(events)
+          // .subscribe(events => {
+          //   console.log(events);
+          //   if(events){
+          //     this.events = events;
+          //   }           
+          // });
+        });
+      }
+    });
+  }
 
-    //this.modalCtrl.create(EventTabsPage, {event: event}).present();
+  private loadManagingEvents() {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.userProvider.getCurrentUser().subscribe(user => {
+          this.subscription = this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
+            .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
+            .subscribe(events => {
+              console.log(events);
+              if (events) {
+                this.events = events;
+              }
+            });
+        });
+      }
+    });
+  }
 
-    // this.selectEventProvider.setScrollPosition(this.scrollAmount);
+  private loadInvitedEvents() {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        return this.userProvider.getCurrentUser().subscribe(user => {
+          return this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
+            .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
+            .subscribe(events => {
+              console.log(events);
+              if (events) {
+                this.events = events;
+              }
+            });
+        });
+      }
+    });
+  }
+
+  changeSearch() {
+    this.changeEventMode();
+  }
+
+  ionViewWillLeave() {
+    // this.subscription.unsubscribe();
+    // console.log('unsubcribe events');
+  }
+
+  addEvent() {
+    this.navCtrl.push(EditEventPage, { type: 'new' });
+    //this.navCtrl.push(EventTabsPage);    
+  }
+
+  onLoadEvent(event: Event) {
+
     this.selectEventProvider.setEvent(event);
-    // this.navCtrl.push(EventTabsPage);
-
     this.navCtrl.push(EventNewsPage);
-    
-    //push(EventTabsPage);
-   
-   //this.navCtrl.push(EventTabsPage, {event: event});
-  //this.modalCtrl.create(EventTabsPage).present();
 
   }
-  
+
+  changeEventMode() {
+    if (this.segment == 'managing') {
+      this.loadManagingEvents();
+    }
+    else {
+      this.loadInvitedEvents();
+    }
+
+  }
+
 
 }
