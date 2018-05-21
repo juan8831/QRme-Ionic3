@@ -26,14 +26,17 @@ import { ISubscription } from 'rxjs/Subscription';
 
 export class EventsPage implements OnInit {
 
+  invitedEvents: Event[];
+  managingEvents: Event[];
   searchText: string = "";
   events$: Observable<Event[]>;
   events: Event[];
-  subscription: ISubscription;
+  subscriptions: ISubscription [] = [];
   //scrollAmount: number = 0;
   //@ViewChild(Content) content: Content;
 
   segment = "managing";
+  filteredEvents: Event[];
 
 
   constructor(public navCtrl: NavController,
@@ -52,15 +55,15 @@ export class EventsPage implements OnInit {
     //   //   this.scrollAmount = $event.scrollTop;
     // });
 
-    console.log('subscribing');
     this.loadManagingEvents();
-
+   
+    //this.changeEventMode();
   }
 
   ngOnDestroy(): void {
     console.log('unsubscribe destory!');
-    this.subscription.unsubscribe();
-    
+    this.subscriptions.map(subscription => subscription.unsubscribe());
+
   }
 
 
@@ -74,13 +77,6 @@ export class EventsPage implements OnInit {
         return this.userProvider.getCurrentUser().switchMap(user => {
           return this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
             .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())));
-          // .switchMap(events)
-          // .subscribe(events => {
-          //   console.log(events);
-          //   if(events){
-          //     this.events = events;
-          //   }           
-          // });
         });
       }
     });
@@ -92,13 +88,6 @@ export class EventsPage implements OnInit {
         return this.userProvider.getCurrentUser().switchMap(user => {
           return this.eventProvider.getEventsForAdmin(Object.keys(user.eventInviteeList))
             .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())));
-          // .switchMap(events)
-          // .subscribe(events => {
-          //   console.log(events);
-          //   if(events){
-          //     this.events = events;
-          //   }           
-          // });
         });
       }
     });
@@ -108,14 +97,16 @@ export class EventsPage implements OnInit {
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.userProvider.getCurrentUser().subscribe(user => {
-          this.subscription = this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
+         var subscription = this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
             .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
             .subscribe(events => {
               console.log(events);
               if (events) {
-                this.events = events;
+                this.managingEvents = events;
+                this.loadInvitedEvents();
               }
             });
+            this.subscriptions.push(subscription);
         });
       }
     });
@@ -124,22 +115,25 @@ export class EventsPage implements OnInit {
   private loadInvitedEvents() {
     this.afAuth.authState.subscribe(user => {
       if (user) {
-        return this.userProvider.getCurrentUser().subscribe(user => {
-          return this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
+        this.userProvider.getCurrentUser().subscribe(user => {
+         var subscription = this.eventProvider.getEventsForAdmin(Object.keys(user.eventInviteeList))
             .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
             .subscribe(events => {
+              this.changeEventMode();
               console.log(events);
               if (events) {
-                this.events = events;
+                this.invitedEvents = events;
+                this.changeEventMode();
               }
             });
+            this.subscriptions.push(subscription);
         });
       }
     });
   }
 
   changeSearch() {
-    this.changeEventMode();
+    this.filteredEvents = this.events.filter(event => event.name.toLowerCase().includes(this.searchText.toLowerCase()));
   }
 
   ionViewWillLeave() {
@@ -161,12 +155,15 @@ export class EventsPage implements OnInit {
 
   changeEventMode() {
     if (this.segment == 'managing') {
-      this.loadManagingEvents();
+      this.events = this.managingEvents;
     }
     else {
-      this.loadInvitedEvents();
+      this.events = this.invitedEvents;
     }
 
+    if(this.events != null){
+      this.changeSearch();
+    }
   }
 
 

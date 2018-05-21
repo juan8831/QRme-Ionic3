@@ -14,6 +14,7 @@ import firebase from 'firebase';
 import { RootPageProvider } from '../providers/root-page/root-page';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthProvider } from '../providers/auth/auth';
+import { JoinEventsPage } from '../pages/join-events/join-events';
 
 @Component({
   templateUrl: 'app.html'
@@ -21,9 +22,10 @@ import { AuthProvider } from '../providers/auth/auth';
 export class MyApp {
   rootPage :any = EventsPage;
   eventsPage = EventsPage;
-  publicEventsPage = PublicEventsPage
-  signInUpPage = SigninUpPage
-  settings = SettingsPage
+  publicEventsPage = PublicEventsPage;
+  signInUpPage = SigninUpPage;
+  settings = SettingsPage;
+  joinEventsPage = JoinEventsPage;
 
   isAuthenticated = true;
   email = "";

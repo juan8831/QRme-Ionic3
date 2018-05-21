@@ -13,9 +13,9 @@
                 <ion-icon item-start name="book"></ion-icon>
                 Your Events
             </button>
-            <button class="menuItem" ion-item icon-left menuClose (click)="onLoad(publicEventsPage)" *ngIf="isAuthenticated">
-                <ion-icon item-start name="log-in"></ion-icon>
-                Public Events
+            <button class="menuItem" ion-item icon-left menuClose (click)="onLoad(joinEventsPage)" *ngIf="isAuthenticated">
+                <ion-icon item-start name="add-circle"></ion-icon>
+                Join Events
             </button>
             <button class="menuItem" ion-item icon-left menuClose (click)="onLoad(signInUpPage)" *ngIf="!isAuthenticated">
                 <ion-icon item-start name="person"></ion-icon>

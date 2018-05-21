@@ -1,0 +1,36 @@
+<ion-header>
+
+  <ion-navbar>
+      <ion-buttons start>
+          <button ion-button icon-only menuToggle >
+            <ion-icon name="menu"></ion-icon>
+          </button>
+        </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <h1 text-center>Join an Event!</h1>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+          <button full ion-button round large [navPush]="searchEventsPage" color="primary" style="margin-top: 10%">
+              <ion-icon item-left name="search" style="margin-right: 6px "></ion-icon>
+              Search Events
+            </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col>
+            <button block ion-button round large [navPush]="qrJoinEventPage" color="primary" style="margin-top: 10%">
+                <ion-icon item-left name="qr-scanner" style="margin-right: 6px "></ion-icon>
+                Scan QR Code
+              </button>
+        </ion-col>
+      </ion-row>
+
+  </ion-grid>
+
+</ion-content>

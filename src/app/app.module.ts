@@ -33,6 +33,10 @@ import { SelectedEventProvider } from '../providers/selected-event/selected-even
 import { AuthProvider } from '../providers/auth/auth';
 import { UserProvider } from '../providers/user/user';
 import { AngularFirestore, AngularFirestoreModule } from 'angularfire2/firestore';
+import { JoinEventsPage } from '../pages/join-events/join-events';
+import { SearchEventsPage } from '../pages/search-events/search-events';
+import { SearchEventDetailPage } from '../pages/search-event-detail/search-event-detail';
+import { QrJoinEventPage } from '../pages/qr-join-event/qr-join-event';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
@@ -62,7 +66,11 @@ export const firebaseConfig = {
     EventNewsPage,
     EventAttendancePage,
     EventBlogPage,
-    EventPollsPage
+    EventPollsPage,
+    JoinEventsPage,
+    SearchEventsPage,
+    SearchEventDetailPage,
+    QrJoinEventPage
   ],
   imports: [
     BrowserModule,
@@ -92,7 +100,11 @@ export const firebaseConfig = {
     EventNewsPage,
     EventAttendancePage,
     EventBlogPage,
-    EventPollsPage
+    EventPollsPage,
+    JoinEventsPage,
+    SearchEventsPage,
+    SearchEventDetailPage,
+    QrJoinEventPage
   ],
   providers: [
     StatusBar,

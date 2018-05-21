@@ -1,0 +1,28 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Search Events</ion-title>
+  </ion-navbar>
+
+  <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search">
+    </ion-searchbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list *ngIf="(filteredEvents)?.length > 0" >
+        <!-- <ion-list-header>Today</ion-list-header> -->
+        <ion-item  *ngFor="let event of filteredEvents" (click)="onLoadEvent(event)">
+            <ion-avatar item-start>
+                <img src="assets/imgs/festival.png">
+              </ion-avatar>
+            <h2>{{event.name}}</h2>
+            <h3>{{event.description}}</h3>
+            <h3>Created By: {{event.creator}}</h3>
+            <p>{{event.date | date}} | {{event.time }} </p>
+            <ion-note *ngIf="event.type == 'Private'" style="color:red" item-end>Private</ion-note>
+            <ion-note *ngIf="event.type == 'Public'" style="color: #40d647" item-end>Public</ion-note>     
+        </ion-item>
+    </ion-list>
+</ion-content>

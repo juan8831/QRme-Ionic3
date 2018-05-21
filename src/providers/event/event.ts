@@ -47,7 +47,7 @@ export class EventProvider {
   }
 
   getEvents() : Observable<Event[]>{
-    return this.dbRef.snapshotChanges().map(changes => {
+    return this.afDB.list('events', ref => ref.orderByChild('name')).snapshotChanges().map(changes => {
       return changes.map(action => {
         const data = action.payload.val() as Event;        
         data.id = action.payload.key
