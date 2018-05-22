@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { EventProvider } from '../../providers/event/event';
 import { Event } from '../../models/event';
 import { ISubscription } from 'rxjs/Subscription';
+import { UserProvider } from '../../providers/user/user';
+import { SearchEventDetailPage } from '../search-event-detail/search-event-detail';
 
 /**
  * Generated class for the SearchEventsPage page.
@@ -19,20 +21,23 @@ import { ISubscription } from 'rxjs/Subscription';
 export class SearchEventsPage implements OnInit {
 
 
-  events: Event[];
+  events: Event[] = [];
   filteredEvents: Event[];
   subscription: ISubscription;
   searchText: string = "";
+  userEvents = [];
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private eventProvider: EventProvider
+    private eventProvider: EventProvider,
+    private userProvider: UserProvider
   ) { }
 
   ngOnInit() {
-    this.subscription = this.eventProvider.getEvents().subscribe(events => {
+      this.subscription = this.eventProvider.getEvents().subscribe(events => {
       this.events = events;
+      this.events = this.events.filter(event => this.getUserEvents().indexOf(event.id) == -1);
       this.events.sort(function (a, b) {
         var nameA = a.name.toUpperCase(); // ignore upper and lowercase
         var nameB = b.name.toUpperCase(); // ignore upper and lowercase
@@ -46,17 +51,34 @@ export class SearchEventsPage implements OnInit {
         // names must be equal
         return 0;
       });
+      
       this.searchText = "";
       this.changeSearch();
     });
 
+    
+
+  }
+
+  private filterEvents() {
+    if(this.events.length >0)
+    this.events = this.events.filter(event => this.userEvents.indexOf(event.id) == -1);
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    console.log('search-events unsubscribe');
   }
 
-  ionViewDidLoad() {
+  getUserEvents(){
+    var userEventsList = Object.keys(this.userProvider.userProfile.eventAdminList);
+    Object.keys(this.userProvider.userProfile.eventInviteeList).map(event => userEventsList.push(event));
+    return userEventsList;
+  }
+
+  ionViewDidEnter() {
+   
+   // this.filterEvents();
 
   }
 
@@ -66,6 +88,10 @@ export class SearchEventsPage implements OnInit {
     if (this.events != null) {
       this.filteredEvents = this.events.filter(event => event.name.toLowerCase().includes(this.searchText.toLowerCase()));
     }
+  }
+
+  onLoadEvent(event: Event){
+    this.navCtrl.push(SearchEventDetailPage, {event: event});
   }
 
 

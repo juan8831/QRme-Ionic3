@@ -10,8 +10,10 @@ export class Event{
     locationLat?: number
     locationLong?: number
     creator: string
-    inviteeList? : string[] //User[]
-    adminList?: string[]// User[]
+    creatorName: string
+    inviteeList : object //User[]
+    adminList: object// User[]
+    category: string
     type: string
     blogId?: string
     Attendance: Attendance[]

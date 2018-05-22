@@ -47,13 +47,28 @@ export class EventProvider {
   }
 
   getEvents() : Observable<Event[]>{
-    return this.afDB.list('events', ref => ref.orderByChild('name')).snapshotChanges().map(changes => {
+    
+
+    return this.afDB.list('events')
+    .snapshotChanges().map(changes => {
       return changes.map(action => {
         const data = action.payload.val() as Event;        
         data.id = action.payload.key
         return data;
       });
     });
+  }
+
+  getEventsByCategory(categoryName: string): Observable<Event[]>{
+    return this.afDB.list('events', ref => ref.orderByChild(`category`).equalTo(categoryName))
+    .snapshotChanges().map(changes => {
+      return changes.map(action => {
+        const data = action.payload.val() as Event;        
+        data.id = action.payload.key
+        return data;
+      });
+    });
+
   }
 
   getEvent(id: string) {

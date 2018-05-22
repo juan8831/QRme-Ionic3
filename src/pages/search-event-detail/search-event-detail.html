@@ -1,18 +1,63 @@
-<!--
-  Generated template for the SearchEventDetailPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>searchEventDetail</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+      <!-- <ion-title text-center>{{event?.name}}</ion-title> -->
+      <ion-buttons end>
+        <button ion-button (click)="onShowOptions($event)">
+          Edit
+        </button>
+      </ion-buttons>
+      <ion-buttons end>
+        <button ion-button icon-only (click)="onShowOptions($event)">
+          <ion-icon name="settings"></ion-icon>
+        </button>
+      </ion-buttons>
+  
+    </ion-navbar>
+  
+  </ion-header>
+  
+  
+  <ion-content padding>
+    <h1 text-center>{{event?.name}}</h1>
+    <p text-center>{{event.date | date}} | {{event.time}} </p>
+    <img src="assets/imgs/festival.png"/>
+    <h4>
+      {{event?.description}}
+    </h4>
+    <ion-card>
+        <ion-card-content>
+            <ion-row no-padding>
+                <ion-col col-4 class="left" >
+                  <p><b>Type</b> </p>
+                </ion-col>
+                <ion-col col-8 text-left class="right" >
+                  <p>{{event.type}}</p>
+                </ion-col>
+            </ion-row>
+            <ion-row no-padding>
+                <ion-col col-4 class="left" >
+                  <p><b>Location</b> </p>
+                </ion-col>
+                <ion-col col-8 text-left class="right" >
+                  <p>{{event.location}}</p>
+                </ion-col>
+            </ion-row>
+            <ion-row no-padding>
+                <ion-col col-4 class="left" >
+                  <p><b>Recurring</b></p>
+                </ion-col>
+                <ion-col col-8 text-left class="right" >
+                  <p>{{event.recurring == true ? 'Yes' : 'No'}}</p>
+                </ion-col>
+            </ion-row>
+          </ion-card-content>
+    </ion-card>
+  
+    <button block ion-button *ngIf="event.type ==='Private'" (click)="requestInvite()">Request Invite</button>
+    <button block ion-button *ngIf="event.type =='Public'" (click)="joinEvent()">Join Event</button>
 
-</ion-header>
 
-
-<ion-content padding>
-
-</ion-content>
+  
+  
+  </ion-content>

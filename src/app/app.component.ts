@@ -15,6 +15,7 @@ import { RootPageProvider } from '../providers/root-page/root-page';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthProvider } from '../providers/auth/auth';
 import { JoinEventsPage } from '../pages/join-events/join-events';
+import { UserProvider } from '../providers/user/user';
 
 @Component({
   templateUrl: 'app.html'
@@ -33,14 +34,15 @@ export class MyApp {
 
   @ViewChild('nav') nav: NavController;
 
-  constructor(
+   constructor(
     platform: Platform, 
     statusBar: StatusBar, 
     splashScreen: SplashScreen, 
     private menuCtrl: MenuController,
     private rootPageProvider : RootPageProvider,
     private authProvider: AuthProvider,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private userProvider: UserProvider
   ) {
     firebase.initializeApp({
       apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
@@ -50,14 +52,18 @@ export class MyApp {
 
     afAuth.authState.subscribe(user => {
       if(user){
+            console.log("logged in..");
             this.isAuthenticated = true;
+            //this.userProvider.getUserProfile();
             //this.email = user.email;
             this.rootPage = EventsPage;
             //this.nav.setRoot(this.tabsPage);
           }
           else{
+            console.log("logged out..");
             this.isAuthenticated = false;
             this.email = "";
+            this.userProvider.userProfile = null;
             //this.nav.setRoot(this.signinPage)
             this.rootPage = SigninUpPage;
           }

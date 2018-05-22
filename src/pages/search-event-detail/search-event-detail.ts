@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
+import { Event } from '../../models/event';
+import { UserProvider } from '../../providers/user/user';
+import { EventProvider } from '../../providers/event/event';
 
-/**
- * Generated class for the SearchEventDetailPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -15,11 +12,56 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class SearchEventDetailPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  event: Event;
+
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    private loadingCtrl: LoadingController,
+    private alertCtrl : AlertController,
+    private toastCtrl: ToastController,
+    private userProvider: UserProvider,
+    private eventProvider: EventProvider
+     
+  ) {
+    this.event = navParams.get('event');
+
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad SearchEventDetailPage');
+  }
+
+  requestInvite(){
+
+  }
+
+  //add user id to event invitee list && add the current even to the user's invitee list
+  joinEvent(){
+    const loader = this.loadingCtrl.create({content: 'Joining event...'}); 
+    loader.present();
+
+    this.userProvider.userProfile.eventInviteeList[this.event.id] = true;
+    this.userProvider.updateUser(this.userProvider.userProfile)
+    .then(_=> {
+      if(!this.event.inviteeList){
+        this.event.inviteeList = {};
+      }
+      this.event.inviteeList[this.userProvider.userProfile.id] = true;
+      this.eventProvider.updateEvent(this.event)
+      .then(_=> {
+        this.toastCtrl.create({message: 'You have successfully joined the event', duration: 4000}).present();
+        this.navCtrl.pop()
+        loader.dismiss();
+      })
+      .catch(err => {
+        this.toastCtrl.create({message: err, duration: 4000}).present();
+        loader.dismiss();
+      });
+    })
+    .catch(err => {
+      this.toastCtrl.create({message: err, duration: 4000}).present();
+      loader.dismiss();
+    });
   }
 
 }

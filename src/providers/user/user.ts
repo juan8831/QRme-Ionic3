@@ -15,6 +15,7 @@ export class UserProvider {
   userDoc: AngularFirestoreDocument<User>;
   users: Observable<User[]>;
   user: Observable<User>;
+  userProfile : User = null;
 
   constructor(
     public http: HttpClient,
@@ -71,11 +72,25 @@ export class UserProvider {
   }
 
   //get signed in user
-  getCurrentUser(): Observable<User>  { 
+  getCurrentUserObservable(): Observable<User>  { 
      return this.getUser(this.afAuth.auth.currentUser.email);
     //else
      // return this.getUser("joe@gmail.com");
   }
+
+    getUserProfile() {
+    return this.afAuth.authState.switchMap(user => {
+      return this.getUser(user.uid);
+    });
+
+  }
+
+    setUserProfile(){
+      this.afAuth.authState.take(1).subscribe(user => {
+        this.getUser(user.uid).take(1).subscribe(userProfile => this.userProfile = userProfile);
+      });
+    } 
+   
 
    deleteEventForUser (userId: string, eventId: string){
      return this.getUser(userId).first().switchMap(user => {

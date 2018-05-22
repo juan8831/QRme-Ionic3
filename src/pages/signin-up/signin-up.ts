@@ -41,9 +41,9 @@ export class SigninUpPage {
   onCreate(form: NgForm) {
     var user = new User();
     user.name = form.value.name;
-    user.id = form.value.email;
-    user.eventAdminList = {'eventId' : true}
-    user.eventInviteeList = [];
+    user.email = form.value.email;
+    user.eventAdminList = {};
+    user.eventInviteeList = {};
 
     const loading = this.loadingCtrl.create({
       content: 'Creating your account...'
@@ -52,6 +52,7 @@ export class SigninUpPage {
 
     this.afAuth.auth.createUserWithEmailAndPassword(form.value.email, form.value.password)
       .then(data => {
+        user.id = data.user.uid;
         this.userProvider.addUser(user)
           .then(_ =>
             loading.dismiss()

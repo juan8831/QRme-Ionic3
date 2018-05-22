@@ -1,6 +1,7 @@
 export class User{
-    id: string  //use email as id
+    id: string  // auth uid
     name: string
+    email: string
     eventAdminList : Object
     eventInviteeList: Object
     pendingInvitationList?: string[]

@@ -26,12 +26,12 @@ import { ISubscription } from 'rxjs/Subscription';
 
 export class EventsPage implements OnInit {
 
-  invitedEvents: Event[];
-  managingEvents: Event[];
+  invitedEvents: Event[] = [];
+  managingEvents: Event[] = [];
   searchText: string = "";
   events$: Observable<Event[]>;
   events: Event[];
-  subscriptions: ISubscription [] = [];
+  subscriptions: ISubscription[] = [];
   //scrollAmount: number = 0;
   //@ViewChild(Content) content: Content;
 
@@ -55,8 +55,18 @@ export class EventsPage implements OnInit {
     //   //   this.scrollAmount = $event.scrollTop;
     // });
 
-    this.loadManagingEvents();
-   
+    if (this.userProvider.userProfile != null) {
+      this.loadManagingEvents();
+    }
+    else {
+      this.userProvider.getUserProfile().subscribe(user => {
+        this.userProvider.userProfile = user;
+        this.loadManagingEvents();
+      });
+    }
+
+
+
     //this.changeEventMode();
   }
 
@@ -74,7 +84,7 @@ export class EventsPage implements OnInit {
   private loadManagingEventsObservable() {
     this.events$ = this.afAuth.authState.switchMap(user => {
       if (user) {
-        return this.userProvider.getCurrentUser().switchMap(user => {
+        return this.userProvider.getCurrentUserObservable().switchMap(user => {
           return this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
             .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())));
         });
@@ -82,10 +92,10 @@ export class EventsPage implements OnInit {
     });
   }
 
-  private loadInvitedEventsObservable() {
+  private async loadInvitedEventsObservable() {
     this.events$ = this.afAuth.authState.switchMap(user => {
       if (user) {
-        return this.userProvider.getCurrentUser().switchMap(user => {
+        return this.userProvider.getCurrentUserObservable().switchMap(user => {
           return this.eventProvider.getEventsForAdmin(Object.keys(user.eventInviteeList))
             .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())));
         });
@@ -94,42 +104,32 @@ export class EventsPage implements OnInit {
   }
 
   private loadManagingEvents() {
-    this.afAuth.authState.subscribe(user => {
-      if (user) {
-        this.userProvider.getCurrentUser().subscribe(user => {
-         var subscription = this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
-            .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
-            .subscribe(events => {
-              console.log(events);
-              if (events) {
-                this.managingEvents = events;
-                this.loadInvitedEvents();
-              }
-            });
-            this.subscriptions.push(subscription);
-        });
-      }
-    });
+
+    var subscription = this.eventProvider.getEventsForAdmin(Object.keys(this.userProvider.userProfile.eventAdminList))
+      .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
+      .subscribe(events => {
+        console.log(events);
+        if (events) {
+          this.managingEvents = events;
+          this.loadInvitedEvents();
+        }
+      });
+    this.subscriptions.push(subscription);
   }
 
   private loadInvitedEvents() {
-    this.afAuth.authState.subscribe(user => {
-      if (user) {
-        this.userProvider.getCurrentUser().subscribe(user => {
-         var subscription = this.eventProvider.getEventsForAdmin(Object.keys(user.eventInviteeList))
-            .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
-            .subscribe(events => {
-              this.changeEventMode();
-              console.log(events);
-              if (events) {
-                this.invitedEvents = events;
-                this.changeEventMode();
-              }
-            });
-            this.subscriptions.push(subscription);
-        });
-      }
-    });
+
+    var subscription = this.eventProvider.getEventsForAdmin(Object.keys(this.userProvider.userProfile.eventInviteeList))
+      .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
+      .subscribe(events => {
+        this.changeEventMode();
+        console.log(events);
+        if (events) {
+          this.invitedEvents = events; 
+        }
+      });
+    this.subscriptions.push(subscription);
+    this.changeEventMode();
   }
 
   changeSearch() {
@@ -161,7 +161,7 @@ export class EventsPage implements OnInit {
       this.events = this.invitedEvents;
     }
 
-    if(this.events != null){
+    if (this.events != null) {
       this.changeSearch();
     }
   }

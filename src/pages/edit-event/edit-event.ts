@@ -56,20 +56,17 @@ export class EditEventPage implements OnInit {
 
     if (this.isnewEvent) {
       this.event.creator = this.afAuth.auth.currentUser.email;
-      this.event.adminList = [this.afAuth.auth.currentUser.email];
-      this.event.inviteeList = [];
+      this.event.creatorName = this.userProvider.userProfile.name;
+      this.event.adminList = {};
+      this.event.adminList[this.userProvider.userProfile.id] = true;
+      this.event.inviteeList = {};
       this.eventProvider.addEvent(this.event)
         .then(data => {
           var key = data.key;
           console.log(key);
-          this.userProvider.getCurrentUser().first().subscribe(user => {
-            if (user != null) {
-              //something.unsubscribe();
-              var updateUser: User = user;
-              updateUser.eventAdminList[key] = true;
-              this.userProvider.updateUser(updateUser).then(_ => this.navCtrl.pop());           
-            }
-          });
+          var updateUser = this.userProvider.userProfile;
+          updateUser.eventAdminList[key] = true;
+          this.userProvider.updateUser(updateUser).then(_ => this.navCtrl.pop());
 
         });
     }
@@ -103,7 +100,7 @@ export class EditEventPage implements OnInit {
 
      async deleteEvent() {
 
-      await Promise.all(this.event.adminList.map(async (userId) => {
+      await Promise.all(Object.keys(this.event.adminList).map(async (userId) => {
         await this.userProvider.deleteEventForUser(userId, this.event.id).toPromise();
         console.log('deleted for user');
       }));
