@@ -12,6 +12,7 @@ import { EventAttendancePage } from '../event-attendance/event-attendance';
 import { EventPollsPage } from '../event-polls/event-polls';
 import { EventBlogPageModule } from '../event-blog/event-blog.module';
 import { EventBlogPage } from '../event-blog/event-blog';
+import { UserProvider } from '../../providers/user/user';
 
 
 @IonicPage()
@@ -25,6 +26,7 @@ export class EventNewsPage {
   eventAttendancePage = EventAttendancePage;
   eventBlogPage = EventBlogPage;
   eventPollsPage = EventPollsPage;
+  isManaging: boolean = false;
 
 
   constructor(
@@ -34,12 +36,19 @@ export class EventNewsPage {
     private viewCtrl: ViewController,
     private selectedEventProvider: SelectedEventProvider,
     private rootPageProvider : RootPageProvider,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private userProvider: UserProvider
   ) {
     this.event = this.selectedEventProvider.getEvent();
+    if(this.event.adminList){
+      this.isManaging = this.event.adminList[this.userProvider.userProfile.id] == true ? true : false;
+    }
+  
+
   }
 
   ionViewDidEnter(){
+    //this.isManaging = this.event.adminList[this.userProvider.userProfile.id] == true ? true : false;
     //this.event = this.navParams.get('event');
    //console.log(this.event);
   }
@@ -49,7 +58,7 @@ export class EventNewsPage {
   }
 
   onOpenInfo(){
-    this.navCtrl.push(EventDetailPage, {event: this.event});
+    this.navCtrl.push(EventDetailPage, {event: this.event, 'isManaging': this.isManaging});
     //this.navCtrl.p
   }
 

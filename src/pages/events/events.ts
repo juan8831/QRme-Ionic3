@@ -61,9 +61,12 @@ export class EventsPage implements OnInit {
     else {
       this.userProvider.getUserProfile().subscribe(user => {
         this.userProvider.userProfile = user;
+        this.userProvider.setUserProfile();
         this.loadManagingEvents();
       });
     }
+
+    
 
 
 

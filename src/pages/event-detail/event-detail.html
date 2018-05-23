@@ -54,6 +54,8 @@
         </ion-card-content>
   </ion-card>
 
+  <button *ngIf="!isManaging" ion-button block color="danger"  (click)="onLeaveEvent()">Leave Event</button>
+
   <!-- <ion-card>
 
         <img src="assets/imgs/festival.png"/>

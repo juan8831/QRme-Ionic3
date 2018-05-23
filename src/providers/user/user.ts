@@ -86,8 +86,8 @@ export class UserProvider {
   }
 
     setUserProfile(){
-      this.afAuth.authState.take(1).subscribe(user => {
-        this.getUser(user.uid).take(1).subscribe(userProfile => this.userProfile = userProfile);
+      this.afAuth.authState.subscribe(user => {
+        this.getUser(user.uid).subscribe(userProfile => this.userProfile = userProfile);
       });
     } 
    

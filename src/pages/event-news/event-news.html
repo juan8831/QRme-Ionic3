@@ -19,7 +19,7 @@
       </button>
     </ion-buttons>
     <ion-buttons end>
-      <button ion-button icon-only (click)="onOpenEdit()">
+      <button ion-button icon-only *ngIf="isManaging" (click)="onOpenEdit()">
         <ion-icon name="settings"></ion-icon>
       </button>
     </ion-buttons>
