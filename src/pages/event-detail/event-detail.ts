@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, ToastController, AlertController } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 import { EventProvider } from '../../providers/event/event';
 import { Event } from '../../models/event';
+import { EditEventPage } from '../edit-event/edit-event';
 
 
 @IonicPage()
@@ -21,7 +22,8 @@ export class EventDetailPage {
     private loadingCtrl: LoadingController,
     private userProvider: UserProvider,
     private eventProvider: EventProvider,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController
   ) {
     this.event = navParams.get('event');
     this.isManaging = navParams.get('isManaging');
@@ -58,6 +60,29 @@ export class EventDetailPage {
       console.log(err);
     });
 
+  }
+
+  showConfirm() {
+    let confirm = this.alertCtrl.create({
+      title: 'Leave Event?',
+      message: 'Are you sure you want to leave this event?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.onLeaveEvent();
+          }
+        },
+        {
+          text: 'No',
+        }
+      ]
+    });
+    confirm.present();
+  }
+
+  onOpenEdit(){
+    this.navCtrl.push(EditEventPage, {type: 'edit', event: this.event});
   }
 
 }

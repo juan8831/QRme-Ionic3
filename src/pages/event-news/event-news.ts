@@ -13,6 +13,7 @@ import { EventPollsPage } from '../event-polls/event-polls';
 import { EventBlogPageModule } from '../event-blog/event-blog.module';
 import { EventBlogPage } from '../event-blog/event-blog';
 import { UserProvider } from '../../providers/user/user';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 
 @IonicPage()
@@ -37,11 +38,12 @@ export class EventNewsPage {
     private selectedEventProvider: SelectedEventProvider,
     private rootPageProvider : RootPageProvider,
     private modalCtrl: ModalController,
-    private userProvider: UserProvider
+    private userProvider: UserProvider,
+    private afAuth: AngularFireAuth
   ) {
     this.event = this.selectedEventProvider.getEvent();
     if(this.event.adminList){
-      this.isManaging = this.event.adminList[this.userProvider.userProfile.id] == true ? true : false;
+      this.isManaging = this.event.adminList[this.afAuth.auth.currentUser.uid] == true ? true : false;
     }
   
 
@@ -69,9 +71,7 @@ export class EventNewsPage {
     
   }
 
-  onOpenEdit(){
-    this.navCtrl.push(EditEventPage, {type: 'edit', event: this.event});
-  }
+ 
 
   onAttendance(){
     console.log("onAttendace");

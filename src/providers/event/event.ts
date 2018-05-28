@@ -13,79 +13,76 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import { mergeAll } from 'rxjs/operator/mergeAll';
 import { combineLatest } from 'rxjs/observable/combineLatest';
-
+import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
+import {FirebaseApp} from 'angularfire2';
 
 @Injectable()
 export class EventProvider {
 
-  dbRef : any
+  dbRef: any
+  eventsCollection: AngularFirestoreCollection<Event>;
 
-  constructor(public http: HttpClient, 
-    private afDB: AngularFireDatabase, 
+  constructor(public http: HttpClient,
+    private afDB: AngularFireDatabase,
+    private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
-    private userProvider: UserProvider
-  )  
-    {
+    private userProvider: UserProvider,
+    private fb: FirebaseApp
+  ) {
     this.dbRef = this.afDB.list('events');
-    }
-
-  addEvent(event: Event){
-    //const userId = this.authProvider.getActiveUser().uid;
-    //const url = 'https://qrme-65e1e.firebaseio.com' + '/event.json?';
-    //+ 'auth=' + token;
-    //return this.http.put(url, event );
-
-    
-
-    return this.dbRef.push(event);
-    // var id = 'juan@gmail.com'.replace(/[.]/g, '%20');
-    // return this.afDB.object(`/events/${id}`).set(event);
-
-
-    //this.http.put()
-
+    this.eventsCollection = this.afs.collection('events', ref => ref.orderBy('name', 'asc'));
   }
 
-  getEvents() : Observable<Event[]>{
-    
+  addEvent(event: Event) {
+    return this.eventsCollection.add(Object.assign({}, event))
+    .then(event => {
+      var users = {};
+      users[this.userProvider.userProfile.id] = true;
+      return this.afs.doc(`events/${event.id}`).collection('users').doc('admin').set({ 'users': users })
+        .then(_ => {
+          return this.afs.doc(`events/${event.id}`).collection('users').doc('invitee').set({ 'users': {} })
+          .then(_=> {
+            return event
+          });
+        });
+    });
+  }
 
-    return this.afDB.list('events')
-    .snapshotChanges().map(changes => {
+  getAllEvents(): Observable<Event[]> {
+
+    return this.eventsCollection.snapshotChanges().map(changes => {
       return changes.map(action => {
-        const data = action.payload.val() as Event;        
-        data.id = action.payload.key
+        const data = action.payload.doc.data() as Event;
+        data.id = action.payload.doc.id;
         return data;
       });
     });
   }
 
-  getEventsByCategory(categoryName: string): Observable<Event[]>{
+  getEventsByCategory(categoryName: string): Observable<Event[]> {
     return this.afDB.list('events', ref => ref.orderByChild(`category`).equalTo(categoryName))
-    .snapshotChanges().map(changes => {
-      return changes.map(action => {
-        const data = action.payload.val() as Event;        
-        data.id = action.payload.key
-        return data;
+      .snapshotChanges().map(changes => {
+        return changes.map(action => {
+          const data = action.payload.val() as Event;
+          data.id = action.payload.key
+          return data;
+        });
       });
-    });
 
   }
 
   getEvent(id: string) {
-    return this.afDB.object(`events/${id}`).snapshotChanges().map(action => {
+    return this.afs.doc(`events/${id}`).snapshotChanges().map(action => {
 
-          const data = action.payload.val() as Event; 
-          if(data != null){
-            data.id = action.payload.key;
-            return data;
-          }
-          else{
-            return null;
-          }
-          //if(data == null) return null;       
-          
-        
-      });
+      if (action.payload.exists === false) {
+        return null;
+      }
+      else {
+        const data = action.payload.data() as Event;
+        data.id = action.payload.id;
+        return data;
+      }
+    });
   }
 
   // getEventsForAdmin()  {
@@ -97,65 +94,36 @@ export class EventProvider {
 
   // }
 
-  getEventsForAdmin(idList) : Observable<Event[]>  {
-   // var x : Observable<Event []>;
-    // return combineLatest((this.userProvider.getCurrentUser())
-    //   .mergeMap(user => from(Object.keys(user.eventAdminList)))
-    //   .map((eventId) => this.getEvent(eventId)));
+  getEventsForAdmin(idList): Observable<Event[]> {
+
     return combineLatest(idList.map((eventId) => this.getEvent(eventId)));
-    //   .mergeMap(user => from(Object.keys(user.eventAdminList)))
-    //   .map((eventId) => this.getEvent(eventId)));
-      
-      //.map(event => event as Event)
-      
-
-      //.do(result => console.log(result));
-      
-      //return combineLatest(x);
-
-    //.concat(user => from(Object.keys(user.eventAdminList)))
-    //.do(result => console.log(result))
-    //.mergeMap(eventId => this.getEvent(eventId));
-    //.subscribe(event => console.log)
-
-
-      // Object.keys(user.eventAdminList)
-
-      // var list= [];
-      // for(var event in user.eventAdminList)
-      // {
-      //   list.push(event);
-      // }
-
-      // return from(list).concatMap(event => this.getEvent(event)); 
-
-      //return from(list);
-
-      //user.eventAdminList.forEach(event => list.push(this.getEvent(event)));
-
-      //return forkJoin(user.eventAdminList.map(event => this.getEvent(event)));
-      //return from(user.eventAdminList).mergeMap(event => this.getEvent(event));   
-      
-     //(from(user.eventAdminList).flatMap(event => this.getEvent(event)).map(event => event as Event));
-
-   
-
-    // return this.userProvider.getCurrentUser()
-    // .concatMap(user => from(user.eventAdminList)
 
   }
 
-  updateEvent(event: Event){
+  updateEvent(event: Event) {
     return this.dbRef.update(event.id, event);
+
+    //this.dbRef.transaction
   }
 
-  deleteEvent(event: Event){
+  deleteEvent(event: Event) {
     return this.dbRef.remove(event.id);
   }
 
-  
+  addUserToInviteeList(userId: string, eventId: string){
+    var inviteeDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
+    return this.fb.firestore().runTransaction(transaction => {
+      return transaction.get(inviteeDocRef).then(inviteeDoc => {
+        var users = inviteeDoc.data().users;
+        users[userId] = true;
+        transaction.update(inviteeDocRef, {'users': users} );
+      });
+    });
+  }
 
 
-  
+
+
+
 
 }

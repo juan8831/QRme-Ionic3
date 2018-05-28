@@ -3,14 +3,9 @@
   <ion-navbar>
     <!-- <ion-title text-center>{{event?.name}}</ion-title> -->
     <ion-buttons end>
-      <button ion-button (click)="onShowOptions($event)">
-        Edit
-      </button>
-    </ion-buttons>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="onShowOptions($event)">
-        <ion-icon name="settings"></ion-icon>
-      </button>
+        <button ion-button icon-only *ngIf="isManaging" (click)="onOpenEdit()">
+            <ion-icon name="settings"></ion-icon>
+          </button>
     </ion-buttons>
 
   </ion-navbar>
@@ -54,7 +49,7 @@
         </ion-card-content>
   </ion-card>
 
-  <button *ngIf="!isManaging" ion-button block color="danger"  (click)="onLeaveEvent()">Leave Event</button>
+  <button *ngIf="!isManaging" ion-button block color="danger"  (click)="showConfirm()">Leave Event</button>
 
   <!-- <ion-card>
 

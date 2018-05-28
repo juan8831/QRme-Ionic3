@@ -52,7 +52,7 @@ export class SigninUpPage {
 
     this.afAuth.auth.createUserWithEmailAndPassword(form.value.email, form.value.password)
       .then(data => {
-        user.id = data.user.uid;
+        user.id = data.uid;
         this.userProvider.addUser(user)
           .then(_ =>
             loading.dismiss()

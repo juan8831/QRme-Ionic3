@@ -62,11 +62,11 @@ export class EditEventPage implements OnInit {
       this.event.inviteeList = {};
       this.eventProvider.addEvent(this.event)
         .then(data => {
-          var key = data.key;
-          console.log(key);
-          var updateUser = this.userProvider.userProfile;
-          updateUser.eventAdminList[key] = true;
-          this.userProvider.updateUser(updateUser).then(_ => this.navCtrl.pop());
+          var key = data.id;
+          //console.log(key);
+         // var updateUser = this.userProvider.userProfile;
+          //updateUser.eventAdminList[key] = true;
+          this.userProvider.addEventAdminList(key).then(_ => this.navCtrl.pop());
 
         });
     }

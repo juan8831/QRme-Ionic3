@@ -5,6 +5,7 @@ import { Event } from '../../models/event';
 import { ISubscription } from 'rxjs/Subscription';
 import { UserProvider } from '../../providers/user/user';
 import { SearchEventDetailPage } from '../search-event-detail/search-event-detail';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 /**
  * Generated class for the SearchEventsPage page.
@@ -35,29 +36,33 @@ export class SearchEventsPage implements OnInit {
   ) { }
 
   ngOnInit() {
-      this.subscription = this.eventProvider.getEvents().subscribe(events => {
-      this.events = events;
-      this.events = this.events.filter(event => this.getUserEvents().indexOf(event.id) == -1);
-      this.events.sort(function (a, b) {
-        var nameA = a.name.toUpperCase(); // ignore upper and lowercase
-        var nameB = b.name.toUpperCase(); // ignore upper and lowercase
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-
-        // names must be equal
-        return 0;
-      });
-      
+    var allEvents$ = this.eventProvider.getAllEvents()
+    var adminEvents$ = this.userProvider.getEventAdminList();
+    var inviteeEvents$ = this.userProvider.getEventInviteeList();
+    this.subscription = combineLatest( allEvents$, adminEvents$, inviteeEvents$)
+    .subscribe(([allEvents, adminEvents, inviteeEvents]) => {
+      this.events = allEvents;
+      this.events = this.events.filter(event => !(event.id in adminEvents.events)); //filter out events that the user is admin
+      this.events = this.events.filter(event => !(event.id in inviteeEvents.events)); //filter out events that the user is invited
+      this.sortEvents();
       this.searchText = "";
       this.changeSearch();
     });
+  }
 
-    
-
+  private sortEvents() {
+    this.events.sort(function (a, b) {
+      var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+      var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      // names must be equal
+      return 0;
+    });
   }
 
   private filterEvents() {

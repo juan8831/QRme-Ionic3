@@ -41,7 +41,7 @@ export class SearchEventDetailPage {
     loader.present();
 
     this.userProvider.userProfile.eventInviteeList[this.event.id] = true;
-    this.userProvider.updateUser(this.userProvider.userProfile)
+    this.userProvider.addEventInviteeList(this.event.id)
     .then(_=> {
       if(!this.event.inviteeList){
         this.event.inviteeList = {};

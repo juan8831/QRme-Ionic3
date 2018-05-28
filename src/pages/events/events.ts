@@ -55,17 +55,11 @@ export class EventsPage implements OnInit {
     //   //   this.scrollAmount = $event.scrollTop;
     // });
 
-    if (this.userProvider.userProfile != null) {
+    this.afAuth.authState.take(1).subscribe(user => {
+      //this.userProvider.getAdminList(user.uid);
       this.loadManagingEvents();
-    }
-    else {
-      this.userProvider.getUserProfile().subscribe(user => {
-        this.userProvider.userProfile = user;
-        this.userProvider.setUserProfile();
-        this.loadManagingEvents();
-      });
-    }
-
+      this.loadInvitedEvents();
+    })
     
 
 
@@ -81,7 +75,7 @@ export class EventsPage implements OnInit {
 
 
   ionViewDidEnter() {
-    //this.loadEvents();
+    this.changeEventMode();
   }
 
   private loadManagingEventsObservable() {
@@ -106,33 +100,61 @@ export class EventsPage implements OnInit {
     });
   }
 
-  private loadManagingEvents() {
-
-    var subscription = this.eventProvider.getEventsForAdmin(Object.keys(this.userProvider.userProfile.eventAdminList))
-      .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
-      .subscribe(events => {
-        console.log(events);
-        if (events) {
-          this.managingEvents = events;
-          this.loadInvitedEvents();
-        }
-      });
-    this.subscriptions.push(subscription);
+  private loadManagingEvents(){
+    var subs = this.userProvider.getEventAdminList().subscribe(events => {
+      if(!events || events == null){
+        this.managingEvents = [];
+        return;
+      } 
+      var adminEvents = events.events;
+      if(!adminEvents || Object.keys(adminEvents).length == 0)
+          this.managingEvents = [];
+      else {
+      var subscription = this.eventProvider.getEventsForAdmin(Object.keys(adminEvents))
+        .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
+        .subscribe(events => {
+          console.log(events);
+          if (events) {
+            this.managingEvents = events;
+            this.events = this.managingEvents;
+            this.changeSearch();
+          }
+        });
+      this.subscriptions.push(subscription);
+      }
+    });
+    this.subscriptions.push(subs);
   }
 
   private loadInvitedEvents() {
+    var subs = this.userProvider.getEventInviteeList().subscribe(events => {
 
-    var subscription = this.eventProvider.getEventsForAdmin(Object.keys(this.userProvider.userProfile.eventInviteeList))
-      .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
-      .subscribe(events => {
-        this.changeEventMode();
-        console.log(events);
-        if (events) {
-          this.invitedEvents = events; 
-        }
-      });
-    this.subscriptions.push(subscription);
-    this.changeEventMode();
+      if(!events || events == null){
+        this.managingEvents = [];
+        return;
+      } 
+
+      var inviteeEvents = events.events;
+
+        if(!inviteeEvents || Object.keys(inviteeEvents).length == 0)
+          this.invitedEvents = [];
+        else{
+        this.eventProvider.getEventsForAdmin(Object.keys(inviteeEvents))
+        .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
+        .take(1)
+        .subscribe(events => {
+          //this.changeEventMode();
+          console.log(events);
+          if (events) {
+            this.invitedEvents = events;
+          }
+        });
+      }
+      this.subscriptions.push(subs);
+      //this.changeEventMode();
+      
+    });
+    this.subscriptions.push(subs)
   }
 
   changeSearch() {
