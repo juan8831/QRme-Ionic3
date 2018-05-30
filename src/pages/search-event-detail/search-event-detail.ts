@@ -40,27 +40,38 @@ export class SearchEventDetailPage {
     const loader = this.loadingCtrl.create({content: 'Joining event...'}); 
     loader.present();
 
-    this.userProvider.userProfile.eventInviteeList[this.event.id] = true;
-    this.userProvider.addEventInviteeList(this.event.id)
+    // this.userProvider.userProfile.eventInviteeList[this.event.id] = true;
+    // this.userProvider.addEventInviteeList(this.event.id)
+    // .then(_=> {
+    //   if(!this.event.inviteeList){
+    //     this.event.inviteeList = {};
+    //   }
+    //   this.event.inviteeList[this.userProvider.userProfile.id] = true;
+    //   this.eventProvider.addUserToInviteeList(this.userProvider.userProfile.id, this.event.id)
+    //   .then(_=> {
+    //     this.toastCtrl.create({message: 'You have successfully joined the event', duration: 4000}).present();
+    //     this.navCtrl.pop()
+    //     loader.dismiss();
+    //   })
+    //   .catch(err => {
+    //     this.toastCtrl.create({message: err, duration: 4000}).present();
+    //     loader.dismiss();
+    //   });
+    // })
+    // .catch(err => {
+    //   this.toastCtrl.create({message: err, duration: 4000}).present();
+    //   loader.dismiss();
+    // });
+
+    this.eventProvider.synchronizeInviteeWithEvent(this.userProvider.userProfile.id, this.event.id)
     .then(_=> {
-      if(!this.event.inviteeList){
-        this.event.inviteeList = {};
-      }
-      this.event.inviteeList[this.userProvider.userProfile.id] = true;
-      this.eventProvider.updateEvent(this.event)
-      .then(_=> {
         this.toastCtrl.create({message: 'You have successfully joined the event', duration: 4000}).present();
         this.navCtrl.pop()
         loader.dismiss();
-      })
-      .catch(err => {
-        this.toastCtrl.create({message: err, duration: 4000}).present();
-        loader.dismiss();
-      });
     })
     .catch(err => {
-      this.toastCtrl.create({message: err, duration: 4000}).present();
-      loader.dismiss();
+        this.toastCtrl.create({message: err, duration: 4000}).present();
+        loader.dismiss();
     });
   }
 

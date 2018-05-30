@@ -39,25 +39,17 @@ export class EventDetailPage {
     const loader = this.loadingCtrl.create({content: 'Leaving event...'});
     loader.present();
 
-    delete this.userProvider.userProfile.eventInviteeList[this.event.id];
-    this.userProvider.updateUser(this.userProvider.userProfile)
-    .then(_ =>{
-      delete this.event.inviteeList[this.userProvider.userProfile.id];
-      this.eventProvider.updateEvent(this.event)
-      .then(_ =>{
-        loader.dismiss();
-        this.toastCtrl.create({message: `Successfully left the event: ${this.event.name}`, duration: 5000}).present();
-        this.navCtrl.popToRoot();
-      })
-      .catch(err => {
-        loader.dismiss();
-        console.log(err);
-      });
 
+    this.eventProvider.desynchronizeInviteeWithEvent(this.userProvider.userProfile.id, this.event.id)
+    .then(_=> {
+      loader.dismiss();
+      this.toastCtrl.create({message: `Successfully left the event: ${this.event.name}`, duration: 5000}).present();
+      this.navCtrl.popToRoot();
     })
     .catch(err => {
       loader.dismiss();
       console.log(err);
+      this.toastCtrl.create({message: `Error, unable to leave event`, duration: 5000}).present();
     });
 
   }

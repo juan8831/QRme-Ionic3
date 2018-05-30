@@ -14,7 +14,7 @@ import 'rxjs/add/observable/combineLatest';
 import { mergeAll } from 'rxjs/operator/mergeAll';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
-import {FirebaseApp} from 'angularfire2';
+import { FirebaseApp } from 'angularfire2';
 
 @Injectable()
 export class EventProvider {
@@ -35,17 +35,17 @@ export class EventProvider {
 
   addEvent(event: Event) {
     return this.eventsCollection.add(Object.assign({}, event))
-    .then(event => {
-      var users = {};
-      users[this.userProvider.userProfile.id] = true;
-      return this.afs.doc(`events/${event.id}`).collection('users').doc('admin').set({ 'users': users })
-        .then(_ => {
-          return this.afs.doc(`events/${event.id}`).collection('users').doc('invitee').set({ 'users': {} })
-          .then(_=> {
-            return event
+      .then(event => {
+        var users = {};
+        users[this.userProvider.userProfile.id] = true;
+        return this.afs.doc(`events/${event.id}`).collection('users').doc('admin').set({ 'users': users })
+          .then(_ => {
+            return this.afs.doc(`events/${event.id}`).collection('users').doc('invitee').set({ 'users': {} })
+              .then(_ => {
+                return event
+              });
           });
-        });
-    });
+      });
   }
 
   getAllEvents(): Observable<Event[]> {
@@ -110,17 +110,62 @@ export class EventProvider {
     return this.dbRef.remove(event.id);
   }
 
-  addUserToInviteeList(userId: string, eventId: string){
+  addUserToInviteeList(userId: string, eventId: string) {
     var inviteeDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
     return this.fb.firestore().runTransaction(transaction => {
       return transaction.get(inviteeDocRef).then(inviteeDoc => {
         var users = inviteeDoc.data().users;
         users[userId] = true;
-        transaction.update(inviteeDocRef, {'users': users} );
+        transaction.update(inviteeDocRef, { 'users': users });
       });
     });
   }
 
+  synchronizeInviteeWithEvent(userId: string, eventId: string) {
+    var usersDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
+    var eventsDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
+
+    return this.fb.firestore().runTransaction(transaction => {
+      return transaction.get(usersDocRef).then(userDoc => {
+        return transaction.get(eventsDocRef).then(eventDoc => {
+
+          //add userId to event's invitee events
+          var users = userDoc.data().users;
+          users[userId] = true;
+
+          //add event to user's invitee events
+          var events = eventDoc.data().events;
+          events[eventId] = true;
+
+          transaction.update(usersDocRef, { 'users': users });
+          transaction.update(eventsDocRef, { 'events': events });
+        });
+      });
+    });
+  }
+
+  desynchronizeInviteeWithEvent(userId: string, eventId: string) {
+    var usersDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
+    var eventsDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
+
+    return this.fb.firestore().runTransaction(transaction => {
+      return transaction.get(usersDocRef).then(userDoc => {
+        return transaction.get(eventsDocRef).then(eventDoc => {
+
+          //delete userId from event's invitee events
+          var users = userDoc.data().users;
+          delete users[userId];
+
+          //delete event from user's invitee events
+          var events = eventDoc.data().events;
+          delete events[eventId];
+
+          transaction.update(usersDocRef, { 'users': users });
+          transaction.update(eventsDocRef, { 'events': events });
+        });
+      });
+    });
+  }
 
 
 
