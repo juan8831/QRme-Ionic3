@@ -34,6 +34,7 @@ export class EventsPage implements OnInit {
   events: Event[];
   subscriptions: ISubscription[] = [];
   manageSubscription : ISubscription = null;
+  inviteeSubscription: ISubscription = null;
   //scrollAmount: number = 0;
   //@ViewChild(Content) content: Content;
 
@@ -167,6 +168,10 @@ export class EventsPage implements OnInit {
   private loadInvitedEvents() {
     var subs = this.userProvider.getEventInviteeList().subscribe(events => {
 
+      if(this.inviteeSubscription != null){
+        this.inviteeSubscription.unsubscribe();
+      }
+
       if(!events || events == null){
         this.invitedEvents = [];
         return;
@@ -179,7 +184,7 @@ export class EventsPage implements OnInit {
         if(!inviteeEvents || Object.keys(inviteeEvents).length == 0)
           this.invitedEvents = [];
         else{
-        this.eventProvider.getEventsForAdmin(Object.keys(inviteeEvents))
+        this.inviteeSubscription = this.eventProvider.getEventsForAdmin(Object.keys(inviteeEvents))
         .map(events => {
           
           var existentEvents = [];
@@ -220,7 +225,7 @@ export class EventsPage implements OnInit {
 
         });
       }
-      this.subscriptions.push(subs);
+      //this.subscriptions.push(subs);
       //this.changeEventMode();
       
     });
