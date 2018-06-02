@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, ViewController, Content, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, ViewController, Content, Events, AlertController } from 'ionic-angular';
 import { EditEventPage } from '../edit-event/edit-event';
 import { EventProvider } from '../../providers/event/event';
 //import { Observable } from '@firebase/util';
@@ -46,7 +46,8 @@ export class EventsPage implements OnInit {
     private selectEventProvider: SelectedEventProvider,
     private viewCtrl: ViewController,
     private afAuth: AngularFireAuth,
-    private userProvider: UserProvider
+    private userProvider: UserProvider,
+    private alertCtrl: AlertController
   ) {
   }
 
@@ -106,11 +107,29 @@ export class EventsPage implements OnInit {
         this.managingEvents = [];
         return;
       } 
+      var nonExistentEvents :Event [] = [];
+      var nonExistentEventNames = [];
       var adminEvents = events.events;
       if(!adminEvents || Object.keys(adminEvents).length == 0)
           this.managingEvents = [];
       else {
       var subscription = this.eventProvider.getEventsForAdmin(Object.keys(adminEvents))
+      .map(events => {    
+        var existentEvents = [];
+        events.forEach(event => {
+          if(event){
+            if(event.name == null){
+              nonExistentEvents.push(event);
+              nonExistentEventNames.push(adminEvents[event.id]);
+            }
+           
+          else 
+            existentEvents.push(event);
+          }
+          
+        });
+        return existentEvents;
+      })
         .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
         .subscribe(events => {
           console.log(events);
@@ -118,6 +137,18 @@ export class EventsPage implements OnInit {
             this.managingEvents = events;
             this.events = this.managingEvents;
             this.changeSearch();
+          }
+
+          if(nonExistentEvents.length > 0){
+            this.userProvider.deleteAdminEventsForUser(nonExistentEvents)
+            .then(_=> {
+              var title = "Events Deleted";
+              var message = "The following event(s) were deleted: " + nonExistentEventNames.toString();
+              this.displayAlert(title, message);
+              nonExistentEventNames = [];
+              nonExistentEvents = [];
+            });
+
           }
         });
       this.subscriptions.push(subscription);
@@ -135,19 +166,50 @@ export class EventsPage implements OnInit {
       } 
 
       var inviteeEvents = events.events;
+      var nonExistentEvents :Event [] = [];
+      var nonExistentEventNames = [];
 
         if(!inviteeEvents || Object.keys(inviteeEvents).length == 0)
           this.invitedEvents = [];
         else{
         this.eventProvider.getEventsForAdmin(Object.keys(inviteeEvents))
+        .map(events => {
+          
+          var existentEvents = [];
+          events.forEach(event => {
+            if(event){
+              if(event.name == null){
+                nonExistentEvents.push(event);
+                nonExistentEventNames.push(inviteeEvents[event.id]);
+              }
+             
+            else 
+              existentEvents.push(event);
+            }
+            
+          });
+          return existentEvents;
+        })
         .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
-        .take(1)
         .subscribe(events => {
           //this.changeEventMode();
           console.log(events);
           if (events) {
             this.invitedEvents = events;
           }
+
+          if(nonExistentEvents.length > 0){
+            this.userProvider.deleteInviteeEventsForUser(nonExistentEvents)
+            .then(_=> {
+              var title = "Events Deleted";
+              var message = "The following event(s) were deleted: " + nonExistentEventNames.toString();
+              this.displayAlert(title, message);
+              nonExistentEventNames = [];
+              nonExistentEvents = [];
+            });
+
+          }
+
         });
       }
       this.subscriptions.push(subs);
@@ -189,6 +251,16 @@ export class EventsPage implements OnInit {
     if (this.events != null) {
       this.changeSearch();
     }
+  }
+
+  displayAlert(title: string, message: string)
+  {
+    let alert = this.alertCtrl.create({
+      title: title,
+      subTitle: message,
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
 

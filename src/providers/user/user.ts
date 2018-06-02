@@ -8,6 +8,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { GESTURE_REFRESHER } from 'ionic-angular';
 import {FirebaseApp} from 'angularfire2';
 import { DocumentData } from '@firebase/firestore-types';
+import { Event } from '../../models/event';
 
 @Injectable()
 export class UserProvider {
@@ -208,8 +209,28 @@ export class UserProvider {
       delete user.eventAdminList[eventId];
       return this.updateUser(user);
     });
+  }
 
-    // return promise;
+  deleteAdminEventsForUser(events: Event []) {
+    var adminDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('admin');
+    return this.fb.firestore().runTransaction(transaction => {
+      return transaction.get(adminDocRef).then(adminDoc => {
+        var events = adminDoc.data().events;
+        events.forEach(event => delete events[event.id]);
+        transaction.update(adminDocRef, {'events': events} );
+      });
+    });
+  }
+
+  deleteInviteeEventsForUser(events: Event []) {
+    var inviteeDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
+    return this.fb.firestore().runTransaction(transaction => {
+      return transaction.get(inviteeDocRef).then(inviteeDoc => {
+        var events = inviteeDoc.data().events;
+        events.forEach(event => delete events[event.id]);
+        transaction.update(inviteeDocRef, {'events': events} );
+      });
+    });
   }
 
 }

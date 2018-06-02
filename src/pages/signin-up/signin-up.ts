@@ -4,7 +4,6 @@ import { auth } from 'firebase';
 import { NgForm } from '@angular/forms';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthProvider } from '../../providers/auth/auth';
-import { firebaseConfig } from '../../app/app.module';
 
 import { firebase } from '@firebase/app';
 import { User } from '../../models/user';

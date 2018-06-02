@@ -98,21 +98,28 @@ export class EditEventPage implements OnInit {
 
   }
 
-     async deleteEvent() {
+    //delete event from each user's list (admin & invitee)
+    //delete event && users subcollection 
+  
+    deleteEvent() {
 
-      await Promise.all(Object.keys(this.event.adminList).map(async (userId) => {
-        await this.userProvider.deleteEventForUser(userId, this.event.id).toPromise();
-        console.log('deleted for user');
-      }));
+      console.log('hello');
+
+      // await Promise.all(Object.keys(this.event.adminList).map(async (userId) => {
+      //   await this.userProvider.deleteEventForUser(userId, this.event.id).toPromise();
+      //   console.log('deleted for user');
+      // }));
       
-    this.eventProvider.deleteEvent(this.event);
+    this.eventProvider.deleteEvent(this.event)
+    .then(_=> {
+      this.toastCtrl.create({
+        message: 'Event successfully deleted',
+        duration: 3000
+      }).present();
+      this.navCtrl.popToRoot();
+    });
     //todo invitee list delete
-
-    this.toastCtrl.create({
-      message: 'Event successfully deleted',
-      duration: 3000
-    }).present();
-    this.navCtrl.popToRoot();
+    
   }
 
   showConfirm() {

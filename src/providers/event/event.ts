@@ -75,7 +75,9 @@ export class EventProvider {
     return this.afs.doc(`events/${id}`).snapshotChanges().map(action => {
 
       if (action.payload.exists === false) {
-        return null;
+        var nonExistentEvent = new Event();
+        nonExistentEvent.id = id;
+        nonExistentEvent.name = null;
       }
       else {
         const data = action.payload.data() as Event;
@@ -106,8 +108,14 @@ export class EventProvider {
     //this.dbRef.transaction
   }
 
+  //delete event and its users  subcollection
   deleteEvent(event: Event) {
-    return this.dbRef.remove(event.id);
+    var batch = this.fb.firestore().batch();
+    batch.delete(this.fb.firestore().doc(`events/${event.id}`));
+    batch.delete(this.fb.firestore().doc(`events/${event.id}`).collection('users').doc('admin'));
+    batch.delete(this.fb.firestore().doc(`events/${event.id}`).collection('users').doc('invitee'));
+    return batch.commit();
+   
   }
 
   addUserToInviteeList(userId: string, eventId: string) {
@@ -121,7 +129,7 @@ export class EventProvider {
     });
   }
 
-  synchronizeInviteeWithEvent(userId: string, eventId: string) {
+  synchronizeInviteeWithEvent(userId: string, eventId: string, eventName: string) {
     var usersDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
     var eventsDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
 
@@ -135,7 +143,7 @@ export class EventProvider {
 
           //add event to user's invitee events
           var events = eventDoc.data().events;
-          events[eventId] = true;
+          events[eventId] = eventName;
 
           transaction.update(usersDocRef, { 'users': users });
           transaction.update(eventsDocRef, { 'events': events });

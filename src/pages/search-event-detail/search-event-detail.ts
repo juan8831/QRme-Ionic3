@@ -63,7 +63,7 @@ export class SearchEventDetailPage {
     //   loader.dismiss();
     // });
 
-    this.eventProvider.synchronizeInviteeWithEvent(this.userProvider.userProfile.id, this.event.id)
+    this.eventProvider.synchronizeInviteeWithEvent(this.userProvider.userProfile.id, this.event.id, this.event.name)
     .then(_=> {
         this.toastCtrl.create({message: 'You have successfully joined the event', duration: 4000}).present();
         this.navCtrl.pop()

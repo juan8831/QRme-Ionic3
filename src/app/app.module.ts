@@ -37,16 +37,7 @@ import { JoinEventsPage } from '../pages/join-events/join-events';
 import { SearchEventsPage } from '../pages/search-events/search-events';
 import { SearchEventDetailPage } from '../pages/search-event-detail/search-event-detail';
 import { QrJoinEventPage } from '../pages/qr-join-event/qr-join-event';
-
-export const firebaseConfig = {
-    apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
-    authDomain: "qrme-65e1e.firebaseapp.com",
-    databaseURL: "https://qrme-65e1e.firebaseio.com",
-    projectId: "qrme-65e1e",
-    storageBucket: "qrme-65e1e.appspot.com",
-    messagingSenderId: "734199081398"
-};
-
+import { firebaseConfig } from '../environment';
 
 @NgModule({
   declarations: [
