@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, AlertController, LoadingController } from 'ionic-angular';
 import { Event } from '../../models/event';
 import { Form, NgForm } from '@angular/forms';
 import { EventProvider } from '../../providers/event/event';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { UserProvider } from '../../providers/user/user';
 import { User } from '../../models/user';
+import { MessagingProvider } from '../../providers/messaging/messaging';
 
 //used for creating and editing events
 @IonicPage()
@@ -24,7 +25,9 @@ export class EditEventPage implements OnInit {
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private afAuth: AngularFireAuth,
-    private userProvider: UserProvider
+    private userProvider: UserProvider,
+    private loadingCtl: LoadingController,
+    private mProv: MessagingProvider
 
   ) {
   }
@@ -44,6 +47,7 @@ export class EditEventPage implements OnInit {
   }
 
   onSubmit(f: NgForm) {
+    
     this.event.name = f.value.name;
     this.event.recurring = f.value.recurring ? f.value.recurring : false;
     this.event.location = f.value.location;
@@ -55,19 +59,25 @@ export class EditEventPage implements OnInit {
     this.event.description = f.value.description ? f.value.description : '';
 
     if (this.isnewEvent) {
+      let loader = this.loadingCtl.create({spinner: 'dots', content: 'Creating new event...'});
+      loader.present();
       this.event.creator = this.afAuth.auth.currentUser.email;
       this.event.creatorName = this.userProvider.userProfile.name;
-      this.event.adminList = {};
-      this.event.adminList[this.userProvider.userProfile.id] = true;
-      this.event.inviteeList = {};
-      this.eventProvider.addEvent(this.event)
-        .then(data => {
-          var key = data.id;
-          //console.log(key);
-         // var updateUser = this.userProvider.userProfile;
-          //updateUser.eventAdminList[key] = true;
-          this.userProvider.addEventAdminList(key).then(_ => this.navCtrl.pop());
+      //this.event.adminList = {};
+     // this.event.adminList[this.userProvider.userProfile.id] = true;
+      //this.event.inviteeList = {};
 
+
+      this.eventProvider.CreateNewEventAndSynchronizeWithUser(this.event)
+        .then(_ => {
+          loader.dismiss();
+            this.mProv.showToastMessage('You have created a new event!');
+            this.navCtrl.pop();
+        })
+        .catch(err => {
+          console.log(err);
+          loader.dismiss();
+          this.mProv.showAlertOkMessage('Error', 'Could not create event. Plase try again.');
         });
     }
     //.catch(err => console.log(err, 'You do not have access!'));
@@ -88,7 +98,8 @@ export class EditEventPage implements OnInit {
     // });
 
     else {
-      this.eventProvider.updateEvent(this.event);
+      this.eventProvider.updateEvent(this.event)
+      .then()
       this.navCtrl.pop();
     }
 

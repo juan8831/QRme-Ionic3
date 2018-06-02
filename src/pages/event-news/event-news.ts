@@ -14,6 +14,7 @@ import { EventBlogPageModule } from '../event-blog/event-blog.module';
 import { EventBlogPage } from '../event-blog/event-blog';
 import { UserProvider } from '../../providers/user/user';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { EventProvider } from '../../providers/event/event';
 
 
 @IonicPage()
@@ -39,14 +40,16 @@ export class EventNewsPage {
     private rootPageProvider : RootPageProvider,
     private modalCtrl: ModalController,
     private userProvider: UserProvider,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private eventProvider: EventProvider
   ) {
     this.event = this.selectedEventProvider.getEvent();
-    if(this.event.adminList){
-      this.isManaging = this.event.adminList[this.afAuth.auth.currentUser.uid] == true ? true : false;
-    }
-  
 
+    this.eventProvider.getAdminUsersForEvent(this.event).take(1).subscribe(users => {
+      this.isManaging = this.afAuth.auth.currentUser.uid in users? true: false
+      
+    });
+  
   }
 
   ionViewDidEnter(){

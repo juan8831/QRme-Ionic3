@@ -17,6 +17,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 import { mergeAll } from 'rxjs/operator/mergeAll';
 import { UserProvider } from '../../providers/user/user';
 import { ISubscription } from 'rxjs/Subscription';
+import { MessagingProvider } from '../../providers/messaging/messaging';
 
 @IonicPage()
 @Component({
@@ -32,6 +33,7 @@ export class EventsPage implements OnInit {
   events$: Observable<Event[]>;
   events: Event[];
   subscriptions: ISubscription[] = [];
+  manageSubscription : ISubscription = null;
   //scrollAmount: number = 0;
   //@ViewChild(Content) content: Content;
 
@@ -47,7 +49,8 @@ export class EventsPage implements OnInit {
     private viewCtrl: ViewController,
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private mProv: MessagingProvider
   ) {
   }
 
@@ -71,6 +74,7 @@ export class EventsPage implements OnInit {
   ngOnDestroy(): void {
     console.log('unsubscribe destory!');
     this.subscriptions.map(subscription => subscription.unsubscribe());
+    this.manageSubscription.unsubscribe();
 
   }
 
@@ -103,6 +107,9 @@ export class EventsPage implements OnInit {
 
   private loadManagingEvents(){
     var subs = this.userProvider.getEventAdminList().subscribe(events => {
+      if(this.manageSubscription != null){
+        this.manageSubscription.unsubscribe();
+      }
       if(!events || events == null){
         this.managingEvents = [];
         return;
@@ -113,7 +120,7 @@ export class EventsPage implements OnInit {
       if(!adminEvents || Object.keys(adminEvents).length == 0)
           this.managingEvents = [];
       else {
-      var subscription = this.eventProvider.getEventsForAdmin(Object.keys(adminEvents))
+      this.manageSubscription = this.eventProvider.getEventsForAdmin(Object.keys(adminEvents))
       .map(events => {    
         var existentEvents = [];
         events.forEach(event => {
@@ -136,7 +143,7 @@ export class EventsPage implements OnInit {
           if (events) {
             this.managingEvents = events;
             this.events = this.managingEvents;
-            this.changeSearch();
+            this.changeEventMode()
           }
 
           if(nonExistentEvents.length > 0){
@@ -144,14 +151,14 @@ export class EventsPage implements OnInit {
             .then(_=> {
               var title = "Events Deleted";
               var message = "The following event(s) were deleted: " + nonExistentEventNames.toString();
-              this.displayAlert(title, message);
+              this.mProv.showAlertOkMessage(title, message);
               nonExistentEventNames = [];
               nonExistentEvents = [];
             });
 
           }
         });
-      this.subscriptions.push(subscription);
+      //this.subscriptions.push(subscription);
       }
     });
     this.subscriptions.push(subs);
@@ -161,7 +168,7 @@ export class EventsPage implements OnInit {
     var subs = this.userProvider.getEventInviteeList().subscribe(events => {
 
       if(!events || events == null){
-        this.managingEvents = [];
+        this.invitedEvents = [];
         return;
       } 
 
@@ -196,6 +203,7 @@ export class EventsPage implements OnInit {
           console.log(events);
           if (events) {
             this.invitedEvents = events;
+            this.changeEventMode()
           }
 
           if(nonExistentEvents.length > 0){
@@ -203,7 +211,7 @@ export class EventsPage implements OnInit {
             .then(_=> {
               var title = "Events Deleted";
               var message = "The following event(s) were deleted: " + nonExistentEventNames.toString();
-              this.displayAlert(title, message);
+              this.mProv.showAlertOkMessage(title, message);
               nonExistentEventNames = [];
               nonExistentEvents = [];
             });
@@ -252,16 +260,5 @@ export class EventsPage implements OnInit {
       this.changeSearch();
     }
   }
-
-  displayAlert(title: string, message: string)
-  {
-    let alert = this.alertCtrl.create({
-      title: title,
-      subTitle: message,
-      buttons: ['OK']
-    });
-    alert.present();
-  }
-
 
 }

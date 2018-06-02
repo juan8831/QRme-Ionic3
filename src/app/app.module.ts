@@ -38,6 +38,7 @@ import { SearchEventsPage } from '../pages/search-events/search-events';
 import { SearchEventDetailPage } from '../pages/search-event-detail/search-event-detail';
 import { QrJoinEventPage } from '../pages/qr-join-event/qr-join-event';
 import { firebaseConfig } from '../environment';
+import { MessagingProvider } from '../providers/messaging/messaging';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { firebaseConfig } from '../environment';
     AngularFireModule.initializeApp(firebaseConfig, 'qrME'),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    AngularFirestoreModule.enablePersistence()
 
   ],
   bootstrap: [IonicApp],
@@ -105,7 +107,8 @@ import { firebaseConfig } from '../environment';
     RootPageProvider,
     SelectedEventProvider,
     AuthProvider,
-    UserProvider
+    UserProvider,
+    MessagingProvider
   ]
 })
 export class AppModule {}

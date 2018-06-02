@@ -153,7 +153,7 @@ export class UserProvider {
     this.afs.doc(`users/${user.id}`).collection('events').doc('invitee').update({ 'events': user.eventInviteeList });
   }
 
-  addEventInviteeList(id: string){
+  addEventToUserInviteeList(id: string){
     var inviteeDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
     return this.fb.firestore().runTransaction(transaction => {
       return transaction.get(inviteeDocRef).then(inviteeDoc => {
@@ -164,12 +164,12 @@ export class UserProvider {
     });
   }
 
-  addEventAdminList(id: string) {
+  addEventToUserAdminList(id: string, name: string) {
     var adminDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('admin');
     return this.fb.firestore().runTransaction(transaction => {
       return transaction.get(adminDocRef).then(adminDoc => {
         var events = adminDoc.data().events;
-        events[id] = true;
+        events[id] = name;
         transaction.update(adminDocRef, {'events': events} );
       });
     });
@@ -211,23 +211,23 @@ export class UserProvider {
     });
   }
 
-  deleteAdminEventsForUser(events: Event []) {
+  deleteAdminEventsForUser(eventsToDelete: Event []) {
     var adminDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('admin');
     return this.fb.firestore().runTransaction(transaction => {
       return transaction.get(adminDocRef).then(adminDoc => {
-        var events = adminDoc.data().events;
-        events.forEach(event => delete events[event.id]);
+        let events = adminDoc.data().events;
+        eventsToDelete.map(event => delete events[event.id]);
         transaction.update(adminDocRef, {'events': events} );
       });
     });
   }
 
-  deleteInviteeEventsForUser(events: Event []) {
+  deleteInviteeEventsForUser(eventsToDelete: Event []) {
     var inviteeDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
     return this.fb.firestore().runTransaction(transaction => {
       return transaction.get(inviteeDocRef).then(inviteeDoc => {
-        var events = inviteeDoc.data().events;
-        events.forEach(event => delete events[event.id]);
+        let events = inviteeDoc.data().events;
+        eventsToDelete.map(event => delete events[event.id]);
         transaction.update(inviteeDocRef, {'events': events} );
       });
     });
