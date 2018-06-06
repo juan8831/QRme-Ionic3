@@ -39,6 +39,7 @@ import { SearchEventDetailPage } from '../pages/search-event-detail/search-event
 import { QrJoinEventPage } from '../pages/qr-join-event/qr-join-event';
 import { firebaseConfig } from '../environment';
 import { MessagingProvider } from '../providers/messaging/messaging';
+import { ManageInvitesPage } from '../pages/manage-invites/manage-invites';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { MessagingProvider } from '../providers/messaging/messaging';
     JoinEventsPage,
     SearchEventsPage,
     SearchEventDetailPage,
-    QrJoinEventPage
+    QrJoinEventPage,
+    ManageInvitesPage
   ],
   imports: [
     BrowserModule,
@@ -72,7 +74,7 @@ import { MessagingProvider } from '../providers/messaging/messaging';
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
-    AngularFirestoreModule.enablePersistence()
+   // AngularFirestoreModule.enablePersistence()
 
   ],
   bootstrap: [IonicApp],
@@ -97,7 +99,8 @@ import { MessagingProvider } from '../providers/messaging/messaging';
     JoinEventsPage,
     SearchEventsPage,
     SearchEventDetailPage,
-    QrJoinEventPage
+    QrJoinEventPage,
+    ManageInvitesPage
   ],
   providers: [
     StatusBar,

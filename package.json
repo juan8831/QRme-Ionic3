@@ -58,5 +58,9 @@
     "platforms": [
       "ios"
     ]
+  },
+  "config": {
+    "ionic_source_map": "source-map" 
   }
+
 }

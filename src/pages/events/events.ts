@@ -75,7 +75,11 @@ export class EventsPage implements OnInit {
   ngOnDestroy(): void {
     console.log('unsubscribe destory!');
     this.subscriptions.map(subscription => subscription.unsubscribe());
-    this.manageSubscription.unsubscribe();
+    
+    if(this.manageSubscription != null)
+      this.manageSubscription.unsubscribe();
+    if(this.inviteeSubscription != null)
+    this.inviteeSubscription.unsubscribe();
 
   }
 

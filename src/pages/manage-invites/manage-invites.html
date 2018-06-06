@@ -1,0 +1,118 @@
+<ion-header>
+
+  <ion-navbar no-border-bottom>
+    <ion-buttons start>
+      <button ion-button icon-only menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+
+    <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search Event Name...">
+    </ion-searchbar>
+
+
+</ion-header>
+
+
+<ion-content padding [id]='content'>
+
+  <ion-list >
+      <ion-list-header>Pending</ion-list-header>
+      <ion-item  *ngFor="let event of filteredEvents" (click)="onLoadEvent(event)">
+          <ion-avatar item-start>
+              <img src="assets/imgs/festival.png">
+            </ion-avatar>
+          <h2>{{event.name}}</h2>
+          <h3>{{event.description}}</h3>
+          <p>{{event.date | date}}</p>
+          <ion-note item-end>{{event.time }}</ion-note>     
+      </ion-item>
+      <ion-item-sliding>
+          <ion-item>
+            <h2>Concertfsdfkdsfjkldsfjlsfljsdffsdllsddljf</h2>
+            <h3>Status: Pending</h3>
+          <p>Date Requested: June 11, 2018</p>
+          <p>Requested By: You </p>
+
+          <!-- <button item-end ion-button icon-only>
+              <ion-icon name="checkmark"></ion-icon>
+            </button>
+            <button item-end ion-button icon-only>
+                <ion-icon name="close"></ion-icon>
+              </button> -->
+          <ion-avatar item-end>
+              <button item-end ion-button icon-only>
+              <ion-icon name="checkmark"></ion-icon>
+            </button>
+            <button color="danger" item-end ion-button icon-only>
+                <ion-icon name="close"></ion-icon>
+              </button>
+          </ion-avatar>
+          </ion-item>
+          <ion-item-options side="right">
+            <button ion-button color="primary">
+              <ion-icon name="close"></ion-icon>
+              Cancel
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+
+      </ion-list>
+    
+    <ion-list>
+        <ion-list-header>Accepted</ion-list-header>
+      <ion-item-sliding>
+          <ion-item>
+            <h2>Concertfsdfkdsfjkldsfjlsfljsdffsdllsddljf</h2>
+            <h3>Status: Pending</h3>
+          <p>Date Requested: June 11, 2018</p>
+          <p>Requested By: You </p>
+          </ion-item>
+          <ion-item-options side="right">
+            <button ion-button color="primary">
+              <ion-icon name="remove-circle"></ion-icon>
+              Clear
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+  </ion-list>
+
+
+
+
+  <ion-list>
+      <ion-list-header>Rejected</ion-list-header>
+      <ion-item-sliding>
+          <ion-item>
+            <h2>Concert Miami</h2>
+            <h3>Status: Rejected</h3>
+          <p>Date Requested: June 11, 2018</p>
+          <p>Requested By: You </p>
+
+          <!-- <ion-avatar item-end>
+              <button item-end ion-button icon-only>
+              <ion-icon name="checkmark"></ion-icon>
+            </button>
+            <button color="danger" item-end ion-button icon-only>
+                <ion-icon name="close"></ion-icon>
+              </button>
+          </ion-avatar> -->
+          </ion-item>
+
+          <ion-item-options side="right">
+              <button ion-button color="primary">
+                <ion-icon name="refresh"></ion-icon>
+                Resend
+              </button>
+              <button ion-button color="primary">
+                  <ion-icon name="close"></ion-icon>
+                  Cancel
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+
+  </ion-list>
+
+</ion-content>
