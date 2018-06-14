@@ -40,6 +40,7 @@ import { QrJoinEventPage } from '../pages/qr-join-event/qr-join-event';
 import { firebaseConfig } from '../environment';
 import { MessagingProvider } from '../providers/messaging/messaging';
 import { ManageInvitesPage } from '../pages/manage-invites/manage-invites';
+import { InviteRequestProvider } from '../providers/invite-request/invite-request';
 
 @NgModule({
   declarations: [
@@ -111,7 +112,8 @@ import { ManageInvitesPage } from '../pages/manage-invites/manage-invites';
     SelectedEventProvider,
     AuthProvider,
     UserProvider,
-    MessagingProvider
+    MessagingProvider,
+    InviteRequestProvider
   ]
 })
 export class AppModule {}

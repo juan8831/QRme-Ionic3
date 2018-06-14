@@ -20,21 +20,12 @@
 
   <ion-list >
       <ion-list-header>Pending</ion-list-header>
-      <ion-item  *ngFor="let event of filteredEvents" (click)="onLoadEvent(event)">
-          <ion-avatar item-start>
-              <img src="assets/imgs/festival.png">
-            </ion-avatar>
-          <h2>{{event.name}}</h2>
-          <h3>{{event.description}}</h3>
-          <p>{{event.date | date}}</p>
-          <ion-note item-end>{{event.time }}</ion-note>     
-      </ion-item>
-      <ion-item-sliding>
+      <ion-item-sliding *ngFor="let invite of pendingInviteRequests">
           <ion-item>
-            <h2>Concertfsdfkdsfjkldsfjlsfljsdffsdllsddljf</h2>
-            <h3>Status: Pending</h3>
-          <p>Date Requested: June 11, 2018</p>
-          <p>Requested By: You </p>
+            <h2>{{invite.eventName}}</h2>
+            <h3>Status: {{invite.status}}</h3>
+          <p>Requested By: {{invite.requestedBy == 'User'? 'You' : 'Event Admin'}} </p>
+          <p>Date Requested: {{invite.requestDate | date: 'shortDate'}} </p>
 
           <!-- <button item-end ion-button icon-only>
               <ion-icon name="checkmark"></ion-icon>
@@ -42,7 +33,7 @@
             <button item-end ion-button icon-only>
                 <ion-icon name="close"></ion-icon>
               </button> -->
-          <ion-avatar item-end>
+          <ion-avatar item-end *ngIf="invite.requestedBy == 'eventAdmin'">
               <button item-end ion-button icon-only>
               <ion-icon name="checkmark"></ion-icon>
             </button>
@@ -52,9 +43,8 @@
           </ion-avatar>
           </ion-item>
           <ion-item-options side="right">
-            <button ion-button color="primary">
+            <button ion-button color="primary" (click)="cancelInvite(invite)">
               <ion-icon name="close"></ion-icon>
-              Cancel
             </button>
           </ion-item-options>
         </ion-item-sliding>

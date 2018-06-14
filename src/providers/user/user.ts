@@ -175,11 +175,6 @@ export class UserProvider {
     });
   }
 
-
-
-
-
-
   deleteUser(user: User) {
     this.userDoc = this.afs.doc(`users/${user.id}`);
     this.userDoc.delete();

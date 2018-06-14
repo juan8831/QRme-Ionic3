@@ -1,12 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the ManageInvitesPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { InviteRequest } from '../../models/inviteRequest';
+import { InviteRequestProvider } from '../../providers/invite-request/invite-request';
 
 @IonicPage()
 @Component({
@@ -15,11 +10,25 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class ManageInvitesPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  pendingInviteRequests : InviteRequest[];
+
+
+
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    private inviteRequestProvider: InviteRequestProvider
+  ) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ManageInvitesPage');
+    this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, "pending").subscribe(invites => {
+      this.pendingInviteRequests = invites;
+    })
+  }
+
+  cancelInvite(invite: InviteRequest){
+    this.inviteRequestProvider.deleteInviteRequest(invite);
   }
 
 }
