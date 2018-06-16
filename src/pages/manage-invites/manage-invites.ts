@@ -10,9 +10,9 @@ import { InviteRequestProvider } from '../../providers/invite-request/invite-req
 })
 export class ManageInvitesPage {
 
-  pendingInviteRequests : InviteRequest[];
-
-
+  pendingInviteRequests: InviteRequest[];
+  acceptedInviteRequests: InviteRequest[];
+  rejectedInviteRequests: InviteRequest[];
 
   constructor(
     public navCtrl: NavController, 

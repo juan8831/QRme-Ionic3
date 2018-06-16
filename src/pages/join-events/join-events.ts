@@ -16,11 +16,23 @@ export class JoinEventsPage {
   qrJoinEventPage = QrJoinEventPage;
   manageInvitesPage = ManageInvitesPage;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    private
+
+    
+    ) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad JoinEventsPage');
   }
+
+  ngOnDestroy(): void {
+
+  }
+
+
 
 }
