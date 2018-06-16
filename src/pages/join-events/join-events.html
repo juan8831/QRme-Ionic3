@@ -24,15 +24,11 @@
     </ion-row>
     <ion-row>
       <ion-col>
-          <ion-badge style="align-content: right ;"color="danger">5</ion-badge>
           <button full ion-button round large [navPush]="manageInvitesPage" color="primary" style="margin-top: 10%">
-              <ion-icon item-left name="mail" style="margin-right: 6px "></ion-icon>
-              
-              Manage Invites
-                
-            </button>
-            
-            
+              <ion-icon *ngIf="pendingInvitations == 0" item-left name="mail" style="margin-right: 6px "></ion-icon>
+              <ion-badge *ngIf="pendingInvitations > 0" id="badge" style="margin-right: 6px " color="danger">{{pendingInvitations}}</ion-badge>
+              Manage Invites         
+            </button>  
       </ion-col>
     </ion-row>
     <ion-row>

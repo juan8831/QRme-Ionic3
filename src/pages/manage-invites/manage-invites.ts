@@ -24,7 +24,7 @@ export class ManageInvitesPage {
   ionViewDidLoad() {
     this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, "pending").subscribe(invites => {
       this.pendingInviteRequests = invites;
-    })
+    });
   }
 
   cancelInvite(invite: InviteRequest){
