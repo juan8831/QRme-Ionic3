@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { PublicEventsPage } from '../public-events/public-events';
 import { QrJoinEventPage } from '../qr-join-event/qr-join-event';
@@ -7,16 +7,17 @@ import { ManageInvitesPage } from '../manage-invites/manage-invites';
 import { InviteRequest } from '../../models/inviteRequest';
 import { InviteRequestProvider } from '../../providers/invite-request/invite-request';
 import { ISubscription } from 'rxjs/Subscription';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 @IonicPage()
 @Component({
   selector: 'page-join-events',
   templateUrl: 'join-events.html',
 })
-export class JoinEventsPage {
+export class JoinEventsPage implements OnInit {
 
   subscriptions: ISubscription [] = [];
-  pendingInvitations: number = 0;
+  acceptedAndRejectedInvitesTotal: number = 0;
 
   searchEventsPage = SearchEventsPage;
   qrJoinEventPage = QrJoinEventPage;
@@ -27,15 +28,17 @@ export class JoinEventsPage {
     public navParams: NavParams,
     private inviteRequestProvider: InviteRequestProvider
     ) {
-
-      let subscription = this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, "pending").subscribe(invites => {
-        this.pendingInvitations = invites.length;
-      });
-      this.subscriptions.push(subscription);
   }
 
-  ionViewDidLoad() {
-    
+  ngOnInit(){
+    var acceptedEvents$ = this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, 'accepted');
+    var rejectedEvents$ = this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, 'rejected');
+    var subs = combineLatest(acceptedEvents$, rejectedEvents$)
+    .subscribe(([acceptedInvites, rejectedInvites]) => {
+      this.acceptedAndRejectedInvitesTotal = acceptedInvites.length + rejectedInvites.length;
+    });
+
+    this.subscriptions.push(subs);
   }
 
   ngOnDestroy(): void {

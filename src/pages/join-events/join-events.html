@@ -25,8 +25,8 @@
     <ion-row>
       <ion-col>
           <button full ion-button round large [navPush]="manageInvitesPage" color="primary" style="margin-top: 10%">
-              <ion-icon *ngIf="pendingInvitations == 0" item-left name="mail" style="margin-right: 6px "></ion-icon>
-              <ion-badge *ngIf="pendingInvitations > 0" id="badge" style="margin-right: 6px " color="danger">{{pendingInvitations}}</ion-badge>
+              <ion-icon *ngIf="acceptedAndRejectedInvitesTotal == 0" item-left name="mail" style="margin-right: 6px "></ion-icon>
+              <ion-badge *ngIf="acceptedAndRejectedInvitesTotal > 0" id="badge" style="margin-right: 6px " color="danger">{{acceptedAndRejectedInvitesTotal}}</ion-badge>
               Manage Invites         
             </button>  
       </ion-col>
