@@ -55,7 +55,7 @@
     </ion-card>
   
     <button block ion-button *ngIf="event.type ==='Private' && !inviteRequestExists" (click)="requestInvite()">Request Invite</button>
-    <button block ion-button *ngIf="event.type ==='Private' && inviteRequestExists" >Invite Already Sent!</button>
+    <h2 text-center *ngIf="event.type ==='Private' && inviteRequestExists">Invite Requested!</h2>
     <button block ion-button *ngIf="event.type =='Public'" (click)="joinEvent()">Join Event</button>
 
 
