@@ -18,4 +18,38 @@ page-event-news {
         font-size:30px !important;
         margin-bottom: 20px;
     }
+
+    #cart-btn {
+        position: relative;
+     }
+     
+     #cart-badge {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+     }
+
+     #notification-button {            
+        position: relative;
+        width: 42px;
+        top:1px;
+        right: 1px;
+        overflow: visible!important;
+    }
+
+
+#notifications-badge {
+        background-color: red;
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        border-radius: 100%;
+    }
+
+    .badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        font-size: .8em;
+      }
 }

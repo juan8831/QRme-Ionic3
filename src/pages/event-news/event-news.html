@@ -2,17 +2,18 @@
 
   <ion-navbar>
     <ion-title>
-      <ion-buttons start>
-        <button ion-button icon-only>
-          <ion-icon name="home"></ion-icon>
-        </button>
-      </ion-buttons>
     </ion-title>
     <ion-buttons start>
       <button ion-button icon-only menuToggle>
         <ion-icon name="menu"></ion-icon>
       </button>
     </ion-buttons>
+    <ion-buttons end>
+        <button ion-button icon-only (click)="onOpenInvitations()">
+          <ion-icon name="mail">
+          </ion-icon>        
+        </button>
+      </ion-buttons>
     <ion-buttons end>
       <button ion-button icon-only (click)="onOpenInfo()">
         <ion-icon name="information-circle"></ion-icon>
@@ -23,13 +24,32 @@
 </ion-header>
 
 
-<ion-content padding>
-  <ion-fab bottom left #fab>
-    <button color="primary" ion-fab mini (click)="onGoHome()">
-      <ion-icon name="home"></ion-icon>
-    </button>
-  </ion-fab>
 
+
+<ion-content padding>
+
+    <div>
+        <button id="notification-button" ion-button clear>
+            <ion-icon name="notifications">
+              <ion-badge id="notifications-badge" color="danger">5</ion-badge>
+            </ion-icon> 
+            <span class="badge alert">1</span>             
+        </button>
+    </div>
+
+        <button id="cart-btn" ion-button icon-only (click)="onOpenInfo()">
+          <ion-icon name="person-add">
+              <ion-badge id="cart-badge">260k</ion-badge>
+          </ion-icon>
+          
+        </button>
+
+
+        <button id="notification-button" ion-button clear>
+            <ion-icon name="notifications">
+              <ion-badge id="notifications-badge" color="danger">7</ion-badge>
+            </ion-icon>              
+        </button>
   <ion-grid>
     <ion-row nowrap align-items-center>
       <ion-col text-center>
@@ -48,10 +68,15 @@
     </ion-row>
     <ion-row text-center>
       <ion-col>
-
         <button ion-button round [navPush]="eventAttendancePage" [navParams]="event" color="darkRed">
-          <ion-icon item-left name="person" style="margin-right: 4px "></ion-icon>
+          <ion-icon item-left name="checkmark-circle" style="margin-right: 4px "></ion-icon>
           Attendance
+        </button>
+      </ion-col>
+      <ion-col *ngIf="isManaging">
+        <button round block ion-button color="primary" [navPush]='eventInviteesPage' [navParams]="event">
+          <ion-icon item-left name="contacts" style="margin-right: 4px "></ion-icon>
+          Invitees
         </button>
       </ion-col>
     </ion-row>
@@ -68,6 +93,7 @@
           Polls
         </button>
       </ion-col>
+
     </ion-row>
   </ion-grid>
 

@@ -95,6 +95,20 @@ export class InviteRequestProvider {
     return this.inviteRequests;
   }
 
+  getInviteRequestsByEventAndType(eventId: string, requestStatus: string): Observable<InviteRequest[]> {
+    var inviteRequestsCollection = this.afs.collection('inviteRequests', ref => 
+    ref.where('eventId', '==', eventId).where('status', '==', requestStatus).orderBy('requestDate', 'asc'));
+    this.inviteRequests = inviteRequestsCollection.snapshotChanges().map(changes => {
+      return changes.map(action => {
+        const data = action.payload.doc.data() as InviteRequest;
+        data.id = action.payload.doc.id;
+        return data;
+      });
+    });
+
+    return this.inviteRequests;
+  }
+
   getInviteRequestByUserAndEvent(userId: string = this.afAuth.auth.currentUser.uid, eventId: string): Observable<InviteRequest[]> {
     var inviteRequestsCollection = this.afs.collection('inviteRequests', 
     ref => ref.where('userId', '==', userId).where('eventId', '==', eventId).orderBy('requestDate', 'asc'));

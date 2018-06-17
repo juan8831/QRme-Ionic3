@@ -48,6 +48,7 @@ export class ManageInvitesPage implements OnInit {
 
   resendInvite(invite: InviteRequest){  
     invite.status = "pending";
+    invite.requestDate = new Date();
     this.inviteRequestProvider.updateInviteRequest(invite);
   }
 

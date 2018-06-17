@@ -15,6 +15,8 @@ import { EventBlogPage } from '../event-blog/event-blog';
 import { UserProvider } from '../../providers/user/user';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { EventProvider } from '../../providers/event/event';
+import { EventInviteesPage } from '../event-invitees/event-invitees';
+import { EventInvitationsPage } from '../event-invitations/event-invitations';
 
 
 @IonicPage()
@@ -26,6 +28,7 @@ export class EventNewsPage {
 
   event: Event;
   eventAttendancePage = EventAttendancePage;
+  eventInviteesPage = EventInviteesPage;
   eventBlogPage = EventBlogPage;
   eventPollsPage = EventPollsPage;
   isManaging: boolean = false;
@@ -65,6 +68,10 @@ export class EventNewsPage {
   onOpenInfo(){
     this.navCtrl.push(EventDetailPage, {event: this.event, 'isManaging': this.isManaging});
     //this.navCtrl.p
+  }
+
+  onOpenInvitations(){
+    this.navCtrl.push(EventInvitationsPage, {event: this.event, 'isManaging': this.isManaging});
   }
 
   onGoHome(){

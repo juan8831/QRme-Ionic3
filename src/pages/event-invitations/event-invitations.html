@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-navbar no-border-bottom>
+    <ion-buttons start>
+      <button ion-button icon-only menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding [id]='content'>
+
+  <h2 *ngIf="pendingInviteRequests.length == 0">No pending requests...</h2>
+
+  <ion-list *ngIf="pendingInviteRequests.length > 0">
+    <ion-list-header>
+      <p style="color:#F6AA1C;">Pending ({{pendingInviteRequests.length}})</p>
+    </ion-list-header>
+    <ion-item-sliding *ngFor="let invite of pendingInviteRequests">
+      <ion-item>
+        <h2>User: {{invite.userName}}</h2>
+        <p>Date Requested: {{invite.requestDate | date: 'shortDate'}} </p>
+
+        <!-- <button item-end ion-button icon-only>
+                <ion-icon name="checkmark"></ion-icon>
+              </button>
+              <button item-end ion-button icon-only>
+                  <ion-icon name="close"></ion-icon>
+                </button> -->
+        <ion-avatar item-end *ngIf="invite.requestedBy == 'eventAdmin'">
+          <button item-end ion-button icon-only>
+            <ion-icon name="checkmark"></ion-icon>
+          </button>
+          <button color="danger" item-end ion-button icon-only>
+            <ion-icon name="close"></ion-icon>
+          </button>
+        </ion-avatar>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button color="primary" (click)="acceptInvite(invite)">
+          <ion-icon name="checkmark"></ion-icon>
+          Accept
+        </button>
+        <button ion-button color="danger" (click)="rejectInvite(invite)">
+          <ion-icon name="close"></ion-icon>
+          Reject
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+  </ion-list>
+
+
+</ion-content>

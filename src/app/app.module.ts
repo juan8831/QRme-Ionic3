@@ -41,6 +41,8 @@ import { firebaseConfig } from '../environment';
 import { MessagingProvider } from '../providers/messaging/messaging';
 import { ManageInvitesPage } from '../pages/manage-invites/manage-invites';
 import { InviteRequestProvider } from '../providers/invite-request/invite-request';
+import { EventInviteesPage } from '../pages/event-invitees/event-invitees';
+import { EventInvitationsPage } from '../pages/event-invitations/event-invitations';
 
 @NgModule({
   declarations: [
@@ -65,7 +67,9 @@ import { InviteRequestProvider } from '../providers/invite-request/invite-reques
     SearchEventsPage,
     SearchEventDetailPage,
     QrJoinEventPage,
-    ManageInvitesPage
+    ManageInvitesPage,
+    EventInviteesPage,
+    EventInvitationsPage
   ],
   imports: [
     BrowserModule,
@@ -101,7 +105,9 @@ import { InviteRequestProvider } from '../providers/invite-request/invite-reques
     SearchEventsPage,
     SearchEventDetailPage,
     QrJoinEventPage,
-    ManageInvitesPage
+    ManageInvitesPage,
+    EventInviteesPage,
+    EventInvitationsPage
   ],
   providers: [
     StatusBar,
