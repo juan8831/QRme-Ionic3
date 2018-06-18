@@ -44,6 +44,8 @@ import { InviteRequestProvider } from '../providers/invite-request/invite-reques
 import { EventInviteesPage } from '../pages/event-invitees/event-invitees';
 import { EventInvitationsPage } from '../pages/event-invitations/event-invitations';
 
+import { QRScanner } from '@ionic-native/qr-scanner';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -119,7 +121,8 @@ import { EventInvitationsPage } from '../pages/event-invitations/event-invitatio
     AuthProvider,
     UserProvider,
     MessagingProvider,
-    InviteRequestProvider
+    InviteRequestProvider,
+    QRScanner
   ]
 })
 export class AppModule {}
