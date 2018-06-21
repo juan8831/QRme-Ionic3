@@ -22,6 +22,7 @@
     "@angular/platform-browser": "5.2.10",
     "@angular/platform-browser-dynamic": "5.2.10",
     "@firebase/app": "0.1.10",
+    "@ionic-native/barcode-scanner": "^4.7.0",
     "@ionic-native/core": "4.7.0",
     "@ionic-native/qr-scanner": "^4.7.0",
     "@ionic-native/splash-screen": "4.7.0",
@@ -40,6 +41,8 @@
     "install": "^0.11.0",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
+    "ngx-qrcode2": "^0.1.0",
+    "phonegap-plugin-barcodescanner": "^8.0.0",
     "promise-polyfill": "^7.1.2",
     "rxjs": "5.5.10",
     "sw-toolbox": "3.6.0",
@@ -57,7 +60,8 @@
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-qrscanner": {}
+      "cordova-plugin-qrscanner": {},
+      "phonegap-plugin-barcodescanner": {}
     },
     "platforms": [
       "ios"

@@ -7,7 +7,13 @@
 </ion-header>
 
 
-<ion-content style="background: none transparent;" padding>
+<ion-content padding>
+
+  <h3>Scan text: {{scannedCode}}</h3>
   <button ion-button (click)="scanQRCode()" >Scan QR Code</button>
+
+  <button ion-button (click)="createCode()">Create Code</button>
+
+  <ngx-qrcode [qrc-value]="createdCode"></ngx-qrcode>
 
 </ion-content>

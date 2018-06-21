@@ -45,6 +45,8 @@ import { EventInviteesPage } from '../pages/event-invitees/event-invitees';
 import { EventInvitationsPage } from '../pages/event-invitations/event-invitations';
 
 import { QRScanner } from '@ionic-native/qr-scanner';
+import {NgxQRCodeModule} from 'ngx-qrcode2';
+import {BarcodeScanner} from '@ionic-native/barcode-scanner';
 
 @NgModule({
   declarations: [
@@ -81,6 +83,7 @@ import { QRScanner } from '@ionic-native/qr-scanner';
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
+    NgxQRCodeModule
    // AngularFirestoreModule.enablePersistence()
 
   ],
@@ -122,7 +125,8 @@ import { QRScanner } from '@ionic-native/qr-scanner';
     UserProvider,
     MessagingProvider,
     InviteRequestProvider,
-    QRScanner
+    QRScanner,
+    BarcodeScanner
   ]
 })
 export class AppModule {}
