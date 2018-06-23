@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, ViewController, Content, Events, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, ViewController, Content, Events, AlertController, Loading } from 'ionic-angular';
 import { EditEventPage } from '../edit-event/edit-event';
 import { EventProvider } from '../../providers/event/event';
 //import { Observable } from '@firebase/util';
@@ -40,6 +40,9 @@ export class EventsPage implements OnInit {
 
   segment = "managing";
   filteredEvents: Event[];
+  managingEventsLoaded = false;
+  invitedEventsLoaded = false;
+  loader : Loading
 
 
   constructor(public navCtrl: NavController,
@@ -59,6 +62,9 @@ export class EventsPage implements OnInit {
     //   // this.content.ionScroll.subscribe(($event) => {
     //   //   this.scrollAmount = $event.scrollTop;
     // });
+
+    this.loader = this.mProv.getLoader('Loading your events');
+    this.loader.present();
 
     this.afAuth.authState.take(1).subscribe(user => {
       //this.userProvider.getAdminList(user.uid);
@@ -127,6 +133,10 @@ export class EventsPage implements OnInit {
             this.managingEvents = events;
             this.events = this.managingEvents;
             this.changeEventMode()
+            this.managingEventsLoaded = true;
+            if(this.invitedEventsLoaded){
+              this.loader.dismiss();
+            }
           }
 
           if(nonExistentEvents.length > 0){
@@ -190,7 +200,11 @@ export class EventsPage implements OnInit {
           console.log(events);
           if (events) {
             this.invitedEvents = events;
-            this.changeEventMode()
+            this.changeEventMode();
+            this.invitedEventsLoaded = true;
+            if(this.managingEventsLoaded){
+              this.loader.dismiss();
+            }
           }
 
           if(nonExistentEvents.length > 0){
