@@ -56,9 +56,8 @@
   
     <button block ion-button *ngIf="event.type ==='Private' && !inviteRequestExists" (click)="requestInvite()">Request Invite</button>
     <h2 text-center *ngIf="event.type ==='Private' && inviteRequestExists">Invite Requested!</h2>
-    <button block ion-button *ngIf="event.type =='Public'" (click)="joinEvent()">Join Event</button>
-
-
-  
+    <button block ion-button *ngIf="event.type =='Public' && !isAdmin && !isInvitee" (click)="joinEvent()">Join Event</button>
+    <h2 text-center *ngIf="isAdmin">You are managing this event!</h2>
+    <h2 text-center *ngIf="isInvitee">You have already joined this event!</h2>
   
   </ion-content>

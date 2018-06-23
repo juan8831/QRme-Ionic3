@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController, AlertController, ToastController, DateTime } from 'ionic-angular';
 import { Event } from '../../models/event';
 import { UserProvider } from '../../providers/user/user';
@@ -8,6 +8,8 @@ import { InviteRequestProvider } from '../../providers/invite-request/invite-req
 import { InviteRequest } from '../../models/inviteRequest';
 import { User } from '../../models/user';
 import { MessagingProvider } from '../../providers/messaging/messaging';
+import { ISubscription } from 'rxjs/Subscription';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 
 @IonicPage()
@@ -15,7 +17,7 @@ import { MessagingProvider } from '../../providers/messaging/messaging';
   selector: 'page-search-event-detail',
   templateUrl: 'search-event-detail.html',
 })
-export class SearchEventDetailPage {
+export class SearchEventDetailPage implements OnInit {
 
   event: Event;
   showJoinedEvent //show if event is in user's invitee list
@@ -23,6 +25,9 @@ export class SearchEventDetailPage {
   showRequestInvite = false; //show if event is private & no invite exists 
   showInviteRequested = false; //show if event is private & invite exists 
   inviteRequestExists = false;
+  subscription: ISubscription;
+  isAdmin = false;
+  isInvitee = false;
 
   constructor(
     public navCtrl: NavController, 
@@ -39,6 +44,14 @@ export class SearchEventDetailPage {
   ) {
     this.event = navParams.get('event');
 
+    var adminEvents$ = this.userProvider.getEventAdminList();
+    var inviteeEvents$ = this.userProvider.getEventInviteeList();
+    this.subscription = combineLatest(adminEvents$, inviteeEvents$)
+    .subscribe(([adminEvents, inviteeEvents]) => {
+      this.isAdmin = (this.event.id in adminEvents.events)? true : false;
+      this.isInvitee = (this.event.id in inviteeEvents.events)? true : false;
+    });
+
     this.inviteRequestProvider.getInviteRequestByUserAndEvent(undefined, this.event.id).subscribe(invites => {
       if(invites.length == 0){
         this.inviteRequestExists == false;
@@ -48,7 +61,18 @@ export class SearchEventDetailPage {
       }   
     });
 
+    //var allEvents$ = this.eventProvider.getAllEvents()
 
+  }
+
+  ngOnInit(){
+    
+
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    
   }
 
   ionViewDidLoad() {

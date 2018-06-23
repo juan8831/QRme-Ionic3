@@ -88,28 +88,6 @@ export class EventsPage implements OnInit {
     this.changeEventMode();
   }
 
-  private loadManagingEventsObservable() {
-    this.events$ = this.afAuth.authState.switchMap(user => {
-      if (user) {
-        return this.userProvider.getCurrentUserObservable().switchMap(user => {
-          return this.eventProvider.getEventsForAdmin(Object.keys(user.eventAdminList))
-            .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())));
-        });
-      }
-    });
-  }
-
-  private async loadInvitedEventsObservable() {
-    this.events$ = this.afAuth.authState.switchMap(user => {
-      if (user) {
-        return this.userProvider.getCurrentUserObservable().switchMap(user => {
-          return this.eventProvider.getEventsForAdmin(Object.keys(user.eventInviteeList))
-            .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())));
-        });
-      }
-    });
-  }
-
   private loadManagingEvents(){
     var subs = this.userProvider.getEventAdminList().subscribe(events => {
       if(this.manageSubscription != null){

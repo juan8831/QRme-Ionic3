@@ -33,7 +33,7 @@
     </ion-row>
     <ion-row>
         <ion-col>
-            <button block ion-button round large [navPush]="qrJoinEventPage" color="primary" style="margin-top: 10%">
+            <button block ion-button round large (click)="scanQRCode()" color="primary" style="margin-top: 10%">
                 <ion-icon item-left name="qr-scanner" style="margin-right: 6px "></ion-icon>
                 Scan QR Code
               </button>
