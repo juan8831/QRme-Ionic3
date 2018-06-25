@@ -47,6 +47,7 @@ import { EventInvitationsPage } from '../pages/event-invitations/event-invitatio
 import { QRScanner } from '@ionic-native/qr-scanner';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
 import {BarcodeScanner} from '@ionic-native/barcode-scanner';
+import { SearchEventsCategoriesPage } from '../pages/search-events-categories/search-events-categories';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import {BarcodeScanner} from '@ionic-native/barcode-scanner';
     QrJoinEventPage,
     ManageInvitesPage,
     EventInviteesPage,
-    EventInvitationsPage
+    EventInvitationsPage,
+    SearchEventsCategoriesPage
   ],
   imports: [
     BrowserModule,
@@ -112,7 +114,8 @@ import {BarcodeScanner} from '@ionic-native/barcode-scanner';
     QrJoinEventPage,
     ManageInvitesPage,
     EventInviteesPage,
-    EventInvitationsPage
+    EventInvitationsPage,
+    SearchEventsCategoriesPage
   ],
   providers: [
     StatusBar,

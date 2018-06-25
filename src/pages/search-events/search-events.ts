@@ -27,6 +27,7 @@ export class SearchEventsPage implements OnInit {
   subscription: ISubscription;
   searchText: string = "";
   userEvents = [];
+  category: string;
 
   constructor(
     public navCtrl: NavController,
@@ -36,6 +37,7 @@ export class SearchEventsPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.category = this.navParams.get('category');
     var allEvents$ = this.eventProvider.getAllEvents()
     var adminEvents$ = this.userProvider.getEventAdminList();
     var inviteeEvents$ = this.userProvider.getEventInviteeList();

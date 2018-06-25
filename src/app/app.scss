@@ -67,6 +67,50 @@ ion-app.cameraView, ion-app.cameraView ion-content, ion-app.cameraView .nav-deco
     background: transparent none !important; 
   }
 
+.categories-select {
+    
+    }   
+
+.ceremony-select {
+    background-color: color($colors, yellow) !important;
+    color: white !important;
+    }  
+.education-select{
+        background-color: color($colors, yellow) !important;
+        color: white !important;
+    }   
+.meeting-select {
+        background-color: color($colors, blue) !important;
+        color: white !important;
+        }    
+.conference-select{
+            background-color: color($colors, blue) !important;
+            color: white !important;
+        }       
+.sports-select {
+            background-color: color($colors, darkRed) !important;
+            color: white !important;
+            }           
+.festival-select{
+                background-color: color($colors, darkRed) !important;
+                color: white !important;
+            }     
+.concert-select {
+            background-color: color($colors, primary) !important;
+            color: white !important;
+            }           
+.party-select{
+                background-color: color($colors, primary) !important;
+                color: white !important;
+            } 
+.other-select{
+                background-color: color($colors, light) !important;
+                color: black !important;
+            } 
+.cancel-select{
+                background-color: color($colors, light) !important;
+                color: red !important;
+            } 
 
 
 

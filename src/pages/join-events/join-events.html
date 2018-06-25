@@ -16,16 +16,24 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-          <button full ion-button round large [navPush]="searchEventsPage" color="primary" style="margin-top: 10%">
-              <ion-icon item-left name="search" style="margin-right: 6px "></ion-icon>
-              Search Events
+          <button full ion-button round large icon-start (click)="openSearchPage('all')" color="primary" style="margin-top: 10%">
+              <ion-icon item-left name="list"></ion-icon>
+              All Events
             </button>
       </ion-col>
     </ion-row>
     <ion-row>
+        <ion-col>
+            <button full ion-button round large icon-start (click)="openSearchPage('categories')" color="primary" style="margin-top: 10%">
+                <ion-icon item-left name="search"></ion-icon>
+                Search by Category
+              </button>
+        </ion-col>
+      </ion-row>
+    <ion-row>
       <ion-col>
-          <button full ion-button round large [navPush]="manageInvitesPage" color="primary" style="margin-top: 10%">
-              <ion-icon *ngIf="acceptedAndRejectedInvitesTotal == 0" item-left name="mail" style="margin-right: 6px "></ion-icon>
+          <button full ion-button round large icon-start [navPush]="manageInvitesPage" color="primary" style="margin-top: 10%">
+              <ion-icon *ngIf="acceptedAndRejectedInvitesTotal == 0" item-left name="mail"></ion-icon>
               <ion-badge *ngIf="acceptedAndRejectedInvitesTotal > 0" id="badge" style="margin-right: 6px " color="danger">{{acceptedAndRejectedInvitesTotal}}</ion-badge>
               Manage Invites         
             </button>  
@@ -33,8 +41,8 @@
     </ion-row>
     <ion-row>
         <ion-col>
-            <button block ion-button round large (click)="scanQRCode()" color="primary" style="margin-top: 10%">
-                <ion-icon item-left name="qr-scanner" style="margin-right: 6px "></ion-icon>
+            <button block ion-button round large icon-start (click)="scanQRCode()" color="primary" style="margin-top: 10%">
+                <ion-icon item-left name="qr-scanner"></ion-icon>
                 Scan QR Code
               </button>
         </ion-col>

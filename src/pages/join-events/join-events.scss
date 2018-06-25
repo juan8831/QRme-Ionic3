@@ -2,4 +2,27 @@ page-join-events {
     ion-icon {
         font-size: 55px !important; //Preferred size here
     }
+
+    .action-sheets-basic-page {
+
+        
+
+        .ion-md-share {
+          color: #ED4248;
+        }
+        .ion-md-arrow-dropright-circle {
+          color: #508AE4;
+        }
+        .ion-md-heart-outline {
+          color: #31D55F;
+        }
+        .action-sheet-cancel ion-icon,
+        .action-sheet-destructive ion-icon {
+          color: #757575;
+        }
+      }
+
+      .ion-logo-briefcase:before {
+        color: green;
+     } 
 }

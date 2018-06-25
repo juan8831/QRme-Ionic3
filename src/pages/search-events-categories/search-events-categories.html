@@ -1,0 +1,115 @@
+<ion-header>
+
+  <ion-navbar>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+    <ion-item>
+        <ion-label>Gender</ion-label>
+        <ion-select [(ngModel)]="gender">
+          <ion-option color="green" value="f">
+            <ion-icon name="infinite">
+
+            </ion-icon>
+            Hello
+
+          </ion-option>
+          <ion-option value="m">Male</ion-option>
+        </ion-select>
+      </ion-item>
+
+
+      <ion-list radio-group [(ngModel)]="relationship">
+          <ion-item>
+            <ion-icon name="infinite"></ion-icon>
+            <ion-label>Friends</ion-label>
+            <ion-radio value="friends" checked></ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-label>Family</ion-label>
+            <ion-radio value="family"></ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-label>Enemies</ion-label>
+            <ion-radio value="enemies" [disabled]="isDisabled"></ion-radio>
+          </ion-item>
+        </ion-list>
+
+  <ion-grid class="Absolute-Center" >
+    <ion-row>
+      <ion-col>
+        <button ion-button full icon-start large round>
+          <ion-icon name="infinite"></ion-icon>
+          All Events
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6>
+        <button color="yellow" ion-button full icon-start large round>
+          <ion-icon name="ribbon"></ion-icon>
+          Ceremony
+        </button>
+      </ion-col>
+      <ion-col col-6>
+        <button color="yellow" ion-button full icon-start large round>
+          <ion-icon name="school"></ion-icon>
+          Education
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6>
+        <button color="blue" ion-button full icon-start large round>
+          <ion-icon name="contacts"></ion-icon>
+          Conference
+        </button>
+      </ion-col>
+      <ion-col col-6>
+        <button color="blue" ion-button full icon-start large round>
+          <ion-icon name="briefcase"></ion-icon>
+          Meeting
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6>
+        <button color="danger" ion-button full icon-start large round>
+          <ion-icon name="football"></ion-icon>
+          Sports
+        </button>
+      </ion-col>
+      <ion-col col-6>
+        <button color="danger" ion-button full icon-start large round>
+          <ion-icon name="bonfire"></ion-icon>
+          Festival
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6>
+        <button color="light" ion-button full icon-start large round>
+          <ion-icon name="musical-note"></ion-icon>
+          Concert
+        </button>ad
+      </ion-col>
+      <ion-col col-6>
+        <button color="light" ion-button full icon-start large round>
+          <ion-icon name="headset"></ion-icon>
+          Party
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row style="margin-top: 0px">
+      <ion-col>
+        <button ion-button outline block icon-start large round >
+          <ion-icon name="help"></ion-icon>
+          Other
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid> 
+</ion-content>

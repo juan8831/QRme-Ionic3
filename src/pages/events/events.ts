@@ -63,8 +63,8 @@ export class EventsPage implements OnInit {
     //   //   this.scrollAmount = $event.scrollTop;
     // });
 
-    this.loader = this.mProv.getLoader('Loading your events');
-    this.loader.present();
+    this.loader = this.mProv.getLoader('');
+    //this.loader.present();
 
     this.afAuth.authState.take(1).subscribe(user => {
       //this.userProvider.getAdminList(user.uid);
