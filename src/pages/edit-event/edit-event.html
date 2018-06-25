@@ -24,6 +24,20 @@
         <ion-textarea name="location" [ngModel]="event?.location" required></ion-textarea>
       </ion-item>
       <ion-item>
+          <ion-label>Category</ion-label>
+          <ion-select [ngModel]="event?.category" name="category" required>
+            <ion-option value="ceremony">Ceremony</ion-option>
+            <ion-option value="education">Education</ion-option>
+            <ion-option value="conference">Conference</ion-option>
+            <ion-option value="meeting">Meeting</ion-option>
+            <ion-option value="sports">Sports</ion-option>
+            <ion-option value="festival">Festival</ion-option>
+            <ion-option value="concert">Concert</ion-option>
+            <ion-option value="party">Party</ion-option>
+            <ion-option value="other">Other</ion-option>
+          </ion-select>
+        </ion-item>
+      <ion-item>
           <ion-label>Type</ion-label>
           <ion-select [ngModel]="event?.type" name="type" required>
             <ion-option selected value="Public">Public</ion-option>

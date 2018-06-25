@@ -20,7 +20,7 @@ export class Event{
     recurring?: boolean
     date: Date
     time: Date
-
+    
     constructor(){}
 
     // constructor(name, description, location, recurring, type){

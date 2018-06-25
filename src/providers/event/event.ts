@@ -70,15 +70,21 @@ export class EventProvider {
     });
   }
 
+  getEventsWithFilter(collection: AngularFirestoreCollection<any>) : Observable<Event[]> {
+    return collection.snapshotChanges().map(changes => {
+      return changes.map(action => {
+        const data = action.payload.doc.data() as Event;
+        data.id = action.payload.doc.id;
+        return data;
+      });
+    });
+  }
+
   getEventsByCategory(categoryName: string): Observable<Event[]> {
-    if(categoryName == 'all'){
-      this.eventsCollection = this.afs.collection('events', ref => ref.orderBy('name', 'asc'));
-    }
-    else{
-      this.eventsCollection = this.afs.collection('events', ref => ref.
-      orderBy('name', 'asc').where('category', '==', categoryName));
-    }  
-    return this.getAllEvents();
+    let collection = this.afs.collection('events', ref => ref
+    .orderBy('name', 'asc')
+    .where('category', '==', categoryName));
+    return this.getEventsWithFilter(collection);
   }
 
   getEvent(id: string) {
