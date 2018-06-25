@@ -61,7 +61,6 @@ export class EventProvider {
   }
 
   getAllEvents(): Observable<Event[]> {
-
     return this.eventsCollection.snapshotChanges().map(changes => {
       return changes.map(action => {
         const data = action.payload.doc.data() as Event;
@@ -72,15 +71,14 @@ export class EventProvider {
   }
 
   getEventsByCategory(categoryName: string): Observable<Event[]> {
-    return this.afDB.list('events', ref => ref.orderByChild(`category`).equalTo(categoryName))
-      .snapshotChanges().map(changes => {
-        return changes.map(action => {
-          const data = action.payload.val() as Event;
-          data.id = action.payload.key
-          return data;
-        });
-      });
-
+    if(categoryName == 'all'){
+      this.eventsCollection = this.afs.collection('events', ref => ref.orderBy('name', 'asc'));
+    }
+    else{
+      this.eventsCollection = this.afs.collection('events', ref => ref.
+      orderBy('name', 'asc').where('category', '==', categoryName));
+    }  
+    return this.getAllEvents();
   }
 
   getEvent(id: string) {

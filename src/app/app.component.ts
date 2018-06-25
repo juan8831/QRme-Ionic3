@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Platform, NavController, MenuController } from 'ionic-angular';
+import { Platform, NavController, MenuController, AlertController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -16,6 +16,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthProvider } from '../providers/auth/auth';
 import { JoinEventsPage } from '../pages/join-events/join-events';
 import { UserProvider } from '../providers/user/user';
+import { MessagingProvider } from '../providers/messaging/messaging';
 
 @Component({
   templateUrl: 'app.html'
@@ -42,7 +43,9 @@ export class MyApp {
     private rootPageProvider : RootPageProvider,
     private authProvider: AuthProvider,
     private afAuth: AngularFireAuth,
-    private userProvider: UserProvider
+    private userProvider: UserProvider,
+    private mProv: MessagingProvider,
+    private alertCtrl: AlertController
   ) {
     firebase.initializeApp({
       apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
@@ -106,8 +109,24 @@ export class MyApp {
 
   onLogout(){
    // this.afAuth.auth.signOut();
-    this.authProvider.logout();
-    this.menuCtrl.close();
+   //this.mProv.showYesNoConfirm('Log out?', , this.authProvider.logout)
+   let confirm = this.alertCtrl.create({
+    title: 'Log out?',
+    subTitle: 'Are you sure you want to log out?',
+    buttons: [
+      {
+        text: 'Yes',
+        handler: () => {
+          this.authProvider.logout();
+        }
+      },
+      {
+        text: 'No',
+      }
+    ]
+  });
+  confirm.present();
+  this.menuCtrl.close();
   }
 
 

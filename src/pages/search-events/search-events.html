@@ -1,7 +1,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Search Events</ion-title>
+    <ion-title> Search <span class="categoryName">{{category | titlecase }}</span> Events</ion-title>
   </ion-navbar>
 
   <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search">
@@ -25,4 +25,5 @@
             <ion-note *ngIf="event.type == 'Public'" style="color: #40d647" item-end>Public</ion-note>     
         </ion-item>
     </ion-list>
+    <h2 *ngIf="(filteredEvents)?.length == 0">No Events Found</h2>
 </ion-content>

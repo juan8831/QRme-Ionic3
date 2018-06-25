@@ -14,11 +14,11 @@
   <form *ngIf="!create" #f="ngForm" (ngSubmit)="onSignIn(f)">
     <ion-list>
       <ion-item>
-        <ion-label fixed>Email</ion-label>
+        <ion-label floating>Email</ion-label>
         <ion-input type="email" ngModel name="email" required></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label fixed>Password</ion-label>
+        <ion-label floating>Password</ion-label>
         <ion-input type="password" ngModel name="password" required [minlength]="6"></ion-input>
       </ion-item>
     </ion-list>
@@ -28,11 +28,11 @@
   <form *ngIf="create" #f="ngForm" (ngSubmit)="onCreate(f)">
     <ion-list>
       <ion-item>
-        <ion-label fixed>Name</ion-label>
+        <ion-label floating>Name</ion-label>
         <ion-input type="text" ngModel name="name" required></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label fixed>Email</ion-label>
+        <ion-label floating>Email</ion-label>
         <ion-input type="email" ngModel name="email" required></ion-input>
       </ion-item>
       <ion-item>

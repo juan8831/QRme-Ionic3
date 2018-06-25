@@ -38,7 +38,7 @@ export class SearchEventsPage implements OnInit {
 
   ngOnInit() {
     this.category = this.navParams.get('category');
-    var allEvents$ = this.eventProvider.getAllEvents()
+    var allEvents$ = this.eventProvider.getEventsByCategory(this.category);
     var adminEvents$ = this.userProvider.getEventAdminList();
     var inviteeEvents$ = this.userProvider.getEventInviteeList();
     this.subscription = combineLatest( allEvents$, adminEvents$, inviteeEvents$)

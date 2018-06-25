@@ -35,4 +35,23 @@ export class MessagingProvider {
     return this.loadingCtrl.create({ spinner: 'dots', content: message});
   }
 
+  showYesNoConfirm(title: string, message: string, yesAction : () => void) {
+    let confirm = this.alertCtrl.create({
+      title: title,
+      subTitle: message,
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            yesAction();
+          }
+        },
+        {
+          text: 'No',
+        }
+      ]
+    });
+    confirm.present();
+  }
+
 }
