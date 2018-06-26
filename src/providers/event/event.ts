@@ -35,33 +35,36 @@ export class EventProvider {
 
   //Create new event with admin & invitee subcollections. Add eventId to the User's admin list
   CreateNewEventAndSynchronizeWithUser(event: Event) {
-      var newEventDocRef = this.fb.firestore().collection('events').doc();
-      let eventId = newEventDocRef.id;
-      
-      var newEventAdminDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('admin');//.set({ 'users': users })
-      var newEventInviteeDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
-      var userAdminDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('admin');
+    var newEventDocRef = this.fb.firestore().collection('events').doc();
+    let eventId = newEventDocRef.id;
 
-      return this.fb.firestore().runTransaction(transaction => {
-        return transaction.get(userAdminDocRef).then(userAdminDoc => {
-          var userAdminEvents = userAdminDoc.data().events;
-          userAdminEvents[eventId] = event.name;
-          
-          transaction.update(userAdminDocRef, {'events': userAdminEvents});
-          
-          transaction.set(newEventDocRef, Object.assign({}, event));
-          
-          let users = {};
-          users[this.afAuth.auth.currentUser.uid] = true;
-          transaction.set(newEventAdminDocRef, { 'users': users });
-          transaction.set(newEventInviteeDocRef, {'users': {}});
+    var newEventAdminDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('admin');//.set({ 'users': users })
+    var newEventInviteeDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
+    var userAdminDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('admin');
 
-        });
+    return this.fb.firestore().runTransaction(transaction => {
+      return transaction.get(userAdminDocRef).then(userAdminDoc => {
+        var userAdminEvents = userAdminDoc.data().events;
+        userAdminEvents[eventId] = event.name;
+
+        transaction.update(userAdminDocRef, { 'events': userAdminEvents });
+
+        transaction.set(newEventDocRef, Object.assign({}, event));
+
+        let users = {};
+        users[this.afAuth.auth.currentUser.uid] = true;
+        transaction.set(newEventAdminDocRef, { 'users': users });
+        transaction.set(newEventInviteeDocRef, { 'users': {} });
+
       });
+    });
   }
 
   getAllEvents(): Observable<Event[]> {
-    return this.eventsCollection.snapshotChanges().map(changes => {
+    let collection = this.afs.collection('events', ref => ref
+      .where('isVisibleInPublicSearch', '==', true)
+      .orderBy('name', 'asc'));
+    return collection.snapshotChanges().map(changes => {
       return changes.map(action => {
         const data = action.payload.doc.data() as Event;
         data.id = action.payload.doc.id;
@@ -70,7 +73,7 @@ export class EventProvider {
     });
   }
 
-  getEventsWithFilter(collection: AngularFirestoreCollection<any>) : Observable<Event[]> {
+  getEventsWithFilter(collection: AngularFirestoreCollection<any>): Observable<Event[]> {
     return collection.snapshotChanges().map(changes => {
       return changes.map(action => {
         const data = action.payload.doc.data() as Event;
@@ -82,8 +85,9 @@ export class EventProvider {
 
   getEventsByCategory(categoryName: string): Observable<Event[]> {
     let collection = this.afs.collection('events', ref => ref
-    .orderBy('name', 'asc')
-    .where('category', '==', categoryName));
+      .orderBy('name', 'asc')
+      .where('category', '==', categoryName)
+      .where('isVisibleInPublicSearch', '==', true));
     return this.getEventsWithFilter(collection);
   }
 
@@ -104,7 +108,7 @@ export class EventProvider {
     });
   }
 
-  getInviteeUsersForEvent(event: Event){
+  getInviteeUsersForEvent(event: Event) {
     return this.afs.doc(`events/${event.id}`).collection('users').doc('invitee').snapshotChanges().map(action => {
       if (action.payload.exists === false) {
         return null;
@@ -114,10 +118,10 @@ export class EventProvider {
         //data.id = action.payload.id;
         return data;
       }
-    });    
+    });
   }
 
-  getAdminUsersForEvent(event: Event){
+  getAdminUsersForEvent(event: Event) {
     return this.afs.doc(`events/${event.id}`).collection('users').doc('admin').snapshotChanges().map(action => {
       if (action.payload.exists === false) {
         return null;
@@ -127,9 +131,9 @@ export class EventProvider {
         //data.id = action.payload.id;
         return data;
       }
-    });  
+    });
   }
-  
+
 
   // getEventsForAdmin()  {
   //   return this.userProvider.getCurrentUser().switchMap(user => {
@@ -158,7 +162,7 @@ export class EventProvider {
     batch.delete(this.fb.firestore().doc(`events/${event.id}`).collection('users').doc('admin'));
     batch.delete(this.fb.firestore().doc(`events/${event.id}`).collection('users').doc('invitee'));
     return batch.commit();
-   
+
   }
 
   addUserToInviteeList(userId: string, eventId: string) {
@@ -216,7 +220,7 @@ export class EventProvider {
         });
       });
     });
-  
+
   }
 
 

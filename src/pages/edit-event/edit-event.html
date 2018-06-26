@@ -18,33 +18,33 @@
       <ion-item>
         <ion-label floating>Short Description</ion-label>
         <ion-textarea name="description" [ngModel]="event?.description"></ion-textarea>
-      </ion-item> 
+      </ion-item>
       <ion-item>
         <ion-label floating>Location</ion-label>
         <ion-textarea name="location" [ngModel]="event?.location" required></ion-textarea>
       </ion-item>
       <ion-item>
-          <ion-label>Category</ion-label>
-          <ion-select [ngModel]="event?.category" name="category" required>
-            <ion-option value="ceremony">Ceremony</ion-option>
-            <ion-option value="education">Education</ion-option>
-            <ion-option value="conference">Conference</ion-option>
-            <ion-option value="meeting">Meeting</ion-option>
-            <ion-option value="sports">Sports</ion-option>
-            <ion-option value="festival">Festival</ion-option>
-            <ion-option value="concert">Concert</ion-option>
-            <ion-option value="party">Party</ion-option>
-            <ion-option value="other">Other</ion-option>
-          </ion-select>
-        </ion-item>
+        <ion-label>Category</ion-label>
+        <ion-select [ngModel]="event?.category" name="category" required>
+          <ion-option value="ceremony">Ceremony</ion-option>
+          <ion-option value="education">Education</ion-option>
+          <ion-option value="conference">Conference</ion-option>
+          <ion-option value="meeting">Meeting</ion-option>
+          <ion-option value="sports">Sports</ion-option>
+          <ion-option value="festival">Festival</ion-option>
+          <ion-option value="concert">Concert</ion-option>
+          <ion-option value="party">Party</ion-option>
+          <ion-option value="other">Other</ion-option>
+        </ion-select>
+      </ion-item>
       <ion-item>
-          <ion-label>Type</ion-label>
-          <ion-select [ngModel]="event?.type" name="type" required>
-            <ion-option selected value="Public">Public</ion-option>
-            <ion-option value="Private">Private</ion-option>
-          </ion-select>
-        </ion-item>
-      <ion-item>    
+        <ion-label>Type</ion-label>
+        <ion-select [ngModel]="event?.type" name="type" required>
+          <ion-option selected value="Public">Public</ion-option>
+          <ion-option value="Private">Private</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
         <ion-label>Recurring?</ion-label>
         <ion-toggle [ngModel]="event?.recurring" name="recurring"></ion-toggle>
       </ion-item>
@@ -53,8 +53,12 @@
         <ion-datetime displayFormat="MM/DD/YYYY" [ngModel]="event?.date" name="date"></ion-datetime>
       </ion-item>
       <ion-item>
-          <ion-label>Time</ion-label>
-          <ion-datetime displayFormat="hh/m/A" [ngModel]="event?.time" name="time"></ion-datetime>
+        <ion-label>Time</ion-label>
+        <ion-datetime displayFormat="hh/m/A" [ngModel]="event?.time" name="time"></ion-datetime>
+      </ion-item>
+      <ion-item>
+          <ion-label>Show in Public Search Results</ion-label>
+          <ion-toggle [ngModel]="event?.isVisibleInPublicSearch" name="isVisibleInPublicSearch"></ion-toggle>
         </ion-item>
     </ion-list>
     <button ion-button type="submit" block [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
@@ -63,7 +67,7 @@
 
   <button *ngIf="!isnewEvent" color="danger" ion-button block (click)="showConfirm()">Delete Event</button>
 
-  
+
 
 
 </ion-content>

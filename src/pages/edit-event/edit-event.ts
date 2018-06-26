@@ -53,6 +53,7 @@ export class EditEventPage implements OnInit {
     this.event.location = f.value.location;
     this.event.type = f.value.type;
     this.event.category = f.value.category;
+    this.event.isVisibleInPublicSearch = f.value.isVisibleInPublicSearch;
 
     //optional 
     this.event.date = f.value.date ? f.value.date : '';

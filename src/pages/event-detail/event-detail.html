@@ -32,6 +32,14 @@
           </ion-row>
           <ion-row no-padding>
               <ion-col col-4 class="left" >
+                <p><b>Category</b></p>
+              </ion-col>
+              <ion-col col-8 text-left class="right" >
+                <p>{{event.category | titlecase}}</p>
+              </ion-col>
+          </ion-row>
+          <ion-row no-padding>
+              <ion-col col-4 class="left" >
                 <p><b>Location</b> </p>
               </ion-col>
               <ion-col col-8 text-left class="right" >
@@ -44,6 +52,14 @@
               </ion-col>
               <ion-col col-8 text-left class="right" >
                 <p>{{event.recurring == true ? 'Yes' : 'No'}}</p>
+              </ion-col>
+          </ion-row>
+          <ion-row no-padding>
+              <ion-col col-4 class="left" >
+                <p><b>Creator</b></p>
+              </ion-col>
+              <ion-col col-8 text-left class="right" >
+                <p>{{event.creatorName}}</p>
               </ion-col>
           </ion-row>
         </ion-card-content>

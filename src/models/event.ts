@@ -20,6 +20,7 @@ export class Event{
     recurring?: boolean
     date: Date
     time: Date
+    isVisibleInPublicSearch: boolean
     
     constructor(){}
 
