@@ -23,7 +23,9 @@
     "@angular/platform-browser-dynamic": "5.2.10",
     "@firebase/app": "0.1.10",
     "@ionic-native/barcode-scanner": "^4.7.0",
+    "@ionic-native/camera": "^4.8.0",
     "@ionic-native/core": "4.7.0",
+    "@ionic-native/file": "^4.8.0",
     "@ionic-native/qr-scanner": "^4.7.0",
     "@ionic-native/splash-screen": "4.7.0",
     "@ionic-native/status-bar": "4.7.0",
@@ -31,7 +33,9 @@
     "angularfire2": "^5.0.0-rc.6",
     "cordova-ios": "4.5.4",
     "cordova-plugin-add-swift-support": "^1.7.2",
+    "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-file": "^6.0.1",
     "cordova-plugin-ionic-keyboard": "^2.1.2",
     "cordova-plugin-ionic-webview": "^1.2.1",
     "cordova-plugin-qrscanner": "^2.6.0",
@@ -61,7 +65,9 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-qrscanner": {},
-      "phonegap-plugin-barcodescanner": {}
+      "phonegap-plugin-barcodescanner": {},
+      "cordova-plugin-camera": {},
+      "cordova-plugin-file": {}
     },
     "platforms": [
       "ios"

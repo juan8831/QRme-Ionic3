@@ -24,6 +24,7 @@ import { HttpClientModule } from '@angular/common/http'
 import {AngularFireModule} from 'angularfire2';
 import {AngularFireAuthModule} from 'angularfire2/auth';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 import { EventTabsPage } from '../pages/event-tabs/event-tabs';
 import { EventNewsPage } from '../pages/event-news/event-news';
 import { EventBlogPage } from '../pages/event-blog/event-blog';
@@ -48,6 +49,11 @@ import { QRScanner } from '@ionic-native/qr-scanner';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
 import {BarcodeScanner} from '@ionic-native/barcode-scanner';
 import { SearchEventsCategoriesPage } from '../pages/search-events-categories/search-events-categories';
+
+import { Camera, CameraOptions } from '@ionic-native/camera';
+
+import { File } from '@ionic-native/file';
+import { EditEventPicturePage } from '../pages/edit-event-picture/edit-event-picture';
 
 @NgModule({
   declarations: [
@@ -75,7 +81,8 @@ import { SearchEventsCategoriesPage } from '../pages/search-events-categories/se
     ManageInvitesPage,
     EventInviteesPage,
     EventInvitationsPage,
-    SearchEventsCategoriesPage
+    SearchEventsCategoriesPage,
+    EditEventPicturePage
   ],
   imports: [
     BrowserModule,
@@ -85,6 +92,7 @@ import { SearchEventsCategoriesPage } from '../pages/search-events-categories/se
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
+    AngularFireStorageModule,
     NgxQRCodeModule
    // AngularFirestoreModule.enablePersistence()
 
@@ -115,7 +123,8 @@ import { SearchEventsCategoriesPage } from '../pages/search-events-categories/se
     ManageInvitesPage,
     EventInviteesPage,
     EventInvitationsPage,
-    SearchEventsCategoriesPage
+    SearchEventsCategoriesPage,
+    EditEventPicturePage
   ],
   providers: [
     StatusBar,
@@ -129,7 +138,9 @@ import { SearchEventsCategoriesPage } from '../pages/search-events-categories/se
     MessagingProvider,
     InviteRequestProvider,
     QRScanner,
-    BarcodeScanner
+    BarcodeScanner,
+    Camera,
+    File
   ]
 })
 export class AppModule {}

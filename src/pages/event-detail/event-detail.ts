@@ -4,6 +4,8 @@ import { UserProvider } from '../../providers/user/user';
 import { EventProvider } from '../../providers/event/event';
 import { Event } from '../../models/event';
 import { EditEventPage } from '../edit-event/edit-event';
+import { Observable } from 'rxjs';
+import { AngularFireStorage } from 'angularfire2/storage';
 
 
 @IonicPage()
@@ -15,6 +17,7 @@ export class EventDetailPage {
 
   event: Event
   isManaging: boolean = false;
+  profileUrl: Observable<string | null>;
 
   constructor(
     public navCtrl: NavController, 
@@ -23,10 +26,13 @@ export class EventDetailPage {
     private userProvider: UserProvider,
     private eventProvider: EventProvider,
     private toastCtrl: ToastController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private storage: AngularFireStorage
   ) {
     this.event = navParams.get('event');
     this.isManaging = navParams.get('isManaging');
+    const ref = this.storage.ref('eventPictures/cover_photo_116517_1459733496.png');
+    this.profileUrl = ref.getDownloadURL();
 
   }
 

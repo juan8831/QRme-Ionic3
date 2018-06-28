@@ -1,3 +1,32 @@
 page-edit-event {
+    ion-avatar img  {
+        width:35% !important;
+        height : 35% !important;
+        //max-width: 100px !important;  //any size
+        //max-height: 40% !important; //any size
+        }
 
+
+        .opaqueImage{
+            opacity: 0.5;
+        }
+        .nonOpaqueImage{
+            opacity: 1;
+        }
+
+        .editImage{
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+        }
+        .container {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+
+        ion-icon {
+            font-size: 30px !important; //Preferred size here
+        }
 }

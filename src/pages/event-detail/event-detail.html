@@ -17,6 +17,7 @@
   <h1 text-center>{{event?.name}}</h1>
   <p text-center>{{event.date | date}} | {{event.time}} </p>
   <img src="assets/imgs/festival.png"/>
+  <img [src]="profileUrl | async" />
   <h4>
     {{event?.description}}
   </h4>

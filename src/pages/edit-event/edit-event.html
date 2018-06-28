@@ -8,6 +8,17 @@
 
 
 <ion-content padding>
+    <div class="container" (click)="setEventPicture()">
+        <ion-avatar>
+            <img [src]="imageURL" style="display:block; margin:auto;" 
+            [ngClass]="{'opaqueImage': isDefaultImage, 'nonOpaqueImage': !isDefaultImage}">
+            
+          </ion-avatar>
+          <ion-icon *ngIf="isDefaultImage" class="editImage" name="add-circle"></ion-icon>
+          
+    </div>  
+      <br>
+    <!-- <img [src]="assets/imgs/calendar.png | async" /> -->
   <form #f="ngForm" (ngSubmit)="onSubmit(f)">
     <ion-list>
       <ion-item>
@@ -63,6 +74,9 @@
     </ion-list>
     <button ion-button type="submit" block [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
   </form>
+
+
+  
 
 
   <button *ngIf="!isnewEvent" color="danger" ion-button block (click)="showConfirm()">Delete Event</button>
