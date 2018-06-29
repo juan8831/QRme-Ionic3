@@ -9,10 +9,14 @@ import { User } from '../../models/user';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { AngularFireStorage } from 'angularfire2/storage';
-import { File, FileReader } from '@ionic-native/file';
+import { File, FileReader, FileError, Entry } from '@ionic-native/file';
 import { normalizeURL } from 'ionic-angular';
+import { Observable } from 'rxjs';
+import { of } from 'rxjs/observable/of';
+import { FirebaseApp } from 'angularfire2';
 
 declare var window: any;
+
 
 //used for creating and editing events
 @IonicPage()
@@ -24,8 +28,9 @@ export class EditEventPage implements OnInit {
 
   event: Event;
   isnewEvent: boolean;
-  eventImgBlob : Blob;
-  imageURL = 'assets/imgs/calendar.png';
+  eventImgBlob: Blob;
+  imageURL: Observable<string | null>;
+  uploadNewImage = false;
 
   isDefaultImage = true;
 
@@ -40,7 +45,8 @@ export class EditEventPage implements OnInit {
     private mProv: MessagingProvider,
     private camera: Camera,
     private storage: AngularFireStorage,
-    private file: File
+    private file: File,
+    private firebase: FirebaseApp
 
   ) {
   }
@@ -49,24 +55,35 @@ export class EditEventPage implements OnInit {
     this.isnewEvent = this.navParams.get('type') == 'new' ? true : false;
     if (!this.isnewEvent) {
       this.event = this.navParams.get('event');
+      // const ref = this.storage.ref(`eventPictures/${this.event.id}`);
+      // this.imageURL = ref.getDownloadURL();
+
+      const ref = this.storage.ref(`eventPictures/${this.event.id}`);
+      this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).getDownloadURL()
+        .then(result => {
+          this.imageURL = of(result);
+        })
+        .catch(err => {
+
+          this.imageURL = of('assets/imgs/calendar.png');
+
+        })
     }
     else {
       this.event = new Event();
     }
+
+
   }
 
   ngOnDestroy(): void {
     this.camera.cleanup();
-    
+
   }
 
   ionViewDidLoad() {
 
 
-  }
-
-  ionViewDidLeave(){
-    this.camera.cleanup();
   }
 
   onSubmit(f: NgForm) {
@@ -76,7 +93,7 @@ export class EditEventPage implements OnInit {
     this.event.location = f.value.location;
     this.event.type = f.value.type;
     this.event.category = f.value.category;
-    this.event.isVisibleInPublicSearch = f.value.isVisibleInPublicSearch;
+    this.event.isVisibleInPublicSearch = f.value.isVisibleInPublicSearch ? f.value.isVisibleInPublicSearch : false;;
 
     //optional 
     this.event.date = f.value.date ? f.value.date : '';
@@ -88,14 +105,15 @@ export class EditEventPage implements OnInit {
       loader.present();
       this.event.creator = this.afAuth.auth.currentUser.email;
       this.event.creatorName = this.userProvider.userProfile.name;
-      //this.event.adminList = {};
-      // this.event.adminList[this.userProvider.userProfile.id] = true;
-      //this.event.inviteeList = {};
-
-
-      this.eventProvider.CreateNewEventAndSynchronizeWithUser(this.event)
+      let newEventRef = this.firebase.firestore().collection('events').doc();
+      let eventId = newEventRef.id;
+      console.log('new event id:' + eventId);
+      this.eventProvider.CreateNewEventAndSynchronizeWithUser(this.event, newEventRef)
         .then(_ => {
           loader.dismiss();
+          if (this.uploadNewImage) {
+            this.uploadPicture(eventId);
+          }
           this.mProv.showToastMessage('You have created a new event!');
           this.navCtrl.pop();
         })
@@ -124,7 +142,14 @@ export class EditEventPage implements OnInit {
 
     else {
       this.eventProvider.updateEvent(this.event)
-        .then()
+        .then(_ => {
+          if (this.uploadNewImage) {
+            this.uploadPicture(this.event.id);
+          }
+        })
+        .catch(err => {
+          this.mProv.showAlertOkMessage('Error', 'Could not update event. Plase try again.')
+        });
       this.navCtrl.pop();
     }
 
@@ -139,8 +164,6 @@ export class EditEventPage implements OnInit {
 
   deleteEvent() {
 
-    console.log('hello');
-
     // await Promise.all(Object.keys(this.event.adminList).map(async (userId) => {
     //   await this.userProvider.deleteEventForUser(userId, this.event.id).toPromise();
     //   console.log('deleted for user');
@@ -148,6 +171,20 @@ export class EditEventPage implements OnInit {
 
     this.eventProvider.deleteEvent(this.event)
       .then(_ => {
+
+        const ref = this.storage.ref(`eventPictures/${this.event.id}`);
+        this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).delete()
+          .then(result => {
+            //this.eventPictureUrl = of(result);
+          })
+          .catch(err => {
+            console.log('Could not delete image: ' + err);
+
+            // this.eventPictureUrl = of('assets/imgs/calendar.png');
+
+          })
+
+
         this.toastCtrl.create({
           message: 'Event successfully deleted',
           duration: 3000
@@ -197,7 +234,7 @@ export class EditEventPage implements OnInit {
 
   // }
 
-  takePicture(source : number) {
+  takePicture(source: number) {
     const options: CameraOptions = {
       encodingType: this.camera.EncodingType.JPEG,
       correctOrientation: true,
@@ -206,8 +243,13 @@ export class EditEventPage implements OnInit {
       quality: 20,
       sourceType: source
     };
+    this.camera.cleanup();
     this.camera.getPicture(options)
       .then(imageData => {
+
+        this.isDefaultImage = false;
+
+        this.uploadNewImage = true;
 
         this.setImageBlob(imageData);
       })
@@ -230,43 +272,74 @@ export class EditEventPage implements OnInit {
       //const task = ref.putString(base64Image, 'data_url');
       .catch(err => {
         console.log('Error: ' + err);
-        this.mProv.showAlertOkMessage('Error', err);
+        this.mProv.showAlertOkMessage('Error', 'Could not take picture. Please try again.');
       });
 
   }
 
-  private uploadPicture() {
-    console.log('Upload attempting to upload...');
-    var task = this.storage.upload(`eventPictures/${this.event.id}`, this.eventImgBlob);
+  private uploadPicture(eventId: string) {
+    console.log('Upload attempting to upload with eventId: ' + eventId);
+    var task = this.storage.upload(`eventPictures/${eventId}`, this.eventImgBlob);
     task
       .then(_ => console.log('Finished upload'))
       .catch(err => {
+        this.mProv.showAlertOkMessage('Error', 'Could not upload event image');
         console.log('Upload error:' + err);
       });
   }
 
-  setImageBlob(imageData){
-    this.file.resolveLocalFilesystemUrl(imageData).then(result => {
+  setImageBlob(imageData) {
 
-      let dirPath = result.nativeURL;
-      let dirPathSegments = dirPath.split('/');
-      dirPathSegments.pop();
-      dirPath = dirPathSegments.join('/');
+    const currentName = imageData.replace(/^.*[\\\/]/, '');
+    console.log(currentName);
+    const path = imageData.replace(/[^\/]*$/, '');
+    const newFileName = new Date().getUTCMilliseconds() + '.jpg';
+    this.file.moveFile(path, currentName, this.file.tempDirectory, newFileName)
+      .then(
+        (data: Entry) => {
+          this.imageURL = of(normalizeURL(data.nativeURL));
 
-      this.imageURL = normalizeURL(result.nativeURL);
-      console.log('imageURL: '+ this.imageURL);
+          this.file.readAsArrayBuffer(this.file.tempDirectory, newFileName).then(buffer => {
+            console.log('Finished read as array');
+            this.eventImgBlob = new Blob([buffer], { type: "image/jpeg" });
+          });
+        }
+      )
+      .catch(
+        (err: FileError) => {
+          //this.imageURL = of('');
+          const toast = this.toastCtrl.create({
+            message: 'Could not save the image. Please try again',
+            duration: 2500
+          });
+          toast.present();
+          this.camera.cleanup();
+        }
+      );
 
-      console.log('dirpath:' + dirPath);
 
-      this.file.readAsArrayBuffer(dirPath, result.name).then(buffer => {
-        console.log('Finished read as array');
-        this.eventImgBlob = new Blob([buffer], { type: "image/jpeg" });
-        this.uploadPicture();
-      });
-    });
+
+    // this.file.resolveLocalFilesystemUrl(imageData).then(result => {
+
+    //   let dirPath = result.nativeURL;
+    //   let dirPathSegments = dirPath.split('/');
+    //   dirPathSegments.pop();
+    //   dirPath = dirPathSegments.join('/');
+
+    //   this.imageURL = of(normalizeURL(result.nativeURL));
+    //   console.log('imageURL: '+ normalizeURL(result.nativeURL));
+
+    //   //console.log('dirpath:' + dirPath);
+
+    //   this.file.readAsArrayBuffer(dirPath, result.name).then(buffer => {
+    //     console.log('Finished read as array');
+    //     this.eventImgBlob = new Blob([buffer], { type: "image/jpeg" });
+    //     this.uploadPicture();
+    //   });
+    // });
   }
 
-  setEventPicture(){
+  setEventPicture() {
     const confirm = this.alertCtrl.create({
       title: 'Change Event Picture',
       //message: 'Do you agree to use this lightsaber to do good across the intergalactic galaxy?',

@@ -10,7 +10,7 @@
 <ion-content padding>
     <div class="container" (click)="setEventPicture()">
         <ion-avatar>
-            <img [src]="imageURL" style="display:block; margin:auto;" 
+            <img [src]="imageURL | async" style="display:block; margin:auto;" 
             [ngClass]="{'opaqueImage': isDefaultImage, 'nonOpaqueImage': !isDefaultImage}">
             
           </ion-avatar>

@@ -34,8 +34,8 @@ export class EventProvider {
   }
 
   //Create new event with admin & invitee subcollections. Add eventId to the User's admin list
-  CreateNewEventAndSynchronizeWithUser(event: Event) {
-    var newEventDocRef = this.fb.firestore().collection('events').doc();
+  CreateNewEventAndSynchronizeWithUser(event: Event, newEventDocRef = this.fb.firestore().collection('events').doc()) {
+    //var newEventDocRef = this.fb.firestore().collection('events').doc();
     let eventId = newEventDocRef.id;
 
     var newEventAdminDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('admin');//.set({ 'users': users })

@@ -6,6 +6,8 @@ import { Event } from '../../models/event';
 import { EditEventPage } from '../edit-event/edit-event';
 import { Observable } from 'rxjs';
 import { AngularFireStorage } from 'angularfire2/storage';
+import { of } from 'rxjs/observable/of';
+import { FirebaseApp } from 'angularfire2';
 
 
 @IonicPage()
@@ -17,22 +19,33 @@ export class EventDetailPage {
 
   event: Event
   isManaging: boolean = false;
-  profileUrl: Observable<string | null>;
+  eventPictureUrl: Observable<string | null>;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public navParams: NavParams,
     private loadingCtrl: LoadingController,
     private userProvider: UserProvider,
     private eventProvider: EventProvider,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private firebase: FirebaseApp
   ) {
     this.event = navParams.get('event');
     this.isManaging = navParams.get('isManaging');
-    const ref = this.storage.ref('eventPictures/cover_photo_116517_1459733496.png');
-    this.profileUrl = ref.getDownloadURL();
+    this.eventPictureUrl = of('assets/imgs/calendar.png');
+
+    const ref = this.storage.ref(`eventPictures/${this.event.id}`);
+    this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).getDownloadURL()
+      .then(result => {
+        this.eventPictureUrl = of(result);
+      })
+      .catch(err => {
+
+        this.eventPictureUrl = of('assets/imgs/calendar.png');
+
+      })
 
   }
 
@@ -41,22 +54,22 @@ export class EventDetailPage {
   }
 
   //delete event from userProfile.inviteeList & from the event.inviteeList
-  onLeaveEvent(){
-    const loader = this.loadingCtrl.create({content: 'Leaving event...'});
+  onLeaveEvent() {
+    const loader = this.loadingCtrl.create({ content: 'Leaving event...' });
     loader.present();
 
 
     this.eventProvider.desynchronizeInviteeWithEvent(this.userProvider.userProfile.id, this.event.id)
-    .then(_=> {
-      loader.dismiss();
-      this.toastCtrl.create({message: `Successfully left the event: ${this.event.name}`, duration: 5000}).present();
-      this.navCtrl.popToRoot();
-    })
-    .catch(err => {
-      loader.dismiss();
-      console.log(err);
-      this.toastCtrl.create({message: `Error, unable to leave event`, duration: 5000}).present();
-    });
+      .then(_ => {
+        loader.dismiss();
+        this.toastCtrl.create({ message: `Successfully left the event: ${this.event.name}`, duration: 5000 }).present();
+        this.navCtrl.popToRoot();
+      })
+      .catch(err => {
+        loader.dismiss();
+        console.log(err);
+        this.toastCtrl.create({ message: `Error, unable to leave event`, duration: 5000 }).present();
+      });
 
   }
 
@@ -79,8 +92,8 @@ export class EventDetailPage {
     confirm.present();
   }
 
-  onOpenEdit(){
-    this.navCtrl.push(EditEventPage, {type: 'edit', event: this.event});
+  onOpenEdit() {
+    this.navCtrl.push(EditEventPage, { type: 'edit', event: this.event });
   }
 
 }

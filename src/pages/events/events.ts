@@ -18,6 +18,7 @@ import { mergeAll } from 'rxjs/operator/mergeAll';
 import { UserProvider } from '../../providers/user/user';
 import { ISubscription } from 'rxjs/Subscription';
 import { MessagingProvider } from '../../providers/messaging/messaging';
+import { FirebaseApp } from 'angularfire2';
 
 @IonicPage()
 @Component({
@@ -54,7 +55,8 @@ export class EventsPage implements OnInit {
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
     private alertCtrl: AlertController,
-    private mProv: MessagingProvider
+    private mProv: MessagingProvider,
+    private firebase: FirebaseApp
   ) {
   }
 
@@ -260,6 +262,17 @@ export class EventsPage implements OnInit {
     if (this.events != null) {
       this.changeSearch();
     }
+  }
+
+   getEventImage(event: Event){
+     this.firebase.storage().ref().child(`eventPictures/${event.id}`).getDownloadURL()
+        .then(result => {
+          return of(result);
+        })
+        .catch(err => {
+         return of('assets/imgs/calendar.png');
+        })
+
   }
 
 }

@@ -17,7 +17,9 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { EventProvider } from '../../providers/event/event';
 import { EventInviteesPage } from '../event-invitees/event-invitees';
 import { EventInvitationsPage } from '../event-invitations/event-invitations';
-
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireStorage } from 'angularfire2/storage';
+import { FirebaseApp } from 'angularfire2';
 
 @IonicPage()
 @Component({
@@ -32,6 +34,7 @@ export class EventNewsPage {
   eventBlogPage = EventBlogPage;
   eventPollsPage = EventPollsPage;
   isManaging: boolean = false;
+  imageURL: string;
 
 
   constructor(
@@ -44,7 +47,9 @@ export class EventNewsPage {
     private modalCtrl: ModalController,
     private userProvider: UserProvider,
     private afAuth: AngularFireAuth,
-    private eventProvider: EventProvider
+    private eventProvider: EventProvider,
+    private storage: AngularFireStorage,
+    private firebase: FirebaseApp
   ) {
     this.event = this.selectedEventProvider.getEvent();
 
@@ -52,6 +57,9 @@ export class EventNewsPage {
       this.isManaging = this.afAuth.auth.currentUser.uid in users? true: false
       
     });
+
+    this.imageURL = 'assets/imgs/calendar.png';
+
   
   }
 
@@ -59,6 +67,14 @@ export class EventNewsPage {
     //this.isManaging = this.event.adminList[this.userProvider.userProfile.id] == true ? true : false;
     //this.event = this.navParams.get('event');
    //console.log(this.event);
+
+      this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).getDownloadURL()
+        .then(result => {
+          this.imageURL = result;
+        })
+        .catch(err => {
+          this.imageURL = 'assets/imgs/calendar.png';
+        })
   }
 
   ionViewDidLoad() {
