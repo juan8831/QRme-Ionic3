@@ -1,0 +1,20 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-buttons start>
+        <button ion-button icon-only (click)="closePage()">
+          <ion-icon name="close"></ion-icon>
+        </button>
+      </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding text-center>
+  <h1>{{event?.name}}</h1>
+  <br>
+  <ngx-qrcode qrc-class = "test-class" [qrc-value]="event.id" id="code"></ngx-qrcode>
+  <button ion-button (click)="share()">Share</button>
+</ion-content>

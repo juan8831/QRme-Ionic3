@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController, ToastController, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 import { EventProvider } from '../../providers/event/event';
 import { Event } from '../../models/event';
@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { of } from 'rxjs/observable/of';
 import { FirebaseApp } from 'angularfire2';
+import { EventQrcodePage } from '../event-qrcode/event-qrcode';
 
 
 @IonicPage()
@@ -30,7 +31,8 @@ export class EventDetailPage {
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private storage: AngularFireStorage,
-    private firebase: FirebaseApp
+    private firebase: FirebaseApp,
+    private modalCtrl: ModalController
   ) {
     this.event = navParams.get('event');
     this.isManaging = navParams.get('isManaging');
@@ -95,6 +97,11 @@ export class EventDetailPage {
 
   onOpenEdit() {
     this.navCtrl.push(EditEventPage, { type: 'edit', event: this.event });
+  }
+
+  openQrpage(){
+    let modal = this.modalCtrl.create(EventQrcodePage, {'event': this.event});
+    modal.present();
   }
 
 }

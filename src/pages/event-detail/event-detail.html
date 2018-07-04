@@ -13,8 +13,11 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding text-center>
   <h1 text-center>{{event?.name}}</h1>
+  <button ion-button icon-only outline rounded (click)="openQrpage()">
+      <ion-icon name="barcode"></ion-icon>
+    </button>
   <p text-center>{{event.date | date}} | {{event.time}} </p>
   <img [src]="event.eventImageUrl" />
   <h4>

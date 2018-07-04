@@ -1,0 +1,45 @@
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { Event } from '../../models/event';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
+
+/**
+ * Generated class for the EventQrcodePage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+
+@IonicPage()
+@Component({
+  selector: 'page-event-qrcode',
+  templateUrl: 'event-qrcode.html',
+})
+export class EventQrcodePage {
+
+  event: Event;
+
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    private viewCtrl: ViewController,
+    private socialSharing: SocialSharing
+  ) {
+    this.event = navParams.get('event');
+  }
+
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad EventQrcodePage');
+  }
+
+  closePage(){
+    this.viewCtrl.dismiss();
+  }
+
+  share(){
+    var code = document.getElementById('code').innerHTML.slice(34, code.length - 8);
+    this.socialSharing.share(null, null, code, null);
+  }
+
+}

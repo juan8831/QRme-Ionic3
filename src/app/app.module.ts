@@ -54,6 +54,9 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
 
 import { File } from '@ionic-native/file';
 import { EditEventPicturePage } from '../pages/edit-event-picture/edit-event-picture';
+import { EventQrcodePage } from '../pages/event-qrcode/event-qrcode';
+
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 @NgModule({
   declarations: [
@@ -82,7 +85,8 @@ import { EditEventPicturePage } from '../pages/edit-event-picture/edit-event-pic
     EventInviteesPage,
     EventInvitationsPage,
     SearchEventsCategoriesPage,
-    EditEventPicturePage
+    EditEventPicturePage,
+    EventQrcodePage
   ],
   imports: [
     BrowserModule,
@@ -124,7 +128,8 @@ import { EditEventPicturePage } from '../pages/edit-event-picture/edit-event-pic
     EventInviteesPage,
     EventInvitationsPage,
     SearchEventsCategoriesPage,
-    EditEventPicturePage
+    EditEventPicturePage,
+    EventQrcodePage
   ],
   providers: [
     StatusBar,
@@ -140,7 +145,8 @@ import { EditEventPicturePage } from '../pages/edit-event-picture/edit-event-pic
     QRScanner,
     BarcodeScanner,
     Camera,
-    File
+    File,
+    SocialSharing
   ]
 })
 export class AppModule {}

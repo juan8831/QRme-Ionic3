@@ -92,5 +92,7 @@
     <allow-navigation href="http://192.168.1.76:8100" />
     <plugin name="cordova-plugin-camera" spec="^4.0.3" />
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
+    <plugin name="cordova-plugin-printer" spec="^0.7.3" />
+    <plugin name="cordova-plugin-x-socialsharing" spec="^5.4.1" />
     <engine name="ios" spec="4.5.4" />
 </widget>
