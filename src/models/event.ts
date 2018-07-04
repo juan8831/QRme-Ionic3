@@ -21,6 +21,7 @@ export class Event{
     date: Date
     time: Date
     isVisibleInPublicSearch: boolean
+    eventImageUrl: string;
     
     constructor(){}
 

@@ -21,6 +21,7 @@ export class EventProvider {
 
   dbRef: any
   eventsCollection: AngularFirestoreCollection<Event>;
+  defaultEventImage = 'assets/imgs/calendar.png';
 
   constructor(public http: HttpClient,
     private afDB: AngularFireDatabase,
@@ -91,8 +92,8 @@ export class EventProvider {
     return this.getEventsWithFilter(collection);
   }
 
-  getEvent(id: string) {
-    return this.afs.doc(`events/${id}`).snapshotChanges().map(action => {
+   getEvent(id: string) {
+    return this.afs.doc(`events/${id}`).snapshotChanges().map( action => {
 
       if (action.payload.exists === false) {
         var nonExistentEvent = new Event();
@@ -103,6 +104,15 @@ export class EventProvider {
       else {
         const data = action.payload.data() as Event;
         data.id = action.payload.id;
+
+        // try{
+        //   data.eventImageUrl = await this.fb.storage().ref().child(`eventPictures/${data.id}`).getDownloadURL();
+        // }
+        // catch{
+        //   data.eventImageUrl = this.defaultEventImage;
+        // }
+
+
         return data;
       }
     });

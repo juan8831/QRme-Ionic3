@@ -16,7 +16,7 @@
 <ion-content padding>
   <h1 text-center>{{event?.name}}</h1>
   <p text-center>{{event.date | date}} | {{event.time}} </p>
-  <img [src]="eventPictureUrl | async" />
+  <img [src]="event.eventImageUrl" />
   <h4>
     {{event?.description}}
   </h4>

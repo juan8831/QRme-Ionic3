@@ -36,16 +36,16 @@ export class EventDetailPage {
     this.isManaging = navParams.get('isManaging');
     this.eventPictureUrl = of('assets/imgs/calendar.png');
 
-    const ref = this.storage.ref(`eventPictures/${this.event.id}`);
-    this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).getDownloadURL()
-      .then(result => {
-        this.eventPictureUrl = of(result);
-      })
-      .catch(err => {
+    // this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).getDownloadURL()
+    //   .then(result => {
+    //     this.eventPictureUrl = of(result);
+    //     console.log('url event details ' + result);
+    //   })
+    //   .catch(err => {
 
-        this.eventPictureUrl = of('assets/imgs/calendar.png');
+    //     this.eventPictureUrl = of('assets/imgs/calendar.png');
 
-      })
+    //   })
 
   }
 
@@ -79,6 +79,7 @@ export class EventDetailPage {
       message: 'Are you sure you want to leave this event?',
       buttons: [
         {
+          role: 'destructive',
           text: 'Yes',
           handler: () => {
             this.onLeaveEvent();

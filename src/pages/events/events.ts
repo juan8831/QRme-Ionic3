@@ -19,6 +19,9 @@ import { UserProvider } from '../../providers/user/user';
 import { ISubscription } from 'rxjs/Subscription';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { FirebaseApp } from 'angularfire2';
+import { EventListener } from '@angular/core/src/debug/debug_node';
+
+const defaultEventImage = 'assets/imgs/calendar.png';
 
 @IonicPage()
 @Component({
@@ -34,7 +37,7 @@ export class EventsPage implements OnInit {
   events$: Observable<Event[]>;
   events: Event[];
   subscriptions: ISubscription[] = [];
-  manageSubscription : ISubscription = null;
+  manageSubscription: ISubscription = null;
   inviteeSubscription: ISubscription = null;
   //scrollAmount: number = 0;
   //@ViewChild(Content) content: Content;
@@ -43,7 +46,7 @@ export class EventsPage implements OnInit {
   filteredEvents: Event[];
   managingEventsLoaded = false;
   invitedEventsLoaded = false;
-  loader : Loading
+  loader: Loading
 
 
   constructor(public navCtrl: NavController,
@@ -73,7 +76,7 @@ export class EventsPage implements OnInit {
       this.loadManagingEvents();
       this.loadInvitedEvents();
     })
-    
+
 
 
 
@@ -83,11 +86,11 @@ export class EventsPage implements OnInit {
   ngOnDestroy(): void {
     console.log('unsubscribe destory!');
     this.subscriptions.map(subscription => subscription.unsubscribe());
-    
-    if(this.manageSubscription != null)
+
+    if (this.manageSubscription != null)
       this.manageSubscription.unsubscribe();
-    if(this.inviteeSubscription != null)
-    this.inviteeSubscription.unsubscribe();
+    if (this.inviteeSubscription != null)
+      this.inviteeSubscription.unsubscribe();
 
   }
 
@@ -96,64 +99,65 @@ export class EventsPage implements OnInit {
     this.changeEventMode();
   }
 
-  private loadManagingEvents(){
+  private loadManagingEvents() {
     var subs = this.userProvider.getEventAdminList().subscribe(events => {
-      if(this.manageSubscription != null){
+      if (this.manageSubscription != null) {
         this.manageSubscription.unsubscribe();
       }
-      if(!events || events == null){
+      if (!events || events == null) {
         this.managingEvents = [];
         return;
-      } 
-      var nonExistentEvents :Event [] = [];
+      }
+      var nonExistentEvents: Event[] = [];
       var nonExistentEventNames = [];
       var adminEvents = events.events;
-      if(!adminEvents || Object.keys(adminEvents).length == 0)
-          this.managingEvents = [];
+      if (!adminEvents || Object.keys(adminEvents).length == 0)
+        this.managingEvents = [];
       else {
-      this.manageSubscription = this.eventProvider.getEventsForAdmin(Object.keys(adminEvents))
-      .map(events => {    
-        var existentEvents = [];
-        events.forEach(event => {
-          if(event){
-            if(event.name == null){
-              nonExistentEvents.push(event);
-              nonExistentEventNames.push(adminEvents[event.id]);
-            }
-           
-          else 
-            existentEvents.push(event);
-          }
-          
-        });
-        return existentEvents;
-      })
-        .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
-        .subscribe(events => {
-          console.log(events);
-          if (events) {
-            this.managingEvents = events;
-            this.events = this.managingEvents;
-            this.changeEventMode()
-            this.managingEventsLoaded = true;
-            if(this.invitedEventsLoaded){
-              this.loader.dismiss();
-            }
-          }
+        this.manageSubscription = this.eventProvider.getEventsForAdmin(Object.keys(adminEvents))
+          .map(events => {
+            var existentEvents = [];
+            events.forEach(event => {
+              if (event) {
+                if (event.name == null) {
+                  nonExistentEvents.push(event);
+                  nonExistentEventNames.push(adminEvents[event.id]);
+                }
 
-          if(nonExistentEvents.length > 0){
-            this.userProvider.deleteAdminEventsForUser(nonExistentEvents)
-            .then(_=> {
-              var title = "Events Deleted";
-              var message = "The following event(s) were deleted: " + nonExistentEventNames.toString();
-              this.mProv.showAlertOkMessage(title, message);
-              nonExistentEventNames = [];
-              nonExistentEvents = [];
+                else
+                  existentEvents.push(event);
+              }
+
             });
+            return existentEvents;
+          })
+          .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
+          .subscribe(events => {
+            console.log(events);
+            if (events) {
 
-          }
-        });
-      //this.subscriptions.push(subscription);
+              this.managingEvents = events;
+              this.events = this.managingEvents;
+              this.changeEventMode()
+              this.managingEventsLoaded = true;
+              if (this.invitedEventsLoaded) {
+                this.loader.dismiss();
+              }
+            }
+
+            if (nonExistentEvents.length > 0) {
+              this.userProvider.deleteAdminEventsForUser(nonExistentEvents)
+                .then(_ => {
+                  var title = "Events Deleted";
+                  var message = "The following event(s) were deleted: " + nonExistentEventNames.toString();
+                  this.mProv.showAlertOkMessage(title, message);
+                  nonExistentEventNames = [];
+                  nonExistentEvents = [];
+                });
+
+            }
+          });
+        //this.subscriptions.push(subscription);
       }
     });
     this.subscriptions.push(subs);
@@ -162,70 +166,70 @@ export class EventsPage implements OnInit {
   private loadInvitedEvents() {
     var subs = this.userProvider.getEventInviteeList().subscribe(events => {
 
-      if(this.inviteeSubscription != null){
+      if (this.inviteeSubscription != null) {
         this.inviteeSubscription.unsubscribe();
       }
 
-      if(!events || events == null){
+      if (!events || events == null) {
         this.invitedEvents = [];
         return;
-      } 
+      }
 
       var inviteeEvents = events.events;
-      var nonExistentEvents :Event [] = [];
+      var nonExistentEvents: Event[] = [];
       var nonExistentEventNames = [];
 
-        if(!inviteeEvents || Object.keys(inviteeEvents).length == 0)
-          this.invitedEvents = [];
-        else{
+      if (!inviteeEvents || Object.keys(inviteeEvents).length == 0)
+        this.invitedEvents = [];
+      else {
         this.inviteeSubscription = this.eventProvider.getEventsForAdmin(Object.keys(inviteeEvents))
-        .map(events => {
-          
-          var existentEvents = [];
-          events.forEach(event => {
-            if(event){
-              if(event.name == null){
-                nonExistentEvents.push(event);
-                nonExistentEventNames.push(inviteeEvents[event.id]);
+          .map(events => {
+
+            var existentEvents = [];
+            events.forEach(event => {
+              if (event) {
+                if (event.name == null) {
+                  nonExistentEvents.push(event);
+                  nonExistentEventNames.push(inviteeEvents[event.id]);
+                }
+
+                else
+                  existentEvents.push(event);
               }
-             
-            else 
-              existentEvents.push(event);
-            }
-            
-          });
-          return existentEvents;
-        })
-        .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
-        .subscribe(events => {
-          //this.changeEventMode();
-          console.log(events);
-          if (events) {
-            this.invitedEvents = events;
-            this.changeEventMode();
-            this.invitedEventsLoaded = true;
-            if(this.managingEventsLoaded){
-              this.loader.dismiss();
-            }
-          }
 
-          if(nonExistentEvents.length > 0){
-            this.userProvider.deleteInviteeEventsForUser(nonExistentEvents)
-            .then(_=> {
-              var title = "Events Deleted";
-              var message = "The following event(s) were deleted: " + nonExistentEventNames.toString();
-              this.mProv.showAlertOkMessage(title, message);
-              nonExistentEventNames = [];
-              nonExistentEvents = [];
             });
+            return existentEvents;
+          })
+          .map(events => events.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase())))
+          .subscribe(events => {
+            //this.changeEventMode();
+            console.log(events);
+            if (events) {
+              this.invitedEvents = events;
+              this.changeEventMode();
+              this.invitedEventsLoaded = true;
+              if (this.managingEventsLoaded) {
+                this.loader.dismiss();
+              }
+            }
 
-          }
+            if (nonExistentEvents.length > 0) {
+              this.userProvider.deleteInviteeEventsForUser(nonExistentEvents)
+                .then(_ => {
+                  var title = "Events Deleted";
+                  var message = "The following event(s) were deleted: " + nonExistentEventNames.toString();
+                  this.mProv.showAlertOkMessage(title, message);
+                  nonExistentEventNames = [];
+                  nonExistentEvents = [];
+                });
 
-        });
+            }
+
+          });
       }
       //this.subscriptions.push(subs);
       //this.changeEventMode();
-      
+
     });
     this.subscriptions.push(subs)
   }
@@ -264,14 +268,14 @@ export class EventsPage implements OnInit {
     }
   }
 
-   getEventImage(event: Event){
-     this.firebase.storage().ref().child(`eventPictures/${event.id}`).getDownloadURL()
-        .then(result => {
-          return of(result);
-        })
-        .catch(err => {
-         return of('assets/imgs/calendar.png');
-        })
+  getEventImage(event: Event) {
+    this.firebase.storage().ref().child(`eventPictures/${event.id}`).getDownloadURL()
+      .then(result => {
+        return of(result);
+      })
+      .catch(err => {
+        return of('assets/imgs/calendar.png');
+      })
 
   }
 

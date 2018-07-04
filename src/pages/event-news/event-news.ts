@@ -58,24 +58,25 @@ export class EventNewsPage {
       
     });
 
-    this.imageURL = 'assets/imgs/calendar.png';
+   // this.event.eventImageUrl = 'assets/imgs/calendar.png';
 
-  
+    
+
   }
 
-  ionViewDidEnter(){
-    //this.isManaging = this.event.adminList[this.userProvider.userProfile.id] == true ? true : false;
-    //this.event = this.navParams.get('event');
-   //console.log(this.event);
+  // ionViewDidEnter(){
+  //   //this.isManaging = this.event.adminList[this.userProvider.userProfile.id] == true ? true : false;
+  //   //this.event = this.navParams.get('event');
+  //  //console.log(this.event);
 
-      this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).getDownloadURL()
-        .then(result => {
-          this.imageURL = result;
-        })
-        .catch(err => {
-          this.imageURL = 'assets/imgs/calendar.png';
-        })
-  }
+  //     this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).getDownloadURL()
+  //       .then(result => {
+  //         this.imageURL = result;
+  //       })
+  //       .catch(err => {
+  //         this.imageURL = 'assets/imgs/calendar.png';
+  //       })
+  // }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad EventNewsPage');
