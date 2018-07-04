@@ -38,7 +38,8 @@ export class EventQrcodePage {
   }
 
   share(){
-    var code = document.getElementById('code').innerHTML.slice(34, code.length - 8);
+    var code = document.getElementById('code').innerHTML.slice(34);
+    code = code.slice(0, code.length - 8 );
     this.socialSharing.share(null, null, code, null);
   }
 

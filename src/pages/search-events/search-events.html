@@ -1,7 +1,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title> Search <span class="categoryName">{{category | titlecase }}</span> Events</ion-title>
+    <ion-title> <span class="categoryName">{{category | titlecase }}</span></ion-title>
   </ion-navbar>
 
   <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search">

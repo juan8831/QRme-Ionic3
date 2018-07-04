@@ -87,9 +87,6 @@ export class EventNewsPage {
     //this.navCtrl.p
   }
 
-  onOpenInvitations(){
-    this.navCtrl.push(EventInvitationsPage, {event: this.event, 'isManaging': this.isManaging});
-  }
 
   onGoHome(){
     //this.app.getRootNav().push(EventsPage);

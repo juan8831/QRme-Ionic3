@@ -1,0 +1,54 @@
+<ion-header>
+
+    <ion-navbar no-border-bottom>
+         <!-- <ion-title text-center>Invitees</ion-title> -->
+    </ion-navbar>
+
+    <!-- <ion-toolbar>
+        <ion-segment [(ngModel)]="segment" (ionChange)="changeEventMode()">
+            <ion-segment-button value="managing">
+                Invitees
+            </ion-segment-button>
+            <ion-segment-button value="invited">
+                Blocked
+            </ion-segment-button>
+        </ion-segment>
+    </ion-toolbar> -->
+
+    
+</ion-header>
+
+
+
+
+<ion-content padding [id]='content' text-center>
+        <button ion-button outline round (click)="openInvites()">
+            <ion-badge style="margin-right: 6px " color="danger">4</ion-badge>
+            Pending Invites
+        </button>
+        <br>
+        <br>
+
+        <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search by User Name">
+        </ion-searchbar>
+
+
+        <ion-list *ngIf="inviteeUsers.length > 0">
+                <ion-list-header>
+                  <p style="color:#F6AA1C;">Current Invitees: {{inviteeUsers.length}}</p>
+                </ion-list-header>
+                <ion-item-sliding *ngFor="let user of inviteeUsers">
+                  <ion-item>
+                    <h2>{{user.name}}</h2>
+                  </ion-item>
+                  <ion-item-options side="right">
+                    <button ion-button color="danger" (click)="showConfirm(user)">
+                      <ion-icon name="close"></ion-icon>
+                      Uninvite
+                    </button>
+                  </ion-item-options>
+                </ion-item-sliding>
+              </ion-list>
+
+    <h2 *ngIf="(inviteeUsers)?.length == 0">No Invitees Yet!</h2>
+</ion-content>

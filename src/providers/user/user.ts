@@ -9,6 +9,7 @@ import { GESTURE_REFRESHER } from 'ionic-angular';
 import {FirebaseApp} from 'angularfire2';
 import { DocumentData } from '@firebase/firestore-types';
 import { Event } from '../../models/event';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 @Injectable()
 export class UserProvider {
@@ -226,6 +227,12 @@ export class UserProvider {
         transaction.update(inviteeDocRef, {'events': events} );
       });
     });
+  }
+
+  getUsersWithList(idList): Observable<User[]> {
+
+    return combineLatest(idList.map((userId) => this.getUser(userId)));
+
   }
 
 }

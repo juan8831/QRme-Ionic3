@@ -160,6 +160,8 @@ export class EventProvider {
 
   }
 
+  
+
   updateEvent(event: Event) {
     var eventDocRef = this.fb.firestore().doc(`events/${event.id}`);
     return eventDocRef.update(event);
@@ -209,9 +211,9 @@ export class EventProvider {
     });
   }
 
-  desynchronizeInviteeWithEvent(userId: string, eventId: string) {
+  desynchronizeInviteeWithEvent(userId: string = this.afAuth.auth.currentUser.uid , eventId: string) {
     var usersDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
-    var eventsDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
+    var eventsDocRef = this.fb.firestore().doc(`users/${userId}`).collection('events').doc('invitee');
 
     return this.fb.firestore().runTransaction(transaction => {
       return transaction.get(usersDocRef).then(userDoc => {

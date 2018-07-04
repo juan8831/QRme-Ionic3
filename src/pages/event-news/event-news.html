@@ -9,12 +9,6 @@
       </button>
     </ion-buttons>
     <ion-buttons end>
-        <button ion-button icon-only (click)="onOpenInvitations()">
-          <ion-icon name="mail">
-          </ion-icon>        
-        </button>
-      </ion-buttons>
-    <ion-buttons end>
       <button ion-button icon-only (click)="onOpenInfo()">
         <ion-icon name="information-circle"></ion-icon>
       </button>
@@ -28,7 +22,7 @@
 
 <ion-content padding>
 
-    <div>
+    <!-- <div>
         <button id="notification-button" ion-button clear>
             <ion-icon name="notifications">
               <ion-badge id="notifications-badge" color="danger">5</ion-badge>
@@ -49,7 +43,7 @@
             <ion-icon name="notifications">
               <ion-badge id="notifications-badge" color="danger">7</ion-badge>
             </ion-icon>              
-        </button>
+        </button> -->
   <ion-grid>
     <ion-row nowrap align-items-center>
       <ion-col text-center>
@@ -68,7 +62,7 @@
     </ion-row>
     <ion-row text-center>
       <ion-col>
-        <button ion-button round [navPush]="eventAttendancePage" [navParams]="event" color="darkRed">
+        <button ion-button block round [navPush]="eventAttendancePage" [navParams]="event" color="darkRed">
           <ion-icon item-left name="checkmark-circle" style="margin-right: 4px "></ion-icon>
           Attendance
         </button>
