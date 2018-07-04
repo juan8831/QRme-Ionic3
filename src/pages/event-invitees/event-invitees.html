@@ -1,7 +1,13 @@
 <ion-header>
 
-    <ion-navbar no-border-bottom>
+    <ion-navbar>
          <!-- <ion-title text-center>Invitees</ion-title> -->
+         <ion-buttons end>
+                <button ion-button outline round (click)="openInvites()" *ngIf="event.type == 'Private'">
+                        <ion-badge style="margin-right: 6px " color="danger">{{pendingInviteRequestsNumber}}</ion-badge>
+                        Pending Invites
+                    </button>
+        </ion-buttons>
     </ion-navbar>
 
     <!-- <ion-toolbar>
@@ -22,22 +28,16 @@
 
 
 <ion-content padding [id]='content' text-center>
-        <button ion-button outline round (click)="openInvites()">
-            <ion-badge style="margin-right: 6px " color="danger">4</ion-badge>
-            Pending Invites
-        </button>
-        <br>
-        <br>
-
+        
         <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search by User Name">
         </ion-searchbar>
 
 
-        <ion-list *ngIf="inviteeUsers.length > 0">
+        <ion-list *ngIf="filteredInviteeUsers?.length > 0">
                 <ion-list-header>
                   <p style="color:#F6AA1C;">Current Invitees: {{inviteeUsers.length}}</p>
                 </ion-list-header>
-                <ion-item-sliding *ngFor="let user of inviteeUsers">
+                <ion-item-sliding *ngFor="let user of filteredInviteeUsers">
                   <ion-item>
                     <h2>{{user.name}}</h2>
                   </ion-item>
@@ -50,5 +50,5 @@
                 </ion-item-sliding>
               </ion-list>
 
-    <h2 *ngIf="(inviteeUsers)?.length == 0">No Invitees Yet!</h2>
+    <h2 *ngIf="(filteredInviteeUsers)?.length == 0">No Invitees Yet!</h2>
 </ion-content>

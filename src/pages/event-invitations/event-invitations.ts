@@ -18,6 +18,8 @@ export class EventInvitationsPage implements OnInit {
   pendingInviteRequests: InviteRequest[] = [];
   event: Event;
   isManaging = false;
+  
+  
 
   constructor(
     public navCtrl: NavController, 
@@ -61,5 +63,7 @@ export class EventInvitationsPage implements OnInit {
     invite.status = "rejected";
     this.inviteRequestProvider.updateInviteRequest(invite);
   }
+
+ 
 
 }

@@ -2,23 +2,27 @@
 
   <ion-navbar>
     <ion-title>{{isnewEvent? 'Create New' : 'Edit'}} Event</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="showConfirm()" color="danger">
+        <ion-icon item-left name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-    <div class="container" (click)="setEventPicture()">
-        <ion-avatar>
-            <img [src]="imageURL" style="display:block; margin:auto;" 
-            [ngClass]="{'opaqueImage': isDefaultImage, 'nonOpaqueImage': !isDefaultImage}">
-            
-          </ion-avatar>
-          <ion-icon *ngIf="isDefaultImage" class="editImage" name="add-circle"></ion-icon>
-          
-    </div>  
-      <br>
-    <!-- <img [src]="assets/imgs/calendar.png | async" /> -->
+  <div class="container" (click)="setEventPicture()">
+    <ion-avatar>
+      <img [src]="imageURL" style="display:block; margin:auto;" [ngClass]="{'opaqueImage': isDefaultImage, 'nonOpaqueImage': !isDefaultImage}">
+
+    </ion-avatar>
+    <ion-icon *ngIf="isDefaultImage" class="editImage" name="add-circle"></ion-icon>
+
+  </div>
+  <br>
+  <!-- <img [src]="assets/imgs/calendar.png | async" /> -->
   <form #f="ngForm" (ngSubmit)="onSubmit(f)">
     <ion-list>
       <ion-item>
@@ -68,20 +72,11 @@
         <ion-datetime displayFormat="hh/m/A" [ngModel]="event?.time" name="time"></ion-datetime>
       </ion-item>
       <ion-item>
-          <ion-label>Show in Public Search Results</ion-label>
-          <ion-toggle [ngModel]="event?.isVisibleInPublicSearch" name="isVisibleInPublicSearch"></ion-toggle>
-        </ion-item>
+        <ion-label>Show in Public Search Results</ion-label>
+        <ion-toggle [ngModel]="event?.isVisibleInPublicSearch" name="isVisibleInPublicSearch"></ion-toggle>
+      </ion-item>
     </ion-list>
     <button ion-button type="submit" block [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
   </form>
-
-
-  
-
-
-  <button *ngIf="!isnewEvent" color="danger" ion-button block (click)="showConfirm()">Delete Event</button>
-
-
-
 
 </ion-content>

@@ -23,10 +23,13 @@ export class EventInviteesPage implements OnInit {
 
   inviteeUsers: User[] = [];
   blockedUsers: User[] = [];
+  searchText: string = "";
+  filteredInviteeUsers: User[] = [];
+  pendingInviteRequestsNumber: number = 0;
 
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public navParams: NavParams,
     private inviteRequestProvider: InviteRequestProvider,
     private eventProvider: EventProvider,
@@ -37,26 +40,37 @@ export class EventInviteesPage implements OnInit {
   ) {
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.event = this.navParams.data;
-    var subs = this.eventProvider.getInviteeUsersForEvent(this.event).subscribe(users => {
-      this.userProvider.getUsersWithList(Object.keys(users)).subscribe(users => {
-        this.inviteeUsers = users;
+    let inviteeSubs = this.eventProvider.getInviteeUsersForEvent(this.event)
+      .subscribe(users => {
+        this.userProvider.getUsersWithList(Object.keys(users))
+          .map(users => users.filter(user => user != null && user.name.toLowerCase().includes(this.searchText.toLowerCase())))
+          .subscribe(users => {
+            this.inviteeUsers = users;
+            this.changeSearch();
+          });
       });
-    });
-    this.subscriptions.push(subs);
+      this.subscriptions.push(inviteeSubs);
 
+    if (this.event.type == 'Private') {
+      let invitationSubs = this.inviteRequestProvider.getInviteRequestsByEventAndType(this.event.id, "pending")
+        .subscribe(requests => {
+          this.pendingInviteRequestsNumber = requests.length;
+          this.subscriptions.push(invitationSubs);
+        });
+    } 
   }
 
   ngOnDestroy(): void {
     this.subscriptions.map(subscription => subscription.unsubscribe());
   }
 
-  openInvites(){
-    this.navCtrl.push(EventInvitationsPage, {event: this.event, 'isManaging': true});
+  openInvites() {
+    this.navCtrl.push(EventInvitationsPage, { event: this.event, 'isManaging': true });
   }
 
-  uninviteUser(user: User){
+  uninviteUser(user: User) {
     const loader = this.mProv.getLoader('Removing user...');
     loader.present();
 
@@ -91,6 +105,10 @@ export class EventInviteesPage implements OnInit {
       ]
     });
     confirm.present();
+  }
+
+  changeSearch() {
+    this.filteredInviteeUsers = this.inviteeUsers.filter(user => user.name.toLowerCase().includes(this.searchText.toLowerCase()));
   }
 
 }

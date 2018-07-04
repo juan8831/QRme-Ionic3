@@ -68,7 +68,10 @@
         </ion-card-content>
   </ion-card>
 
-  <button *ngIf="!isManaging" ion-button block color="danger"  (click)="showConfirm()">Leave Event</button>
+  <button *ngIf="!isManaging" ion-button block color="danger" icon-start (click)="showConfirm()">
+      <ion-icon item-left name="exit"></ion-icon>
+    Leave Event
+  </button>
 
   <!-- <ion-card>
 
