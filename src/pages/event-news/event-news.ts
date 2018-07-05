@@ -58,6 +58,8 @@ export class EventNewsPage {
       
     });
 
+    let next = this.eventProvider.getNextEventDate(this.event);
+
    // this.event.eventImageUrl = 'assets/imgs/calendar.png';
 
     

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, AlertController, LoadingController } from 'ionic-angular';
-import { Event } from '../../models/event';
+import { Event, RepeatType } from '../../models/event';
 import { Form, NgForm } from '@angular/forms';
 import { EventProvider } from '../../providers/event/event';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -32,9 +32,12 @@ export class EditEventPage implements OnInit {
   eventImgBlob: Blob;
   imageURL: string;
   uploadNewImage = false;
-
   setDefaultImage = false;
   isDefaultImage = true;
+
+
+  repeatValues: string[] = [];
+
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -51,6 +54,8 @@ export class EditEventPage implements OnInit {
     private firebase: FirebaseApp
 
   ) {
+    Object.keys(RepeatType).forEach(key => this.repeatValues.push(RepeatType[key]));
+
   }
 
   ngOnInit() {
@@ -73,6 +78,8 @@ export class EditEventPage implements OnInit {
     else {
       this.event = new Event();
       this.imageURL = defaultEventImage;
+      this.event.endRepeat = 'Never';
+      this.event.repeat = RepeatType.Never;
     }
 
 
@@ -90,17 +97,45 @@ export class EditEventPage implements OnInit {
 
   async onSubmit(f: NgForm) {
 
-    
     this.event.name = f.value.name;
     this.event.recurring = f.value.recurring ? f.value.recurring : false;
     this.event.location = f.value.location;
     this.event.type = f.value.type;
     this.event.category = f.value.category;
-    this.event.isVisibleInPublicSearch = f.value.isVisibleInPublicSearch ? f.value.isVisibleInPublicSearch : false;;
+    this.event.isVisibleInPublicSearch = f.value.isVisibleInPublicSearch ? f.value.isVisibleInPublicSearch : false;
+    this.event.repeat = f.value.repeat;
+    this.event.starts = f.value.starts;
+    this.event.ends = f.value.ends;
+
+    if (this.event.repeat != RepeatType.Never) {
+      this.event.endRepeat = f.value.endRepeat;
+      if (this.event.endRepeat != RepeatType.Never) {
+        this.event.endRepeatDate = f.value.endRepeatDate;
+      }
+    }
+
+    if (this.event.starts > this.event.ends) {
+      this.mProv.showAlertOkMessage('Error', 'Start Date must be before End Date.');
+      return;
+    }
+    if (this.event.endRepeatDate < this.event.starts || this.event.endRepeatDate < this.event.ends) {
+      this.mProv.showAlertOkMessage('Error', 'End Repeat Date cannot be before Start Date or End Date.');
+      return;
+    }
+
+    if (this.event.allDay) {
+      let startDate = new Date(this.event.starts);
+      startDate.setHours(0, 0, 0, 0);
+      let endDate = new Date(this.event.ends);
+      endDate.setHours(0, 0, 0, 0);
+      this.event.starts = startDate;
+      this.event.ends = endDate;
+    }
+
 
     //optional 
-    this.event.date = f.value.date ? f.value.date : '';
-    this.event.time = f.value.time ? f.value.time : '';
+    //this.event.date = f.value.date ? f.value.date : '';
+    //this.event.time = f.value.time ? f.value.time : '';
     this.event.description = f.value.description ? f.value.description : '';
 
     if (this.isnewEvent) {
@@ -184,9 +219,8 @@ export class EditEventPage implements OnInit {
         }
         this.event.eventImageUrl = this.eventProvider.defaultEventImage;;
       }
-      
-      if(this.event.eventImageUrl == "" || this.event.eventImageUrl == null)
-      {
+
+      if (this.event.eventImageUrl == "" || this.event.eventImageUrl == null) {
         this.event.eventImageUrl = this.eventProvider.defaultEventImage;
       }
 
@@ -229,6 +263,8 @@ export class EditEventPage implements OnInit {
   }
 
   showConfirm() {
+    console.log(this.event.starts);
+
     let confirm = this.alertCtrl.create({
       title: 'Delete?',
       message: 'Are you sure you want to delete this event?',
@@ -266,7 +302,7 @@ export class EditEventPage implements OnInit {
       })
       .catch(err => {
         console.log('Error: ' + err);
-        if(err != 'No Image Selected'){
+        if (err != 'No Image Selected') {
           this.mProv.showAlertOkMessage('Error', 'Could not take picture. Please try again.');
         }
       });

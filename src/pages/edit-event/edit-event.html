@@ -60,21 +60,66 @@
         </ion-select>
       </ion-item>
       <ion-item>
-        <ion-label>Recurring?</ion-label>
-        <ion-toggle [ngModel]="event?.recurring" name="recurring"></ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-label>Date</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY" [ngModel]="event?.date" name="date"></ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label>Time</ion-label>
-        <ion-datetime displayFormat="hh/m/A" [ngModel]="event?.time" name="time"></ion-datetime>
-      </ion-item>
-      <ion-item>
         <ion-label>Show in Public Search Results</ion-label>
         <ion-toggle [ngModel]="event?.isVisibleInPublicSearch" name="isVisibleInPublicSearch"></ion-toggle>
       </ion-item>
+      <!-- <ion-item>
+        <ion-label>Recurring</ion-label>
+        <ion-toggle [ngModel]="event?.recurring" name="recurring"></ion-toggle>
+      </ion-item> -->
+      
+      <ion-item>
+        <ion-label>All-day</ion-label>
+        <ion-toggle [(ngModel)]="event.allDay" name="allDay"></ion-toggle>
+      </ion-item>
+      <!-- <ion-item *ngIf="event.allDay">
+        <ion-label>Date</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" [ngModel]="event?.date" name="date"></ion-datetime>
+      </ion-item> -->
+      <ion-item *ngIf="event.allDay">
+        <ion-label>Starts</ion-label>
+        <ion-datetime displayFormat="MMM DD, YYYY" [ngModel]="event?.starts" name="starts" required></ion-datetime>
+      </ion-item>
+      <ion-item *ngIf="event.allDay">
+        <ion-label>Ends</ion-label>
+        <ion-datetime displayFormat="MMM DD, YYYY" [ngModel]="event?.ends" name="ends" required></ion-datetime>
+      </ion-item>
+      <ion-item *ngIf="!event.allDay">
+        <ion-label>Starts</ion-label>
+        <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" minuteValues="0,15,30,45" [(ngModel)]="event.starts" name="starts" required></ion-datetime>
+      </ion-item>
+      <ion-item *ngIf="!event.allDay">
+        <ion-label>Ends</ion-label>
+        <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [ngModel]="event?.ends" name="ends" required></ion-datetime>
+      </ion-item>
+      <ion-item>
+          <ion-label>Repeat</ion-label>
+          <ion-select [(ngModel)]="event.repeat" name="repeat" required>
+            <ion-option *ngFor="let option of repeatValues" [value]="option">{{option}}</ion-option>
+            <!-- <ion-option value="never">Never</ion-option>
+            <ion-option value="1day">Every Day</ion-option>
+            <ion-option value="1week">Every Week</ion-option>
+            <ion-option value="2weeks">Every 2 Weeks</ion-option>
+            <ion-option value="1month">Every Month</ion-option>
+            <ion-option value="1year">Every Year</ion-option> -->
+          </ion-select>
+        </ion-item>
+        <ion-item *ngIf="event.repeat != 'Never'">
+            <ion-label>End Repeat</ion-label>
+            <ion-select [(ngModel)]="event.endRepeat" name="endRepeat" required>
+              <ion-option value="Never">Never</ion-option>
+              <ion-option value="onDate">On Date</ion-option>
+            </ion-select>
+          </ion-item>
+          <ion-item *ngIf="event.repeat != 'Never' && event.endRepeat != 'Never'" required>
+              <ion-label>End Repeat Date</ion-label>
+              <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [ngModel]="event?.endRepeatDate" name="endRepeatDate" required></ion-datetime>
+            </ion-item>
+      <!-- <ion-item>
+        <ion-label>Time</ion-label>
+        <ion-datetime displayFormat="hh/m/A" [ngModel]="event?.time" name="time"></ion-datetime>
+      </ion-item> -->
+
     </ion-list>
     <button ion-button type="submit" block [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
   </form>

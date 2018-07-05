@@ -1,6 +1,15 @@
 import { User } from "./user";
 import { Attendance } from "./attendance";
 
+export enum RepeatType{
+    Never = 'Never',
+    Day1 = "Repeats Once a Day",
+    Week1 = 'Repeats Once a Week',
+    Week2 = 'Repeats Twice a Week',
+    Month1 = 'Repeats Once a Month',
+    Year1 = 'Repeats Once a Year',
+}
+
 export class Event{
     id: string
     name: string
@@ -21,7 +30,13 @@ export class Event{
     date: Date
     time: Date
     isVisibleInPublicSearch: boolean
-    eventImageUrl: string;
+    eventImageUrl: string
+    allDay: boolean
+    repeat: RepeatType
+    endRepeat: string
+    endRepeatDate: Date
+    starts: Date
+    ends: Date
     
     constructor(){}
 

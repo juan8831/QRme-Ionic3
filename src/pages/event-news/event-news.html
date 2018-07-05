@@ -55,9 +55,13 @@
       <ion-col>
         <img [src]="event.eventImageUrl" />
       </ion-col>
-      <ion-col>
+      <ion-col text-center>
         <p text-center>{{event?.location}} </p>
-        <p text-center>{{event?.date | date}} | {{event?.time}} </p>
+        <p *ngIf="!event.allDay">Starts: {{event?.starts | date:'M/d/yy, h:mm a'}}</p>
+        <p *ngIf="!event.allDay">Ends: {{event?.ends | date:'M/d/yy, h:mm a'}}</p>
+        <p *ngIf="event.allDay">{{event?.starts | date:'M/d/yy'}} - All Day</p>
+        <p *ngIf="event.repeat != 'Never'">{{event?.repeat}}</p>
+        <!-- <p *ngIf="!event.endRepeat != 'Never'">End Repeat Date: {{event?.endRepeatDate | date:'M/d/yy, h:mm a'}}</p> -->
       </ion-col>
     </ion-row>
     <ion-row text-center>

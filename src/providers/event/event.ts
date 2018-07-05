@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Event } from '../../models/event';
+import { Event, RepeatType } from '../../models/event';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { UserProvider } from '../user/user';
@@ -235,6 +235,64 @@ export class EventProvider {
 
   }
 
+  getNextEventDate(event: Event) {
+    let today = new Date();
+    let start = event.starts;
+    let nextDate = event.starts;
+
+    if(event.repeat == RepeatType.Never){
+      return nextDate;
+    }
+
+    while(nextDate < today && nextDate < event.endRepeatDate){
+      switch(event.repeat){
+        case RepeatType.Day1:{
+          nextDate = this.addDays(nextDate, 1);
+          break;
+        }  
+        case RepeatType.Week1:{
+          nextDate = this.addDays(nextDate, 7);
+          break;
+        }
+        case RepeatType.Week2:{
+          nextDate = this.addDays(nextDate, 14);
+          break;
+        }
+        case RepeatType.Month1:{
+          nextDate = this.addMonths(nextDate, 1);
+          break;
+        }
+        case RepeatType.Year1:{
+          nextDate = this.addYears(nextDate, 1);
+          break;
+        }   
+      }
+
+      return nextDate;
+
+    }
+
+  }
+
+
+    addDays(date, days) {
+      var result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    }
+    addMonths(date, months) {
+      var result = new Date(date);
+      result.setMonth(result.getMonth() + months);
+      return result;
+    }
+
+    addYears(date, years) {
+      var result = new Date(date)
+      result.setFullYear(result.getFullYear() + years);
+      return result;
+    }
+
+    
 
 
 
