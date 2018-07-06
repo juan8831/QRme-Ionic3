@@ -74,6 +74,15 @@ export class EditEventPage implements OnInit {
           this.imageURL = defaultEventImage;
 
         })
+
+        this.event.starts = this.convertISO8601UTCtoLocalwZ(new Date(this.event.starts).toISOString());
+        this.event.ends = this.convertISO8601UTCtoLocalwZ(new Date(this.event.ends).toISOString());
+
+        if(this.event.endRepeatDate && this.event.endRepeatDate != ''){
+          this.event.endRepeatDate = this.convertISO8601UTCtoLocalwZ(new Date(this.event.endRepeatDate).toISOString());
+        }
+
+     // this.event.starts = 
     }
     else {
       this.event = new Event();
@@ -95,6 +104,52 @@ export class EditEventPage implements OnInit {
 
   }
 
+  /* Convert a BOGUS ISO 8601 Local date string (with a Z) to a real ISO 8601 UTC date string.
+   * localDateString should be of format:  YYYY-MM-DDTHH-mm-ss.sssZ
+   */
+  convertISO8601LocalwZtoUTC(localDateString: string): string {
+    const ISO_8601_UTC_REGEXP = /^(\d{4})(-\d{2})(-\d{2})T(\d{2})(\:\d{2}(\:\d{2}(\.\d{3})?)?)?Z$/;
+    try {
+      if (localDateString.match(ISO_8601_UTC_REGEXP)) {
+        let utcDateString: string;
+        let localDate: Date = new Date(localDateString);
+        let tzOffset: number = new Date().getTimezoneOffset() * 60 * 1000;
+        let newTime: number = localDate.getTime() + tzOffset;
+        let utcDate: Date = new Date(newTime);
+        utcDateString = utcDate.toJSON()
+        return utcDateString;
+      } else {
+       // throw 'Incorrect BOGUS local ISO8601 date string';
+      }
+    }
+    catch(err) {
+      alert('Date string is formatted incorrectly: \n' + err);
+    }
+  }
+
+   /* Convert a real ISO 8601 UTC date stringto a BOGUS ISO 8601 local date string (with a Z).
+   * utcDateString should be of format:  YYYY-MM-DDTHH-mm-ss.sssZ
+   */
+  convertISO8601UTCtoLocalwZ(utcDateString: string): string {
+    const ISO_8601_UTC_REGEXP = /^(\d{4})(-\d{2})(-\d{2})T(\d{2})(\:\d{2}(\:\d{2}(\.\d{3})?)?)?Z$/;
+    try {
+      if (utcDateString.match(ISO_8601_UTC_REGEXP)) {
+        let localDateString: string;
+        let utcDate: Date = new Date(utcDateString);
+        let tzOffset: number = new Date().getTimezoneOffset() * 60 * 1000;
+        let newTime: number = utcDate.getTime() - tzOffset;
+        let localDate: Date = new Date(newTime);
+        localDateString = localDate.toJSON()
+        return localDateString;
+      } else {
+        //throw 'Incorrect UTC ISO8601 date string';
+      }
+    }
+    catch(err) {
+      alert('Date string is formatted incorrectly: \n' + err);
+    }
+  }
+
   async onSubmit(f: NgForm) {
 
     this.event.name = f.value.name;
@@ -104,23 +159,36 @@ export class EditEventPage implements OnInit {
     this.event.category = f.value.category;
     this.event.isVisibleInPublicSearch = f.value.isVisibleInPublicSearch ? f.value.isVisibleInPublicSearch : false;
     this.event.repeat = f.value.repeat;
-    this.event.starts = f.value.starts;
-    this.event.ends = f.value.ends;
+
+    if(this.event.allDay){
+      let startDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
+      startDate.setHours(0, 0, 0, 0);   
+      f.value.starts = this.convertISO8601UTCtoLocalwZ(startDate.toISOString());
+
+      let endDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.ends));
+      endDate.setHours(0, 0, 0, 0);   
+      f.value.ends = this.convertISO8601UTCtoLocalwZ(endDate.toISOString());
+      
+    }
+
+    if (f.value.starts > f.value.ends) {
+      this.mProv.showAlertOkMessage('Error', 'Start Date must be before End Date.');
+      return;
+    }
+    if (this.event.repeat != RepeatType.Never && this.event.endRepeat != RepeatType.Never  
+      && (f.value.endRepeatDate < f.value.starts || f.value.endRepeatDate < f.value.ends)) {
+      this.mProv.showAlertOkMessage('Error', 'End Repeat Date cannot be before Start Date or End Date.');
+      return;
+    }
+    
+    this.event.starts = new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
+    this.event.ends = new Date(this.convertISO8601LocalwZtoUTC(f.value.ends));
 
     if (this.event.repeat != RepeatType.Never) {
       this.event.endRepeat = f.value.endRepeat;
       if (this.event.endRepeat != RepeatType.Never) {
-        this.event.endRepeatDate = f.value.endRepeatDate;
+        this.event.endRepeatDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.endRepeatDate));
       }
-    }
-
-    if (this.event.starts > this.event.ends) {
-      this.mProv.showAlertOkMessage('Error', 'Start Date must be before End Date.');
-      return;
-    }
-    if (this.event.endRepeatDate < this.event.starts || this.event.endRepeatDate < this.event.ends) {
-      this.mProv.showAlertOkMessage('Error', 'End Repeat Date cannot be before Start Date or End Date.');
-      return;
     }
 
     if (this.event.allDay) {

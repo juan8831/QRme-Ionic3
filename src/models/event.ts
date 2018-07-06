@@ -5,7 +5,7 @@ export enum RepeatType{
     Never = 'Never',
     Day1 = "Repeats Once a Day",
     Week1 = 'Repeats Once a Week',
-    Week2 = 'Repeats Twice a Week',
+    Week2 = 'Repeats Every 2 Weeks',
     Month1 = 'Repeats Once a Month',
     Year1 = 'Repeats Once a Year',
 }
@@ -34,9 +34,9 @@ export class Event{
     allDay: boolean
     repeat: RepeatType
     endRepeat: string
-    endRepeatDate: Date
-    starts: Date
-    ends: Date
+    endRepeatDate: any
+    starts: any
+    ends: any
     
     constructor(){}
 

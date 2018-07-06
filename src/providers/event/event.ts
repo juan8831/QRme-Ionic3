@@ -237,14 +237,18 @@ export class EventProvider {
 
   getNextEventDate(event: Event) {
     let today = new Date();
-    let start = event.starts;
+    let start = new Date(event.starts);
     let nextDate = event.starts;
 
     if(event.repeat == RepeatType.Never){
       return nextDate;
     }
 
-    while(nextDate < today && nextDate < event.endRepeatDate){
+    if(event.endRepeat != RepeatType.Never && event.endRepeatDate < today){
+      return null;
+    }
+
+    while(nextDate < today){
       switch(event.repeat){
         case RepeatType.Day1:{
           nextDate = this.addDays(nextDate, 1);
@@ -267,11 +271,14 @@ export class EventProvider {
           break;
         }   
       }
-
-      return nextDate;
-
     }
 
+    if(event.endRepeat != RepeatType.Never && nextDate > event.endRepeatDate){
+      return null;
+    }
+
+
+    return nextDate;
   }
 
 
