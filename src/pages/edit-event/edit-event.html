@@ -25,6 +25,8 @@
   <!-- <img [src]="assets/imgs/calendar.png | async" /> -->
   <form #f="ngForm" (ngSubmit)="onSubmit(f)">
     <ion-list>
+        <ion-item-group>
+            <ion-item-divider color="primary" text-center>General</ion-item-divider>
       <ion-item>
         <ion-label fixed>Event Name</ion-label>
         <ion-input type="text" name="name" placeholder="Festival of Lights" [ngModel]="event?.name" required>
@@ -63,13 +65,16 @@
         <ion-label>Show in Public Search Results</ion-label>
         <ion-toggle [ngModel]="event?.isVisibleInPublicSearch" name="isVisibleInPublicSearch"></ion-toggle>
       </ion-item>
+    </ion-item-group>
       <!-- <ion-item>
         <ion-label>Recurring</ion-label>
         <ion-toggle [ngModel]="event?.recurring" name="recurring"></ion-toggle>
       </ion-item> -->
       
+     <ion-item-group>
+        <ion-item-divider color="primary" text-center>Date</ion-item-divider>
       <ion-item>
-        <ion-label>All-day</ion-label>
+        <ion-label>All-day <ion-icon name="information-circle-outline" (click)="openRepeatHelp()" ></ion-icon></ion-label>
         <ion-toggle [(ngModel)]="event.allDay" name="allDay"></ion-toggle>
       </ion-item>
       <!-- <ion-item *ngIf="event.allDay">
@@ -94,7 +99,7 @@
       </ion-item>
       <ion-item>
           <ion-label>Repeat</ion-label>
-          <ion-select [(ngModel)]="event.repeat" name="repeat" required>
+          <ion-select [(ngModel)]="event.repeat" name="repeat" [selectOptions]="selectOptions" required>
             <ion-option *ngFor="let option of repeatValues" [value]="option">{{option}}</ion-option>
             <!-- <ion-option value="never">Never</ion-option>
             <ion-option value="1day">Every Day</ion-option>
@@ -115,6 +120,7 @@
               <ion-label>End Repeat Date</ion-label>
               <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [ngModel]="event?.endRepeatDate" name="endRepeatDate" required></ion-datetime>
             </ion-item>
+  </ion-item-group>
       <!-- <ion-item>
         <ion-label>Time</ion-label>
         <ion-datetime displayFormat="hh/m/A" [ngModel]="event?.time" name="time"></ion-datetime>

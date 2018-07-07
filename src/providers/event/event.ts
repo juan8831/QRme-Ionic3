@@ -9,12 +9,14 @@ import { of } from 'rxjs/observable/of';
 
 import { from } from 'rxjs/observable/from';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { Observable } from 'rxjs/Observable';
+//import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import { mergeAll } from 'rxjs/operator/mergeAll';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { FirebaseApp } from 'angularfire2';
+import { AttendanceRecord } from '../../models/attendance';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class EventProvider {
@@ -142,6 +144,99 @@ export class EventProvider {
         return data;
       }
     });
+  }
+
+
+  addAttendanceRecord(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid ){
+    let newRecord = new AttendanceRecord();
+    newRecord.date = date;
+    newRecord.userId = userId;
+
+    let eventId = event.id;
+
+    let recordId = userId + date.toISOString();
+
+    var newRecordRef = this.fb.firestore().doc(`events/${eventId}`).collection('attendance').doc(recordId);
+    return newRecordRef.set(Object.assign({}, newRecord));
+
+    // return this.fb.firestore().batch((transaction => {
+    //   // return transaction.get(newRecordRef).then(recordDoc => {
+    //   //   var recordExists = recordDoc.data() != null;
+    //   //   if(!recordExists){
+    //   //     transaction.set(newRecordRef, Object.assign({}, newRecord));
+    //   //   }
+    //   // });
+    //   return transaction.set(newRecordRef, Object.assign({}, newRecord));
+    // });
+  }
+
+  deleteAttendanceRecord(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid ){
+    let newRecord = new AttendanceRecord();
+    newRecord.date = date;
+    newRecord.userId = userId;
+
+    let eventId = event.id;
+
+    let recordId = userId + date.toISOString();
+
+    var newRecordRef = this.fb.firestore().doc(`events/${eventId}`).collection('attendance').doc(recordId);
+    return newRecordRef.delete();
+
+    // return this.fb.firestore().batch((transaction => {
+    //   // return transaction.get(newRecordRef).then(recordDoc => {
+    //   //   var recordExists = recordDoc.data() != null;
+    //   //   if(!recordExists){
+    //   //     transaction.set(newRecordRef, Object.assign({}, newRecord));
+    //   //   }
+    //   // });
+    //   return transaction.set(newRecordRef, Object.assign({}, newRecord));
+    // });
+  }
+
+  getAttendanceRecordByEventAndDateAndUser (event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid) : Observable<AttendanceRecord> {
+    let recordId = userId + date.toISOString();
+    let doc = this.afs.doc(`events/${event.id}`).collection('attendance').doc(recordId)
+      return doc.snapshotChanges().map(action => {
+        if (action.payload.exists === false) {
+          return null;
+        }
+        else {
+          const data = action.payload.data() as AttendanceRecord;
+          data.id = action.payload.id;
+          return data;
+        }
+      });
+  }
+
+  
+
+  getAttendanceRecordsByEventAndDateAndUser(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid){
+
+    let collection = this.afs.doc(`events/${event.id}`).collection('attendance', ref => ref
+      .where('date', '==', date)
+      .where('userId', '==', userId));
+
+      return collection.snapshotChanges().map(changes => {
+        return changes.map(action => {
+          const data = action.payload.doc.data() as AttendanceRecord;
+          data.id = action.payload.doc.id;
+          return data;
+        });
+      });
+  }
+
+  getAttendanceRecordsByEventAndDate(event: Event, date: Date){
+
+    let collection = this.afs.doc(`events/${event.id}`).collection('attendance', ref => ref
+      .where('date', '==', date));
+
+      return collection.snapshotChanges().map(changes => {
+        return changes.map(action => {
+          const data = action.payload.doc.data() as AttendanceRecord;
+          data.id = action.payload.doc.id;
+          return data;
+        });
+      });
   }
 
 

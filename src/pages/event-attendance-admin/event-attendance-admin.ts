@@ -27,6 +27,10 @@ export class EventAttendanceAdminPage implements OnInit {
   ngOnInit(){
     this.event = this.navParams.data;
     let today = new Date();
+
+    //if starts date is earlier than current date, then use starts date instead of current date
+    today = today > this.event.starts ? this.event.starts : today;
+
     let twoWeeksFromToday = this.eventProvider.addDays(today, 14);
     this.fromDate = this.eventProvider.convertISO8601UTCtoBogusLocalwZ(today.toISOString());
     this.toDate = this.eventProvider.convertISO8601UTCtoBogusLocalwZ(twoWeeksFromToday.toISOString());
@@ -54,7 +58,7 @@ export class EventAttendanceAdminPage implements OnInit {
   searchDate(){
     if(this.selectedDate != null){
       this.selectedDate = this.event.allDay ? this.eventProvider.getDateWithoutTime(this.selectedDate) : this.selectedDate;
-      this.navCtrl.push(EventAttendanceInstanceAdminPage, {'event' : event, 'selectedDate' : this.selectedDate});
+      this.navCtrl.push(EventAttendanceInstanceAdminPage, {'event' : this.event, 'selectedDate' : this.selectedDate});
     }
   }
 

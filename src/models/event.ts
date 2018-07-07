@@ -1,5 +1,4 @@
 import { User } from "./user";
-import { Attendance } from "./attendance";
 
 export enum RepeatType{
     Never = 'Never',
@@ -25,7 +24,6 @@ export class Event{
     category: string
     type: string
     blogId?: string
-    Attendance: Attendance[]
     recurring?: boolean
     date: Date
     time: Date

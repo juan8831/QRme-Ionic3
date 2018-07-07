@@ -5,7 +5,6 @@ import { EventDetailPage } from '../event-detail/event-detail';
 import { TabsPage } from '../tabs/tabs';
 import { EditEventPage } from '../edit-event/edit-event';
 import { SelectedEventProvider } from '../../providers/selected-event/selected-event';
-import { RootPageProvider } from '../../providers/root-page/root-page';
 import { MyApp } from '../../app/app.component';
 import { EventsPage } from '../events/events';
 import { EventAttendancePage } from '../event-attendance/event-attendance';
@@ -44,7 +43,6 @@ export class EventNewsPage {
     public app: App, 
     private viewCtrl: ViewController,
     private selectedEventProvider: SelectedEventProvider,
-    private rootPageProvider : RootPageProvider,
     private modalCtrl: ModalController,
     private userProvider: UserProvider,
     private afAuth: AngularFireAuth,
@@ -90,16 +88,7 @@ export class EventNewsPage {
     //this.navCtrl.p
   }
 
-
-  onGoHome(){
-    //this.app.getRootNav().push(EventsPage);
-    this.rootPageProvider.page.next(true);
-    //this.myApp.rootPage = TabsPage;
-    
-  }
-
  
-
   onAttendance(){
     console.log("onAttendace");
     this.modalCtrl.create(EventAttendancePage).present();

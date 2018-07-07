@@ -1,7 +1,12 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>eventAttendanceInstanceAdmin</ion-title>
+    <!-- <ion-title>eventAttendanceInstanceAdmin</ion-title> -->
+    <ion-buttons end>
+        <button ion-button (click)="saveChanges()">
+         Save
+        </button>
+      </ion-buttons>
   </ion-navbar>
 
 </ion-header>
@@ -9,10 +14,29 @@
 
 <ion-content padding>
   <div *ngIf="!event.allDay">
-
+    <h1 text-center>Selected Date:
+      <br> {{selectedDate | date:'MMM dd, y | h:mm a'}}</h1>
   </div>
   <div *ngIf="event.allDay">
-
+    <h1 text-center>Selected Date:
+      <br> {{selectedDate | date:'MMM dd, y'}}</h1>
   </div>
 
+  <p text-center>Present: <ion-badge color="primary">4</ion-badge> | Missing: <ion-badge color="danger">1</ion-badge> </p>
+  
+  <ion-searchbar></ion-searchbar>
+
+    <ion-list>
+      <ion-list-header>Invitees</ion-list-header>
+      <ion-item>
+        <ion-label>Adam Jones</ion-label>
+        <ion-toggle></ion-toggle>
+      </ion-item>
+    </ion-list>
+
 </ion-content>
+
+<!-- <ion-item>
+    <ion-label>All-day</ion-label>
+    <ion-toggle [(ngModel)]="event.allDay" name="allDay"></ion-toggle>
+  </ion-item> -->

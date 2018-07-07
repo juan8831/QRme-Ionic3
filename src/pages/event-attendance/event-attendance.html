@@ -14,7 +14,23 @@
 
 <ion-content padding>
 
-  <h2>Hello Pelican</h2>
-  <h2>{{event?.name}}</h2>
+    <div *ngIf="!event.allDay">
+        <h1 text-center>Next Event Date:
+          <br> {{eventDate | date:'MMM dd, y | h:mm a'}}</h1>
+      </div>
+      <div *ngIf="event.allDay">
+        <h1 text-center>Event Date:
+          <br> {{eventDate | date:'MMM dd, y'}}</h1>
+      </div>
+
+      <button full ion-button round large icon-start (click)="openAttendanceRecord()" color="primary" style="margin-top: 10%">
+          <ion-icon item-left name="search"></ion-icon>
+          View Attendance Record
+      </button>
+      <button *ngIf="!markedAttendance" full ion-button round large icon-start (click)="recordAttendance()" color="primary" style="margin-top: 10%">
+          <ion-icon item-left name="checkbox"></ion-icon>
+          Record Attendance
+      </button>
+      <h2 text-center *ngIf="markedAttendance">Attendance Recorded!</h2>
 
 </ion-content>

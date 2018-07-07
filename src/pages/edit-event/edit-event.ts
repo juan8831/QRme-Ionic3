@@ -35,6 +35,11 @@ export class EditEventPage implements OnInit {
   setDefaultImage = false;
   isDefaultImage = true;
 
+  selectOptions = {
+    title: 'Repeat',
+    subTitle: 'If and how often the event repeats.',
+  };
+
 
   repeatValues: string[] = [];
 
@@ -471,6 +476,10 @@ export class EditEventPage implements OnInit {
         //this.imageURL = of(defaultEventImage);
 
       })
+  }
+
+  openRepeatHelp(){
+    this.mProv.showAlertOkMessage('Repeat', 'Event will repeat based on selected interval');
   }
 
 }

@@ -1,10 +1,8 @@
 import { DateTime } from "ionic-angular";
 import { User } from "./user";
 
-export interface Attendance{
+export class AttendanceRecord{
     id: string
-    eventId: string 
-    date?: DateTime
-    attendees: User[]
-    
+    date: Date
+    userId: string    
 }

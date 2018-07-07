@@ -230,9 +230,7 @@ export class UserProvider {
   }
 
   getUsersWithList(idList): Observable<User[]> {
-
     return combineLatest(idList.map((userId) => this.getUser(userId)));
-
   }
 
 }
