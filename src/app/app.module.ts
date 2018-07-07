@@ -57,6 +57,8 @@ import { EditEventPicturePage } from '../pages/edit-event-picture/edit-event-pic
 import { EventQrcodePage } from '../pages/event-qrcode/event-qrcode';
 
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { EventAttendanceAdminPage } from '../pages/event-attendance-admin/event-attendance-admin';
+import { EventAttendanceInstanceAdminPage } from '../pages/event-attendance-instance-admin/event-attendance-instance-admin';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import { SocialSharing } from '@ionic-native/social-sharing';
     EventInvitationsPage,
     SearchEventsCategoriesPage,
     EditEventPicturePage,
-    EventQrcodePage
+    EventQrcodePage,
+    EventAttendanceAdminPage,
+    EventAttendanceInstanceAdminPage
   ],
   imports: [
     BrowserModule,
@@ -129,7 +133,9 @@ import { SocialSharing } from '@ionic-native/social-sharing';
     EventInvitationsPage,
     SearchEventsCategoriesPage,
     EditEventPicturePage,
-    EventQrcodePage
+    EventQrcodePage,
+    EventAttendanceAdminPage,
+    EventAttendanceInstanceAdminPage
   ],
   providers: [
     StatusBar,

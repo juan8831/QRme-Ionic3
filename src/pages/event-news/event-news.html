@@ -66,7 +66,7 @@
     </ion-row>
     <ion-row text-center>
       <ion-col>
-        <button ion-button block round [navPush]="eventAttendancePage" [navParams]="event" color="darkRed">
+        <button ion-button block round (click)="openAttendance()" color="darkRed">
           <ion-icon item-left name="checkmark-circle" style="margin-right: 4px "></ion-icon>
           Attendance
         </button>

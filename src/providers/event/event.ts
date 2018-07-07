@@ -92,8 +92,8 @@ export class EventProvider {
     return this.getEventsWithFilter(collection);
   }
 
-   getEvent(id: string) {
-    return this.afs.doc(`events/${id}`).snapshotChanges().map( action => {
+  getEvent(id: string) {
+    return this.afs.doc(`events/${id}`).snapshotChanges().map(action => {
 
       if (action.payload.exists === false) {
         var nonExistentEvent = new Event();
@@ -160,7 +160,7 @@ export class EventProvider {
 
   }
 
-  
+
 
   updateEvent(event: Event) {
     var eventDocRef = this.fb.firestore().doc(`events/${event.id}`);
@@ -211,7 +211,7 @@ export class EventProvider {
     });
   }
 
-  desynchronizeInviteeWithEvent(userId: string = this.afAuth.auth.currentUser.uid , eventId: string) {
+  desynchronizeInviteeWithEvent(userId: string = this.afAuth.auth.currentUser.uid, eventId: string) {
     var usersDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
     var eventsDocRef = this.fb.firestore().doc(`users/${userId}`).collection('events').doc('invitee');
 
@@ -240,40 +240,40 @@ export class EventProvider {
     let start = new Date(event.starts);
     let nextDate = event.starts;
 
-    if(event.repeat == RepeatType.Never){
+    if (event.repeat == RepeatType.Never) {
       return nextDate;
     }
 
-    if(event.endRepeat != RepeatType.Never && event.endRepeatDate < today){
+    if (event.endRepeat != RepeatType.Never && event.endRepeatDate < today) {
       return null;
     }
 
-    while(nextDate < today){
-      switch(event.repeat){
-        case RepeatType.Day1:{
+    while (nextDate < today) {
+      switch (event.repeat) {
+        case RepeatType.Day1: {
           nextDate = this.addDays(nextDate, 1);
           break;
-        }  
-        case RepeatType.Week1:{
+        }
+        case RepeatType.Week1: {
           nextDate = this.addDays(nextDate, 7);
           break;
         }
-        case RepeatType.Week2:{
+        case RepeatType.Week2: {
           nextDate = this.addDays(nextDate, 14);
           break;
         }
-        case RepeatType.Month1:{
+        case RepeatType.Month1: {
           nextDate = this.addMonths(nextDate, 1);
           break;
         }
-        case RepeatType.Year1:{
+        case RepeatType.Year1: {
           nextDate = this.addYears(nextDate, 1);
           break;
-        }   
+        }
       }
     }
 
-    if(event.endRepeat != RepeatType.Never && nextDate > event.endRepeatDate){
+    if (event.endRepeat != RepeatType.Never && nextDate > event.endRepeatDate) {
       return null;
     }
 
@@ -281,25 +281,121 @@ export class EventProvider {
     return nextDate;
   }
 
+  getEventDates(event: Event, fromDate: Date, toDate: Date): Date[] {
+    let result: Date[] = [];
+    let nextDate = event.starts;
 
-    addDays(date, days) {
-      var result = new Date(date);
-      result.setDate(result.getDate() + days);
-      return result;
+    if (event.repeat == RepeatType.Never) {
+      return [nextDate];
     }
-    addMonths(date, months) {
-      var result = new Date(date);
-      result.setMonth(result.getMonth() + months);
-      return result;
-    }
-
-    addYears(date, years) {
-      var result = new Date(date)
-      result.setFullYear(result.getFullYear() + years);
-      return result;
+    if (event.endRepeat != RepeatType.Never && event.endRepeatDate < fromDate) {
+      return [];
     }
 
-    
+    while (nextDate < toDate) {
+      if (event.endRepeat != RepeatType.Never && nextDate > event.endRepeatDate) {
+        return result;
+      }
+      if (nextDate >= fromDate && nextDate <= toDate) {
+        result.push(nextDate);
+      }
+      switch (event.repeat) {
+        case RepeatType.Day1: {
+          nextDate = this.addDays(nextDate, 1);
+          break;
+        }
+        case RepeatType.Week1: {
+          nextDate = this.addDays(nextDate, 7);
+          break;
+        }
+        case RepeatType.Week2: {
+          nextDate = this.addDays(nextDate, 14);
+          break;
+        }
+        case RepeatType.Month1: {
+          nextDate = this.addMonths(nextDate, 1);
+          break;
+        }
+        case RepeatType.Year1: {
+          nextDate = this.addYears(nextDate, 1);
+          break;
+        }
+      }
+      
+    }
+    return result;
+  }
+
+
+  getDateWithoutTime(date: Date): Date { 
+    date.setHours(0,0,0,0);
+    return date;
+  }
+
+  addDays(date, days): Date {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+  addMonths(date, months): Date {
+    var result = new Date(date);
+    result.setMonth(result.getMonth() + months);
+    return result;
+  }
+
+  addYears(date, years): Date {
+    var result = new Date(date)
+    result.setFullYear(result.getFullYear() + years);
+    return result;
+  }
+
+  /* Convert a BOGUS ISO 8601 Local date string (with a Z) to a real ISO 8601 UTC date string.
+ * localDateString should be of format:  YYYY-MM-DDTHH-mm-ss.sssZ
+ */
+  convertBogusISO8601LocalwZtoRealUTC(localDateString: string): string {
+    const ISO_8601_UTC_REGEXP = /^(\d{4})(-\d{2})(-\d{2})T(\d{2})(\:\d{2}(\:\d{2}(\.\d{3})?)?)?Z$/;
+    try {
+      if (localDateString.match(ISO_8601_UTC_REGEXP)) {
+        let utcDateString: string;
+        let localDate: Date = new Date(localDateString);
+        let tzOffset: number = new Date().getTimezoneOffset() * 60 * 1000;
+        let newTime: number = localDate.getTime() + tzOffset;
+        let utcDate: Date = new Date(newTime);
+        utcDateString = utcDate.toJSON()
+        return utcDateString;
+      } else {
+        // throw 'Incorrect BOGUS local ISO8601 date string';
+      }
+    }
+    catch (err) {
+      alert('Date string is formatted incorrectly: \n' + err);
+    }
+  }
+
+  /* Convert a real ISO 8601 UTC date stringto a BOGUS ISO 8601 local date string (with a Z).
+  * utcDateString should be of format:  YYYY-MM-DDTHH-mm-ss.sssZ
+  */
+  convertISO8601UTCtoBogusLocalwZ(utcDateString: string): string {
+    const ISO_8601_UTC_REGEXP = /^(\d{4})(-\d{2})(-\d{2})T(\d{2})(\:\d{2}(\:\d{2}(\.\d{3})?)?)?Z$/;
+    try {
+      if (utcDateString.match(ISO_8601_UTC_REGEXP)) {
+        let localDateString: string;
+        let utcDate: Date = new Date(utcDateString);
+        let tzOffset: number = new Date().getTimezoneOffset() * 60 * 1000;
+        let newTime: number = utcDate.getTime() - tzOffset;
+        let localDate: Date = new Date(newTime);
+        localDateString = localDate.toJSON()
+        return localDateString;
+      } else {
+        //throw 'Incorrect UTC ISO8601 date string';
+      }
+    }
+    catch (err) {
+      alert('Date string is formatted incorrectly: \n' + err);
+    }
+  }
+
+
 
 
 

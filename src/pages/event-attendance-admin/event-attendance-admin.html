@@ -1,0 +1,83 @@
+<ion-header>
+
+  <ion-navbar>
+    <!-- <ion-title>eventAttendanceAdmin</ion-title> -->
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <h1 text-center>Attendance by Date</h1>
+
+
+  <div *ngIf="!event.allDay">
+      <ion-list>
+          <ion-list-header>
+            Event Dates
+          </ion-list-header>
+          <ion-item >
+            <ion-label>From</ion-label>
+            <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [(ngModel)]="fromDate" name="fromDate" (ngModelChange)="changeDate()"></ion-datetime>
+          </ion-item>
+          <ion-item >
+              <ion-label>To</ion-label>
+              <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [(ngModel)]="toDate" name="toDate" (ngModelChange)="changeDate()"></ion-datetime>
+            </ion-item>
+            <ion-item>
+                <ion-label color="primary">Selected Date</ion-label>
+                <ion-select [(ngModel)]="selectedDate" name="selectedDate">
+                    <ion-option *ngFor="let date of eventDates" [value]="date">{{date | date:'MMM dd, y | h:mm a'}}</ion-option>
+                  </ion-select>
+            </ion-item>
+        </ion-list>
+      
+        <button ion-button large block (click)="searchDate()" [disabled]="selectedDate == null">
+          Search
+          {{selectedDate | date:'MMM dd, y | h:mm a'}}
+        </button>
+  </div>
+
+  <div *ngIf="event.allDay">
+      <ion-list>
+          <ion-list-header>
+            Event Dates
+          </ion-list-header>
+          <ion-item >
+            <ion-label>From</ion-label>
+            <ion-datetime displayFormat="MMM DD, YYYY" [(ngModel)]="fromDate" name="fromDate" (ngModelChange)="changeDate()"></ion-datetime>
+          </ion-item>
+          <ion-item >
+              <ion-label>To</ion-label>
+              <ion-datetime displayFormat="MMM DD, YYYY" [(ngModel)]="toDate" name="toDate" (ngModelChange)="changeDate()"></ion-datetime>
+            </ion-item>
+            <ion-item>
+                <ion-label color="primary">Selected Date</ion-label>
+                <ion-select [(ngModel)]="selectedDate" name="selectedDate">
+                    <ion-option *ngFor="let date of eventDates" [value]="date">{{date | date:'MMM dd, y'}}</ion-option>
+                  </ion-select>
+            </ion-item>
+        </ion-list>
+      
+        <button ion-button large block (click)="searchDate()" [disabled]="selectedDate == null">
+          Search
+          {{selectedDate | date:'MMM dd, y'}}
+        </button>
+  </div>
+  
+
+  <!-- <ion-list>
+    <ion-list-header>
+      Event Dates
+    </ion-list-header>
+    <ion-item *ngFor="let date of eventDates">
+      <button full ion-button strong>
+        {{date | date:'M/d/yy, h:mm a' }}
+      </button>
+    </ion-item>
+  </ion-list> -->
+
+ 
+
+
+</ion-content>

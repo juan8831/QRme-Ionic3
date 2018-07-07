@@ -20,6 +20,7 @@ import { EventInvitationsPage } from '../event-invitations/event-invitations';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { FirebaseApp } from 'angularfire2';
+import { EventAttendanceAdminPage } from '../event-attendance-admin/event-attendance-admin';
 
 @IonicPage()
 @Component({
@@ -104,6 +105,12 @@ export class EventNewsPage {
     this.modalCtrl.create(EventAttendancePage).present();
   }
 
-  
-
+  openAttendance(){
+    if(this.isManaging){
+      this.navCtrl.push(EventAttendanceAdminPage, this.event);
+    }
+    else{
+      this.navCtrl.push(EventAttendancePage, this.event);
+    }
+  }
 }
