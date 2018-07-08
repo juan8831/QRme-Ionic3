@@ -83,6 +83,9 @@ export class EventAttendancePage implements OnInit {
   }
 
   markAttendance() {
+    if(!this.canMarkAttendance()){
+      return;
+    }
     this.eventProvider.addAttendanceRecord(this.event, this.eventDate, undefined)
     .then(_=> {
       this.mProv.showToastMessage('Attendance successfully recorded!')
@@ -92,6 +95,23 @@ export class EventAttendancePage implements OnInit {
       console.log(err);
     })
 
+  }
+
+  canMarkAttendance(){
+    let earliestDate = this.eventProvider.addMinutes(this.eventDate, -this.event.minutesBeforeAttendance);
+    let latestDate = this.eventProvider.addMinutes(this.eventDate, this.event.minutesAfterAttendance);
+    let now = new Date();
+
+    if(now < earliestDate){
+      this.mProv.showAlertOkMessage('Too early', 'You cannot mark your attendance yet.');
+      return false;
+    }
+    if(now > latestDate){
+      this.mProv.showAlertOkMessage('Too late', 'The time to mark your attendance has expired.');
+      return false;
+    }
+
+    return true;
   }
 
   openAttendanceRecord(){

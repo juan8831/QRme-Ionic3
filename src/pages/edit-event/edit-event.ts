@@ -164,6 +164,10 @@ export class EditEventPage implements OnInit {
     this.event.category = f.value.category;
     this.event.isVisibleInPublicSearch = f.value.isVisibleInPublicSearch ? f.value.isVisibleInPublicSearch : false;
     this.event.repeat = f.value.repeat;
+    this.event.allowManualAttendance = f.value.allowManualAttendance ? f.value.allowManualAttendance : false;
+    this.event.minutesAfterAttendance = parseInt(f.value.minutesAfterAttendance)
+    this.event.minutesBeforeAttendance = parseInt(f.value.minutesBeforeAttendance);
+
 
     if(this.event.allDay){
       let startDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));

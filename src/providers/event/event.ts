@@ -342,7 +342,7 @@ export class EventProvider {
 
   }
 
-  getNextEventDate(event: Event) {
+  getNextEventDate(event: Event): Date {
     let today = new Date();
     let start = new Date(event.starts);
     let nextDate = event.starts;
@@ -387,6 +387,14 @@ export class EventProvider {
 
     return nextDate;
   }
+
+  getNextEventDateEnd(event: Event): Date{
+    let nextDate = this.getNextEventDate(event);
+    let diffInMs = Math.abs(new Date(event.ends).getTime() - new Date(event.starts).getTime());
+    return this.addMinutes(nextDate, diffInMs/60000);
+  }
+
+
 
   getEventDates(event: Event, fromDate: Date, toDate: Date): Date[] {
     let result: Date[] = [];
@@ -437,6 +445,12 @@ export class EventProvider {
   getDateWithoutTime(date: Date): Date { 
     date.setHours(0,0,0,0);
     return date;
+  }
+
+  addMinutes(date, minutes): Date{
+    var result = new Date(date);
+    result.setMinutes(result.getMinutes() + minutes);
+    return result;
   }
 
   addDays(date, days): Date {

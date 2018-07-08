@@ -35,6 +35,9 @@ export class Event{
     endRepeatDate: any
     starts: any
     ends: any
+    allowManualAttendance: boolean
+    minutesBeforeAttendance: number
+    minutesAfterAttendance: number
     
     constructor(){}
 

@@ -18,7 +18,18 @@
   <button ion-button icon-only outline rounded (click)="openQrpage()">
       <ion-icon name="barcode"></ion-icon>
     </button>
-  <p text-center>{{event.date | date}} | {{event.time}} </p>
+
+    <p *ngIf="!event.allDay" text-center>
+        <span text-center>Next Date</span>
+        <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy, h:mm a'}}
+        | Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy, h:mm a'}}
+      </p>
+      <p *ngIf="event.allDay" text-center>
+        <span text-center>Next Date</span>
+        <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy'}} - All Day
+        | Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy'}} - All Day
+      </p>
+      
   <img [src]="event.eventImageUrl" />
   <h4>
     {{event?.description}}

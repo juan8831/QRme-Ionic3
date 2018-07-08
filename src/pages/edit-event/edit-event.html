@@ -3,7 +3,7 @@
   <ion-navbar>
     <ion-title>{{isnewEvent? 'Create New' : 'Edit'}} Event</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="showConfirm()" color="danger">
+      <button *ngIf="!isnewEvent" ion-button icon-only (click)="showConfirm()" color="danger">
         <ion-icon item-left name="trash"></ion-icon>
       </button>
     </ion-buttons>
@@ -25,79 +25,81 @@
   <!-- <img [src]="assets/imgs/calendar.png | async" /> -->
   <form #f="ngForm" (ngSubmit)="onSubmit(f)">
     <ion-list>
-        <ion-item-group>
-            <ion-item-divider color="primary" text-center>General</ion-item-divider>
-      <ion-item>
-        <ion-label fixed>Event Name</ion-label>
-        <ion-input type="text" name="name" placeholder="Festival of Lights" [ngModel]="event?.name" required>
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>Short Description</ion-label>
-        <ion-textarea name="description" [ngModel]="event?.description"></ion-textarea>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>Location</ion-label>
-        <ion-textarea name="location" [ngModel]="event?.location" required></ion-textarea>
-      </ion-item>
-      <ion-item>
-        <ion-label>Category</ion-label>
-        <ion-select [ngModel]="event?.category" name="category" required>
-          <ion-option value="ceremony">Ceremony</ion-option>
-          <ion-option value="education">Education</ion-option>
-          <ion-option value="conference">Conference</ion-option>
-          <ion-option value="meeting">Meeting</ion-option>
-          <ion-option value="sports">Sports</ion-option>
-          <ion-option value="festival">Festival</ion-option>
-          <ion-option value="concert">Concert</ion-option>
-          <ion-option value="party">Party</ion-option>
-          <ion-option value="other">Other</ion-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label>Type</ion-label>
-        <ion-select [ngModel]="event?.type" name="type" required>
-          <ion-option selected value="Public">Public</ion-option>
-          <ion-option value="Private">Private</ion-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label>Show in Public Search Results</ion-label>
-        <ion-toggle [ngModel]="event?.isVisibleInPublicSearch" name="isVisibleInPublicSearch"></ion-toggle>
-      </ion-item>
-    </ion-item-group>
+      <ion-item-group>
+        <ion-item-divider color="primary" text-center>General</ion-item-divider>
+        <ion-item>
+          <ion-label fixed>Event Name</ion-label>
+          <ion-input type="text" name="name" placeholder="Festival of Lights" [ngModel]="event?.name" required>
+          </ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label floating>Short Description</ion-label>
+          <ion-textarea name="description" [ngModel]="event?.description"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-label floating>Location</ion-label>
+          <ion-textarea name="location" [ngModel]="event?.location" required></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-label>Category</ion-label>
+          <ion-select [ngModel]="event?.category" name="category" required>
+            <ion-option value="ceremony">Ceremony</ion-option>
+            <ion-option value="education">Education</ion-option>
+            <ion-option value="conference">Conference</ion-option>
+            <ion-option value="meeting">Meeting</ion-option>
+            <ion-option value="sports">Sports</ion-option>
+            <ion-option value="festival">Festival</ion-option>
+            <ion-option value="concert">Concert</ion-option>
+            <ion-option value="party">Party</ion-option>
+            <ion-option value="other">Other</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Type</ion-label>
+          <ion-select [ngModel]="event?.type" name="type" required>
+            <ion-option selected value="Public">Public</ion-option>
+            <ion-option value="Private">Private</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Show in Public Search Results</ion-label>
+          <ion-toggle [ngModel]="event?.isVisibleInPublicSearch" name="isVisibleInPublicSearch"></ion-toggle>
+        </ion-item>
+      </ion-item-group>
       <!-- <ion-item>
         <ion-label>Recurring</ion-label>
         <ion-toggle [ngModel]="event?.recurring" name="recurring"></ion-toggle>
       </ion-item> -->
-      
-     <ion-item-group>
+
+      <ion-item-group>
         <ion-item-divider color="primary" text-center>Date</ion-item-divider>
-      <ion-item>
-        <ion-label>All-day <ion-icon name="information-circle-outline" (click)="openRepeatHelp()" ></ion-icon></ion-label>
-        <ion-toggle [(ngModel)]="event.allDay" name="allDay"></ion-toggle>
-      </ion-item>
-      <!-- <ion-item *ngIf="event.allDay">
+        <ion-item>
+          <ion-label>All-day
+            <ion-icon name="information-circle-outline" (click)="openRepeatHelp()"></ion-icon>
+          </ion-label>
+          <ion-toggle [(ngModel)]="event.allDay" name="allDay"></ion-toggle>
+        </ion-item>
+        <!-- <ion-item *ngIf="event.allDay">
         <ion-label>Date</ion-label>
         <ion-datetime displayFormat="MM/DD/YYYY" [ngModel]="event?.date" name="date"></ion-datetime>
       </ion-item> -->
-      <ion-item *ngIf="event.allDay">
-        <ion-label>Starts</ion-label>
-        <ion-datetime displayFormat="MMM DD, YYYY" [ngModel]="event?.starts" name="starts" required></ion-datetime>
-      </ion-item>
-      <ion-item *ngIf="event.allDay">
-        <ion-label>Ends</ion-label>
-        <ion-datetime displayFormat="MMM DD, YYYY" [ngModel]="event?.ends" name="ends" required></ion-datetime>
-      </ion-item>
-      <ion-item *ngIf="!event.allDay">
-        <ion-label>Starts</ion-label>
-        <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" minuteValues="0,15,30,45" [(ngModel)]="event.starts" name="starts" required></ion-datetime>
-      </ion-item>
-      <ion-item *ngIf="!event.allDay">
-        <ion-label>Ends</ion-label>
-        <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [ngModel]="event?.ends" name="ends" required></ion-datetime>
-      </ion-item>
-      <ion-item>
+        <ion-item *ngIf="event.allDay">
+          <ion-label>Starts</ion-label>
+          <ion-datetime displayFormat="MMM DD, YYYY" [ngModel]="event?.starts" name="starts" required></ion-datetime>
+        </ion-item>
+        <ion-item *ngIf="event.allDay">
+          <ion-label>Ends</ion-label>
+          <ion-datetime displayFormat="MMM DD, YYYY" [ngModel]="event?.ends" name="ends" required></ion-datetime>
+        </ion-item>
+        <ion-item *ngIf="!event.allDay">
+          <ion-label>Starts</ion-label>
+          <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" minuteValues="0,15,30,45" [(ngModel)]="event.starts" name="starts" required></ion-datetime>
+        </ion-item>
+        <ion-item *ngIf="!event.allDay">
+          <ion-label>Ends</ion-label>
+          <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [ngModel]="event?.ends" name="ends" required></ion-datetime>
+        </ion-item>
+        <ion-item>
           <ion-label>Repeat</ion-label>
           <ion-select [(ngModel)]="event.repeat" name="repeat" [selectOptions]="selectOptions" required>
             <ion-option *ngFor="let option of repeatValues" [value]="option">{{option}}</ion-option>
@@ -110,24 +112,59 @@
           </ion-select>
         </ion-item>
         <ion-item *ngIf="event.repeat != 'Never'">
-            <ion-label>End Repeat</ion-label>
-            <ion-select [(ngModel)]="event.endRepeat" name="endRepeat" required>
-              <ion-option value="Never">Never</ion-option>
-              <ion-option value="onDate">On Date</ion-option>
-            </ion-select>
-          </ion-item>
-          <ion-item *ngIf="event.repeat != 'Never' && event.endRepeat != 'Never'" required>
-              <ion-label>End Repeat Date</ion-label>
-              <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [ngModel]="event?.endRepeatDate" name="endRepeatDate" required></ion-datetime>
-            </ion-item>
-  </ion-item-group>
+          <ion-label>End Repeat</ion-label>
+          <ion-select [(ngModel)]="event.endRepeat" name="endRepeat" required>
+            <ion-option value="Never">Never</ion-option>
+            <ion-option value="onDate">On Date</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item *ngIf="event.repeat != 'Never' && event.endRepeat != 'Never'" required>
+          <ion-label>End Repeat Date</ion-label>
+          <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [ngModel]="event?.endRepeatDate" name="endRepeatDate" required></ion-datetime>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item-divider color="primary" text-center>Attendance</ion-item-divider>
+        <ion-item>
+          <ion-label>All Manual Attendance</ion-label>
+          <ion-toggle [ngModel]="event?.allowManualAttendance" name="allowManualAttendance"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>Allow Attendance Before Start</ion-label>
+          <ion-select [ngModel]="event?.minutesBeforeAttendance" name="minutesBeforeAttendance" required>
+            <ion-option value=5>5 Minutes</ion-option>
+            <ion-option value=15>15 Minutes</ion-option>
+            <ion-option value=30>30 Minutes</ion-option>
+            <ion-option value=60>1 Hour</ion-option>
+            <ion-option value=120>2 Hours</ion-option>
+            <ion-option value=240>4 Hours</ion-option>
+            <ion-option value=360>6 Hours</ion-option>
+            <ion-option value=720>12 Hours</ion-option>
+            <ion-option value=1440>1 Day</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Allow Attendance After Start</ion-label>
+          <ion-select [ngModel]="event?.minutesAfterAttendance" name="minutesAfterAttendance" required>
+              <ion-option value=5>5 Minutes</ion-option>
+              <ion-option value=15>15 Minutes</ion-option>
+              <ion-option value=30>30 Minutes</ion-option>
+              <ion-option value=60>1 Hour</ion-option>
+              <ion-option value=120>2 Hours</ion-option>
+              <ion-option value=240>4 Hours</ion-option>
+              <ion-option value=360>6 Hours</ion-option>
+              <ion-option value=720>12 Hours</ion-option>
+              <ion-option value=1440>1 Day</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-item-group>
       <!-- <ion-item>
         <ion-label>Time</ion-label>
         <ion-datetime displayFormat="hh/m/A" [ngModel]="event?.time" name="time"></ion-datetime>
       </ion-item> -->
 
     </ion-list>
-    <button ion-button type="submit" block [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
+    <button ion-button type="submit" block round [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
   </form>
 
 </ion-content>
