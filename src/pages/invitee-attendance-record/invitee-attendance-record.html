@@ -1,0 +1,23 @@
+<ion-header>
+
+  <ion-navbar>
+    <!-- <ion-title>inviteeAttendanceRecord</ion-title> -->
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <h1 text-center>Attendance Record</h1>
+  <ion-list *ngIf="records?.length > 0">
+    <ion-list-header>
+      Dates Present
+    </ion-list-header>
+    <ion-item *ngFor="let record of records">
+      <ion-label *ngIf="!event.allDay">{{record.date | date:'MMM dd, y | h:mm a'}}</ion-label>
+      <ion-label *ngIf="event.allDay">{{record.date | date:'MMM dd, y'}}</ion-label>
+      <ion-icon item-right name="checkmark-circle" color="primary"></ion-icon>
+    </ion-item>
+  </ion-list>
+  <h3 *ngIf="records?.length == 0">You do not have any attendance records for this event.</h3>
+</ion-content>

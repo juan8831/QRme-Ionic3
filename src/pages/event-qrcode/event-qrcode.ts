@@ -19,6 +19,8 @@ import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 export class EventQrcodePage {
 
   event: Event;
+  date: Date = null;
+  code: string;
 
   constructor(
     public navCtrl: NavController, 
@@ -27,6 +29,15 @@ export class EventQrcodePage {
     private socialSharing: SocialSharing
   ) {
     this.event = navParams.get('event');
+    this.code = this.event.id;
+    // this.date = navParams.get('date');
+
+    // if(this.date == null){
+    //   this.code = this.event.id;
+    // }
+    // else{
+    //   this.code = 
+    // }
   }
 
   ionViewDidLoad() {

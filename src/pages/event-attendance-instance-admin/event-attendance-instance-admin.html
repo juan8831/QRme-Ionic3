@@ -2,11 +2,11 @@
 
   <ion-navbar>
     <!-- <ion-title>eventAttendanceInstanceAdmin</ion-title> -->
-    <ion-buttons end>
+    <!-- <ion-buttons end>
         <button ion-button (click)="saveChanges()">
          Save
         </button>
-      </ion-buttons>
+      </ion-buttons> -->
   </ion-navbar>
 
 </ion-header>
@@ -22,17 +22,18 @@
       <br> {{selectedDate | date:'MMM dd, y'}}</h1>
   </div>
 
-  <p text-center>Present: <ion-badge color="primary">4</ion-badge> | Missing: <ion-badge color="danger">1</ion-badge> </p>
+  <p text-center>Present: <ion-badge color="primary">{{numOfPresent}}</ion-badge> | Missing: <ion-badge color="danger">{{numOfMissing}}</ion-badge> </p>
   
-  <ion-searchbar></ion-searchbar>
+  <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search by User Name">
+    </ion-searchbar>
 
-    <ion-list>
-      <ion-list-header>Invitees</ion-list-header>
-      <ion-item>
-        <ion-label>Adam Jones</ion-label>
-        <ion-toggle></ion-toggle>
+    <ion-list *ngIf="filteredUsers?.length > 0">
+      <ion-list-header>Invitees Present</ion-list-header>
+      <ion-item *ngFor="let user of filteredUsers">
+        <ion-label>{{user.name}}</ion-label>
       </ion-item>
     </ion-list>
+    <h2 *ngIf="filteredUsers?.length == 0" text-center>No Attendance Records Found</h2>
 
 </ion-content>
 

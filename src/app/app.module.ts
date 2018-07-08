@@ -59,6 +59,7 @@ import { EventQrcodePage } from '../pages/event-qrcode/event-qrcode';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { EventAttendanceAdminPage } from '../pages/event-attendance-admin/event-attendance-admin';
 import { EventAttendanceInstanceAdminPage } from '../pages/event-attendance-instance-admin/event-attendance-instance-admin';
+import { InviteeAttendanceRecordPage } from '../pages/invitee-attendance-record/invitee-attendance-record';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,9 @@ import { EventAttendanceInstanceAdminPage } from '../pages/event-attendance-inst
     EditEventPicturePage,
     EventQrcodePage,
     EventAttendanceAdminPage,
-    EventAttendanceInstanceAdminPage
+    EventAttendanceInstanceAdminPage,
+    InviteeAttendanceRecordPage
+
   ],
   imports: [
     BrowserModule,
@@ -135,7 +138,8 @@ import { EventAttendanceInstanceAdminPage } from '../pages/event-attendance-inst
     EditEventPicturePage,
     EventQrcodePage,
     EventAttendanceAdminPage,
-    EventAttendanceInstanceAdminPage
+    EventAttendanceInstanceAdminPage,
+    InviteeAttendanceRecordPage
   ],
   providers: [
     StatusBar,

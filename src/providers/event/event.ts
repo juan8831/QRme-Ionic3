@@ -208,12 +208,24 @@ export class EventProvider {
       });
   }
 
-  
-
   getAttendanceRecordsByEventAndDateAndUser(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid){
 
     let collection = this.afs.doc(`events/${event.id}`).collection('attendance', ref => ref
       .where('date', '==', date)
+      .where('userId', '==', userId));
+
+      return collection.snapshotChanges().map(changes => {
+        return changes.map(action => {
+          const data = action.payload.doc.data() as AttendanceRecord;
+          data.id = action.payload.doc.id;
+          return data;
+        });
+      });
+  }
+
+  getAttendanceRecordsByEventAndUser(event: Event, userId: string = this.afAuth.auth.currentUser.uid){
+
+    let collection = this.afs.doc(`events/${event.id}`).collection('attendance', ref => ref
       .where('userId', '==', userId));
 
       return collection.snapshotChanges().map(changes => {

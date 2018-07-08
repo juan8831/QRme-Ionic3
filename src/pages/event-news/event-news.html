@@ -22,7 +22,7 @@
 
 <ion-content padding>
 
-    <!-- <div>
+  <!-- <div>
         <button id="notification-button" ion-button clear>
             <ion-icon name="notifications">
               <ion-badge id="notifications-badge" color="danger">5</ion-badge>
@@ -48,6 +48,9 @@
     <ion-row nowrap align-items-center>
       <ion-col text-center>
         <h1 style="margin-right: 3px">{{event?.name}} </h1>
+        <button ion-button icon-only outline rounded (click)="openQrpage()">
+          <ion-icon name="barcode"></ion-icon>
+        </button>
         <!-- <ion-icon class="titleIcon"  name="information-circle"></ion-icon>    -->
       </ion-col>
     </ion-row>

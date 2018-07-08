@@ -20,6 +20,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { FirebaseApp } from 'angularfire2';
 import { EventAttendanceAdminPage } from '../event-attendance-admin/event-attendance-admin';
+import { EventQrcodePage } from '../event-qrcode/event-qrcode';
 
 @IonicPage()
 @Component({
@@ -101,5 +102,10 @@ export class EventNewsPage {
     else{
       this.navCtrl.push(EventAttendancePage, this.event);
     }
+  }
+
+  openQrpage(){
+    let modal = this.modalCtrl.create(EventQrcodePage, {'event': this.event});
+    modal.present();
   }
 }

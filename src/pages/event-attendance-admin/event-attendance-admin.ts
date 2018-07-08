@@ -50,11 +50,6 @@ export class EventAttendanceAdminPage implements OnInit {
     this.selectedDate =  null;//this.eventDates.length > 0 ? this.eventDates[0] : null;
   }
 
-  getEventDates(){
-    this.eventDates.push(new Date());
-    this.eventDates.push(new Date());
-  }
-
   searchDate(){
     if(this.selectedDate != null){
       this.selectedDate = this.event.allDay ? this.eventProvider.getDateWithoutTime(this.selectedDate) : this.selectedDate;
