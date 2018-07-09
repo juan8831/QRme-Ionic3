@@ -14,7 +14,9 @@
 <ion-content padding>
   <ion-card>
     <ion-card-header text-center>
-      <h1><b>{{post?.title}}</b></h1>
+      <h1>
+        <b>{{post?.title}}</b>
+      </h1>
     </ion-card-header>
     <ion-card-content>
       <p>{{post?.message}}</p>
@@ -34,31 +36,30 @@
         </ion-note>
       </ion-col>
     </ion-row>
-
   </ion-card>
+  <br>
   <hr>
-  <h5 text-center>Comments</h5>
+  <h5 text-center>Comments
+    <ion-icon id="addCircle" (click)="addComment()" icon-right name="add-circle" color="primary"></ion-icon>
+  </h5>
 
-  <ion-card color="primary" id="commentCard">
-     
+  <ion-card color="primary" id="commentCard" *ngFor="let comment of comments">
+
     <ion-card-content>
-        <ion-row>
-            <ion-col text-left col-10 >
-              <p color="black">
-                <b>{{post?.authorName}}</b>
-                {{post?.date | date:'M/d/yy, h:mm a'}}
-              </p>
-            </ion-col>
-            <ion-col text-right col-2>
-                    <!-- <button ion-button icon-only (click)="showConfirm()" color="danger">
-                        <ion-icon item-left name="create"></ion-icon>
-                    </button> -->
-                    <ion-icon id="comment" icon-left name="create"></ion-icon>
-              </ion-col>
-          </ion-row>
+      <ion-row>
+        <ion-col text-left col-10>
+          <p>
+            <b>{{comment?.authorName}}</b>
+            <i>{{comment?.date | date:'M/d/yy, h:mm a'}}</i>
+          </p>
+        </ion-col>
+        <ion-col text-right col-2>
+          <ion-icon *ngIf="event.creator == userEmail || comment.authorId == userId" id="comment" icon-left name="create" (click)="editComment(comment)"></ion-icon>
+        </ion-col>
+      </ion-row>
 
-          A comment.
-        
+      {{comment?.message}}
+
     </ion-card-content>
   </ion-card>
 </ion-content>

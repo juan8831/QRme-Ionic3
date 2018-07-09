@@ -54,6 +54,7 @@
         <!-- <ion-icon class="titleIcon"  name="information-circle"></ion-icon>    -->
       </ion-col>
     </ion-row>
+    <hr>
     <ion-row>
       <ion-col>
         <img [src]="event.eventImageUrl" />
@@ -74,6 +75,9 @@
         <!-- <p *ngIf="!event.endRepeat != 'Never'">End Repeat Date: {{event?.endRepeatDate | date:'M/d/yy, h:mm a'}}</p> -->
       </ion-col>
     </ion-row>
+  </ion-grid>
+    <hr>
+    <ion-grid>
     <ion-row text-center>
       <ion-col>
         <button ion-button block round (click)="openAttendance()" color="darkRed">

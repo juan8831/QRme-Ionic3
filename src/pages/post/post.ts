@@ -5,6 +5,10 @@ import { Comment } from '../../models/comment';
 import { EditPostPage } from '../edit-post/edit-post';
 import { Event } from '../../models/event';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { EditCommentPage } from '../edit-comment/edit-comment';
+import { BlogProvider } from '../../providers/blog/blog';
+import { ISubscription } from 'rxjs/Subscription';
+import { MessagingProvider } from '../../providers/messaging/messaging';
 
 @IonicPage()
 @Component({
@@ -17,38 +21,64 @@ export class PostPage implements OnInit {
   post: Post;
   comments: Comment[] = [];
   isAdminOrCreator = false;
+  subscriptions: ISubscription[] = [];
+  userId: string;
+  userEmail: string;
+
+
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
-    private afs: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private blogProvider: BlogProvider,
+    private mProv: MessagingProvider
   ) 
   {
   }
 
   ngOnInit(){
+    this.userId = this.afAuth.auth.currentUser.uid;
+    this.userEmail = this.afAuth.auth.currentUser.email;
     this.post = this.navParams.get('post');
     this.event = this.navParams.get('event');
+    let loader = this.mProv.getLoader('Loading comments...');
+    loader.present();
+    let commentSubs = this.blogProvider.getCommentsByPost(this.post.id)
+    .subscribe(comments => {
+      loader.dismiss();
+      this.comments = comments;
+    }, err => {
+      loader.dismiss();
+      console.log(err);
+    });
+    this.subscriptions.push(commentSubs);
 
     if(this.event.creatorId){
-      if(this.post.authorId === this.afs.auth.currentUser.uid || this.event.creatorId === this.afs.auth.currentUser.uid){
+      if(this.post.authorId === this.userId || this.event.creatorId === this.userId){
         this.isAdminOrCreator = true;
       }
     }
     else{
-      if(this.post.authorId === this.afs.auth.currentUser.uid || this.event.creator === this.afs.auth.currentUser.email){
+      if(this.post.authorId === this.userId || this.event.creator === this.userEmail){
         this.isAdminOrCreator = true;
       }
     }
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    
+    this.subscriptions.map(subscription => subscription.unsubscribe());    
   }
 
   openEditPost(){
     this.navCtrl.push(EditPostPage, {'post': this.post, 'create': false});
+  }
+
+  addComment(){
+    this.navCtrl.push(EditCommentPage, {'post': this.post, 'create': true});
+  }
+
+  editComment(comment: Comment){
+    this.navCtrl.push(EditCommentPage, {'comment': comment, 'create': false});
   }
 
   

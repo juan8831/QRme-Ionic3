@@ -67,7 +67,7 @@ export class EditPostPage implements OnInit {
       });
     }
     else{
-      let loader = this.mProv.getLoader('Updating new blog post...');
+      let loader = this.mProv.getLoader('Updating blog post...');
       loader.present();
       this.blogProvider.updatePost(this.post)
       .then(_=> {

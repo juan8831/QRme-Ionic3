@@ -52,4 +52,13 @@ page-event-news {
         right: -10px;
         font-size: .8em;
       }
+
+      hr {
+        //border: 2px solid red !important;
+       height: 1px !important;
+       width: 100% !important;
+        background: white !important;
+        //display: block !important;
+        //font-size: 2em !important;
+      }
 }

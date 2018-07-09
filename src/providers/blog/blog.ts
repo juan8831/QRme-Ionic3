@@ -27,6 +27,9 @@ export class BlogProvider {
 
   deletePost(post: Post) {
     const postDoc = this.afs.doc(`posts/${post.id}`);
+    this.getCommentsByPost(post.id).take(1).subscribe(comments => {
+      comments.forEach(comment => this.deleteComment(comment));
+    });
     return postDoc.delete();
   }
 
@@ -64,8 +67,8 @@ export class BlogProvider {
   }
 
   getCommentsByPost(postId) {
-    let commentsCollection = this.afs.doc(`posts/${postId}`).collection('comments');//, ref => ref
-    //.where('userId', '==', userId));
+    let commentsCollection = this.afs.doc(`posts/${postId}`).collection('comments', ref => ref
+    .orderBy('date', 'desc'));
     return commentsCollection.snapshotChanges().map(changes => {
       return changes.map(action => {
         const data = action.payload.doc.data() as Comment;
@@ -88,6 +91,21 @@ export class BlogProvider {
         return data;
       }
     });
+  }
+
+  createComment(comment: Comment) {
+    const commentsCollection = this.afs.doc(`posts/${comment.postId}`).collection('comments');
+    return commentsCollection.add(Object.assign({}, comment));
+  }
+
+  deleteComment(comment: Comment) {
+    const commentDoc = this.afs.doc(`posts/${comment.postId}`).collection('comments').doc(`${comment.id}`);
+    return commentDoc.delete();
+  }
+
+  updateComment(comment: Comment) {
+    const commentDoc = this.afs.doc(`posts/${comment.postId}`).collection('comments').doc(`${comment.id}`);
+    return commentDoc.update(Object.assign({}, comment));
   }
 
 }
