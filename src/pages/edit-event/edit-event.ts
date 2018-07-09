@@ -220,6 +220,7 @@ export class EditEventPage implements OnInit {
       loader.present();
       this.event.creator = this.afAuth.auth.currentUser.email;
       this.event.creatorName = this.userProvider.userProfile.name;
+      this.event.creatorId = this.afAuth.auth.currentUser.uid;
       let newEventRef = this.firebase.firestore().collection('events').doc();
       let eventId = newEventRef.id;
       console.log('new event id:' + eventId);

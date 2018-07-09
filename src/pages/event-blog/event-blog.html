@@ -1,13 +1,29 @@
-
 <ion-header>
 
   <ion-navbar>
-    <ion-title>{{event.name}} Blog</ion-title>
+    <!-- <ion-title>{{event.name}} Blog</ion-title> -->
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+  <h1 text-center> <ion-icon item-left name="text" style=""></ion-icon> Blog</h1>
+  <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search by Post Title"></ion-searchbar>
+  <ion-list *ngIf="filteredPosts?.length > 0">
+    <ion-list-header>Posts</ion-list-header>
+    <ion-item *ngFor="let post of filteredPosts" (click)="openPost(post)">
+        <h2>{{post.title}}</h2>
+        <p><ion-icon icon-left name="person" color="primary"></ion-icon> {{post.authorName}}</p>
+        <ion-note item-end>{{post.date | date:'M/d/yy, h:mm a'}}</ion-note>
+      </ion-item>
+  </ion-list>
+  <h3 text-center *ngIf="filteredPosts?.length == 0">No Posts Found</h3>
+
+  <ion-fab bottom right #fab>
+    <button color="secondary" ion-fab (click)="addPost()">
+      <ion-icon id="addPost" name="add"></ion-icon>
+    </button>
+  </ion-fab>
 
 </ion-content>

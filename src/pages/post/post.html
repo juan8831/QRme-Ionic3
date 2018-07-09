@@ -1,0 +1,64 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-buttons end>
+      <button *ngIf="isAdminOrCreator" ion-button icon-only (click)="openEditPost()">
+        <ion-icon item-left name="settings"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-header text-center>
+      <h1><b>{{post?.title}}</b></h1>
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{post?.message}}</p>
+    </ion-card-content>
+
+    <ion-row>
+      <ion-col center text-center>
+        <ion-note>
+          <ion-icon icon-left name="time" color="primary"></ion-icon>
+          {{post?.date | date:'M/d/yy, h:mm a'}}
+        </ion-note>
+      </ion-col>
+      <ion-col center text-center>
+        <ion-note>
+          <ion-icon icon-left name="person" color="primary"></ion-icon>
+          {{post?.authorName}}
+        </ion-note>
+      </ion-col>
+    </ion-row>
+
+  </ion-card>
+  <hr>
+  <h5 text-center>Comments</h5>
+
+  <ion-card color="primary" id="commentCard">
+     
+    <ion-card-content>
+        <ion-row>
+            <ion-col text-left col-10 >
+              <p color="black">
+                <b>{{post?.authorName}}</b>
+                {{post?.date | date:'M/d/yy, h:mm a'}}
+              </p>
+            </ion-col>
+            <ion-col text-right col-2>
+                    <!-- <button ion-button icon-only (click)="showConfirm()" color="danger">
+                        <ion-icon item-left name="create"></ion-icon>
+                    </button> -->
+                    <ion-icon id="comment" icon-left name="create"></ion-icon>
+              </ion-col>
+          </ion-row>
+
+          A comment.
+        
+    </ion-card-content>
+  </ion-card>
+</ion-content>

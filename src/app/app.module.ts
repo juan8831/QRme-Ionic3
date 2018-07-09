@@ -37,7 +37,6 @@ import { AngularFirestore, AngularFirestoreModule } from 'angularfire2/firestore
 import { JoinEventsPage } from '../pages/join-events/join-events';
 import { SearchEventsPage } from '../pages/search-events/search-events';
 import { SearchEventDetailPage } from '../pages/search-event-detail/search-event-detail';
-import { QrJoinEventPage } from '../pages/qr-join-event/qr-join-event';
 import { firebaseConfig } from '../environment';
 import { MessagingProvider } from '../providers/messaging/messaging';
 import { ManageInvitesPage } from '../pages/manage-invites/manage-invites';
@@ -60,6 +59,10 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 import { EventAttendanceAdminPage } from '../pages/event-attendance-admin/event-attendance-admin';
 import { EventAttendanceInstanceAdminPage } from '../pages/event-attendance-instance-admin/event-attendance-instance-admin';
 import { InviteeAttendanceRecordPage } from '../pages/invitee-attendance-record/invitee-attendance-record';
+import { EditPostPage } from '../pages/edit-post/edit-post';
+import { EditCommentPage } from '../pages/edit-comment/edit-comment';
+import { PostPage } from '../pages/post/post';
+import { BlogProvider } from '../providers/blog/blog';
 
 @NgModule({
   declarations: [
@@ -83,7 +86,6 @@ import { InviteeAttendanceRecordPage } from '../pages/invitee-attendance-record/
     JoinEventsPage,
     SearchEventsPage,
     SearchEventDetailPage,
-    QrJoinEventPage,
     ManageInvitesPage,
     EventInviteesPage,
     EventInvitationsPage,
@@ -92,8 +94,10 @@ import { InviteeAttendanceRecordPage } from '../pages/invitee-attendance-record/
     EventQrcodePage,
     EventAttendanceAdminPage,
     EventAttendanceInstanceAdminPage,
-    InviteeAttendanceRecordPage
-
+    InviteeAttendanceRecordPage,
+    EditPostPage,
+    EditCommentPage,
+    PostPage
   ],
   imports: [
     BrowserModule,
@@ -130,7 +134,6 @@ import { InviteeAttendanceRecordPage } from '../pages/invitee-attendance-record/
     JoinEventsPage,
     SearchEventsPage,
     SearchEventDetailPage,
-    QrJoinEventPage,
     ManageInvitesPage,
     EventInviteesPage,
     EventInvitationsPage,
@@ -139,7 +142,10 @@ import { InviteeAttendanceRecordPage } from '../pages/invitee-attendance-record/
     EventQrcodePage,
     EventAttendanceAdminPage,
     EventAttendanceInstanceAdminPage,
-    InviteeAttendanceRecordPage
+    InviteeAttendanceRecordPage,
+    EditPostPage,
+    EditCommentPage,
+    PostPage
   ],
   providers: [
     StatusBar,
@@ -156,7 +162,8 @@ import { InviteeAttendanceRecordPage } from '../pages/invitee-attendance-record/
     BarcodeScanner,
     Camera,
     File,
-    SocialSharing
+    SocialSharing,
+    BlogProvider
   ]
 })
 export class AppModule {}

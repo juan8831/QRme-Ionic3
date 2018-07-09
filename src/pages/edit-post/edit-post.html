@@ -1,0 +1,31 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{create? 'Create New' : 'Edit'}} Post</ion-title>
+    <ion-buttons end>
+      <button *ngIf="!create" ion-button icon-only (click)="showDeleteConfirm()" color="danger">
+        <ion-icon item-left name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Post Title</ion-label>
+        <ion-input clearInput type="text" maxLength="100" name="title" [ngModel]="post?.title" required>
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Post Message</ion-label>
+        <ion-textarea [attr.rows]="7" type="text" name="message" maxLength="500" [ngModel]="post?.message" required></ion-textarea>
+      </ion-item>
+    </ion-list>
+    <button ion-button type="submit" block round [disabled]="!f.valid">{{create? 'Create New Post' : 'Update Post'}}</button>
+  </form>
+
+</ion-content>

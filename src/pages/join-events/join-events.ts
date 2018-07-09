@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController, ActionSheetController, ActionSheet } from 'ionic-angular';
 import { PublicEventsPage } from '../public-events/public-events';
-import { QrJoinEventPage } from '../qr-join-event/qr-join-event';
 import { SearchEventsPage } from '../search-events/search-events';
 import { ManageInvitesPage } from '../manage-invites/manage-invites';
 import { InviteRequest } from '../../models/inviteRequest';
@@ -26,7 +25,6 @@ export class JoinEventsPage implements OnInit {
   acceptedAndRejectedInvitesTotal: number = 0;
 
   searchEventsPage = SearchEventsPage;
-  qrJoinEventPage = QrJoinEventPage;
   manageInvitesPage = ManageInvitesPage;
 
   constructor(

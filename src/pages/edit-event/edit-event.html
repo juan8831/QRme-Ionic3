@@ -28,17 +28,17 @@
       <ion-item-group>
         <ion-item-divider color="primary" text-center>General</ion-item-divider>
         <ion-item>
-          <ion-label fixed>Event Name</ion-label>
-          <ion-input type="text" name="name" placeholder="Festival of Lights" [ngModel]="event?.name" required>
+          <ion-label fixed >Event Name</ion-label>
+          <ion-input clearInput type="text" name="name" placeholder="Festival of Lights" [ngModel]="event?.name" required>
           </ion-input>
         </ion-item>
         <ion-item>
-          <ion-label floating>Short Description</ion-label>
-          <ion-textarea name="description" [ngModel]="event?.description"></ion-textarea>
+          <ion-label floating >Short Description</ion-label>
+          <ion-textarea clearInput name="description" [ngModel]="event?.description"></ion-textarea>
         </ion-item>
         <ion-item>
-          <ion-label floating>Location</ion-label>
-          <ion-textarea name="location" [ngModel]="event?.location" required></ion-textarea>
+          <ion-label floating >Location</ion-label>
+          <ion-textarea clearInput name="location" [ngModel]="event?.location" required></ion-textarea>
         </ion-item>
         <ion-item>
           <ion-label>Category</ion-label>
