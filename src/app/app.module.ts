@@ -63,6 +63,9 @@ import { EditPostPage } from '../pages/edit-post/edit-post';
 import { EditCommentPage } from '../pages/edit-comment/edit-comment';
 import { PostPage } from '../pages/post/post';
 import { BlogProvider } from '../providers/blog/blog';
+import { PollProvider } from '../providers/poll/poll';
+import { EditPollPage } from '../pages/edit-poll/edit-poll';
+import { PollPage } from '../pages/poll/poll';
 
 @NgModule({
   declarations: [
@@ -97,7 +100,9 @@ import { BlogProvider } from '../providers/blog/blog';
     InviteeAttendanceRecordPage,
     EditPostPage,
     EditCommentPage,
-    PostPage
+    PostPage,
+    EditPollPage,
+    PollPage
   ],
   imports: [
     BrowserModule,
@@ -145,7 +150,9 @@ import { BlogProvider } from '../providers/blog/blog';
     InviteeAttendanceRecordPage,
     EditPostPage,
     EditCommentPage,
-    PostPage
+    PostPage,
+    EditPollPage,
+    PollPage
   ],
   providers: [
     StatusBar,
@@ -163,7 +170,8 @@ import { BlogProvider } from '../providers/blog/blog';
     Camera,
     File,
     SocialSharing,
-    BlogProvider
+    BlogProvider,
+    PollProvider
   ]
 })
 export class AppModule {}

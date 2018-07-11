@@ -7,6 +7,7 @@ import { ISubscription } from 'rxjs/Subscription';
 import { EditPostPage } from '../edit-post/edit-post';
 import { PostPage } from '../post/post';
 import { MessagingProvider } from '../../providers/messaging/messaging';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @IonicPage()
 @Component({
@@ -20,17 +21,34 @@ export class EventBlogPage implements OnInit {
   posts: Post[] = [];
   filteredPosts: Post[] = [];
   searchText = '';
+  isAdmin = false;
+  userId: string;
+  userEmail: string;
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
     private blogProvider: BlogProvider,
-    private mProv: MessagingProvider
+    private mProv: MessagingProvider,
+    private afAuth: AngularFireAuth,
   ) {
-    this.event = this.navParams.data; 
+    
+
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {  
+    this.event = this.navParams.data;
+    this.userId = this.afAuth.auth.currentUser.uid;
+    this.userEmail = this.afAuth.auth.currentUser.email; 
+    if(this.event.creatorId && this.event.creatorId === this.userId ){
+        this.isAdmin = true;
+    }
+    else{
+      if(this.event.creator === this.userEmail ){
+        this.isAdmin = true;
+      }
+    }
+   
     let loader = this.mProv.getLoader('Loading blog posts...');
     loader.present();
     let postSubs = this.blogProvider.getPostsByEvent(this.event.id)

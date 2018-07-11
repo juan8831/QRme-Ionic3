@@ -19,11 +19,8 @@ export class Event{
     locationLong?: number
     creator: string
     creatorName: string
-    inviteeList : object //User[]
-    adminList: object// User[]
     category: string
     type: string
-    blogId?: string
     recurring?: boolean
     date: Date
     time: Date
@@ -38,6 +35,8 @@ export class Event{
     allowManualAttendance: boolean
     minutesBeforeAttendance: number
     minutesAfterAttendance: number
+    allowInviteePosts: boolean
+
     
     constructor(){}
 

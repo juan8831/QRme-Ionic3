@@ -20,6 +20,7 @@ export class PostPage implements OnInit {
   event: Event;
   post: Post;
   comments: Comment[] = [];
+  isAdmin = false;
   isAdminOrCreator = false;
   subscriptions: ISubscription[] = [];
   userId: string;
@@ -57,12 +58,19 @@ export class PostPage implements OnInit {
       if(this.post.authorId === this.userId || this.event.creatorId === this.userId){
         this.isAdminOrCreator = true;
       }
+      if(this.event.creatorId === this.userId ){
+        this.isAdmin = true;
+      }
     }
     else{
       if(this.post.authorId === this.userId || this.event.creator === this.userEmail){
         this.isAdminOrCreator = true;
       }
+      if(this.event.creator === this.userEmail ){
+        this.isAdmin = true;
+      }
     }
+    
   }
 
   ngOnDestroy(): void {
