@@ -36,6 +36,16 @@ export class EventProvider {
     this.eventsCollection = this.afs.collection('events', ref => ref.orderBy('name', 'asc'));
   }
 
+  isEventAdmin(event: Event, userId = this.afAuth.auth.currentUser.uid, userEmail = this.afAuth.auth.currentUser.email): boolean {
+    if (event.creatorId && event.creatorId === userId) {
+      return true;
+    }
+    if (event.creator === userEmail) {
+      return true;
+    }
+    return false;
+  }
+
   //Create new event with admin & invitee subcollections. Add eventId to the User's admin list
   CreateNewEventAndSynchronizeWithUser(event: Event, newEventDocRef = this.fb.firestore().collection('events').doc()) {
     //var newEventDocRef = this.fb.firestore().collection('events').doc();
@@ -147,7 +157,7 @@ export class EventProvider {
   }
 
 
-  addAttendanceRecord(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid ){
+  addAttendanceRecord(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid) {
     let newRecord = new AttendanceRecord();
     newRecord.date = date;
     newRecord.userId = userId;
@@ -170,7 +180,7 @@ export class EventProvider {
     // });
   }
 
-  deleteAttendanceRecord(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid ){
+  deleteAttendanceRecord(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid) {
     let newRecord = new AttendanceRecord();
     newRecord.date = date;
     newRecord.userId = userId;
@@ -193,62 +203,62 @@ export class EventProvider {
     // });
   }
 
-  getAttendanceRecordByEventAndDateAndUser (event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid) : Observable<AttendanceRecord> {
+  getAttendanceRecordByEventAndDateAndUser(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid): Observable<AttendanceRecord> {
     let recordId = userId + date.toISOString();
     let doc = this.afs.doc(`events/${event.id}`).collection('attendance').doc(recordId)
-      return doc.snapshotChanges().map(action => {
-        if (action.payload.exists === false) {
-          return null;
-        }
-        else {
-          const data = action.payload.data() as AttendanceRecord;
-          data.id = action.payload.id;
-          return data;
-        }
-      });
+    return doc.snapshotChanges().map(action => {
+      if (action.payload.exists === false) {
+        return null;
+      }
+      else {
+        const data = action.payload.data() as AttendanceRecord;
+        data.id = action.payload.id;
+        return data;
+      }
+    });
   }
 
-  getAttendanceRecordsByEventAndDateAndUser(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid){
+  getAttendanceRecordsByEventAndDateAndUser(event: Event, date: Date, userId: string = this.afAuth.auth.currentUser.uid) {
 
     let collection = this.afs.doc(`events/${event.id}`).collection('attendance', ref => ref
       .where('date', '==', date)
       .where('userId', '==', userId));
 
-      return collection.snapshotChanges().map(changes => {
-        return changes.map(action => {
-          const data = action.payload.doc.data() as AttendanceRecord;
-          data.id = action.payload.doc.id;
-          return data;
-        });
+    return collection.snapshotChanges().map(changes => {
+      return changes.map(action => {
+        const data = action.payload.doc.data() as AttendanceRecord;
+        data.id = action.payload.doc.id;
+        return data;
       });
+    });
   }
 
-  getAttendanceRecordsByEventAndUser(event: Event, userId: string = this.afAuth.auth.currentUser.uid){
+  getAttendanceRecordsByEventAndUser(event: Event, userId: string = this.afAuth.auth.currentUser.uid) {
 
     let collection = this.afs.doc(`events/${event.id}`).collection('attendance', ref => ref
       .where('userId', '==', userId));
 
-      return collection.snapshotChanges().map(changes => {
-        return changes.map(action => {
-          const data = action.payload.doc.data() as AttendanceRecord;
-          data.id = action.payload.doc.id;
-          return data;
-        });
+    return collection.snapshotChanges().map(changes => {
+      return changes.map(action => {
+        const data = action.payload.doc.data() as AttendanceRecord;
+        data.id = action.payload.doc.id;
+        return data;
       });
+    });
   }
 
-  getAttendanceRecordsByEventAndDate(event: Event, date: Date){
+  getAttendanceRecordsByEventAndDate(event: Event, date: Date) {
 
     let collection = this.afs.doc(`events/${event.id}`).collection('attendance', ref => ref
       .where('date', '==', date));
 
-      return collection.snapshotChanges().map(changes => {
-        return changes.map(action => {
-          const data = action.payload.doc.data() as AttendanceRecord;
-          data.id = action.payload.doc.id;
-          return data;
-        });
+    return collection.snapshotChanges().map(changes => {
+      return changes.map(action => {
+        const data = action.payload.doc.data() as AttendanceRecord;
+        data.id = action.payload.doc.id;
+        return data;
       });
+    });
   }
 
 
@@ -388,10 +398,10 @@ export class EventProvider {
     return nextDate;
   }
 
-  getNextEventDateEnd(event: Event): Date{
+  getNextEventDateEnd(event: Event): Date {
     let nextDate = this.getNextEventDate(event);
     let diffInMs = Math.abs(new Date(event.ends).getTime() - new Date(event.starts).getTime());
-    return this.addMinutes(nextDate, diffInMs/60000);
+    return this.addMinutes(nextDate, diffInMs / 60000);
   }
 
 
@@ -436,18 +446,18 @@ export class EventProvider {
           break;
         }
       }
-      
+
     }
     return result;
   }
 
 
-  getDateWithoutTime(date: Date): Date { 
-    date.setHours(0,0,0,0);
+  getDateWithoutTime(date: Date): Date {
+    date.setHours(0, 0, 0, 0);
     return date;
   }
 
-  addMinutes(date, minutes): Date{
+  addMinutes(date, minutes): Date {
     var result = new Date(date);
     result.setMinutes(result.getMinutes() + minutes);
     return result;

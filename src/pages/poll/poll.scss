@@ -1,3 +1,28 @@
 page-poll {
+    hr {
+        //border: 2px solid red !important;
+       height: 1px !important;
+        //width: 500px !important;
+        background: white !important;
+        // display: block !important;
+        // font-size: 2em !important;
+       visibility: visible !important;
+      }
+
+      .notVoted{
+        //border: 2px solid red; 
+        background: #f4f4f4;
+        color: black;
+        //background: yellow;
+      }
+
+      .voted{
+        //border: 2px solid red; 
+        background: #40d647;
+        color: white;
+        //background: yellow;
+      }
+
+      
 
 }

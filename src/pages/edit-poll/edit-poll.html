@@ -1,18 +1,40 @@
-<!--
-  Generated template for the EditPollPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>editPoll</ion-title>
-  </ion-navbar>
-
-</ion-header>
-
-
-<ion-content padding>
-
-</ion-content>
+    <ion-navbar>
+      <ion-title>{{create? 'Create New' : 'Edit'}} Poll</ion-title>
+      <ion-buttons end>
+        <button *ngIf="!create" ion-button icon-only (click)="showDeleteConfirm()" color="danger">
+          <ion-icon item-left name="trash"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-navbar>
+  
+  </ion-header>
+  
+  
+  <ion-content padding>
+    <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+      <ion-list>
+        <ion-item>
+          <ion-label floating>Poll Name</ion-label>
+          <ion-input clearInput type="text" maxLength="100" name="name" [ngModel]="poll?.name" required>
+          </ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-list>
+            <ion-list-header>
+              Poll Options 
+              <ion-icon id="addCircle" (click)="showPollOptionPrompt()" icon-right name="add-circle" color="primary"></ion-icon>
+            </ion-list-header>
+            
+            <ion-item *ngFor="let option of poll?.options; let i = index;" >
+                {{i + 1}}. {{option.name}}
+                <ion-icon id="addCircle" (click)="deleteOption(i)" icon-right name="trash" color="danger"></ion-icon>
+            </ion-item>
+          </ion-list>
+        </ion-item>
+      </ion-list>
+      <button ion-button type="submit" block round [disabled]="!f.valid || poll?.options.length < 2">{{create? 'Create New Poll' : 'Update Poll'}}</button>
+    </form>
+  
+  </ion-content>

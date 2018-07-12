@@ -1,7 +1,6 @@
 <ion-header>
 
   <ion-navbar>
-    <!-- <ion-title>{{event.name}} Blog</ion-title> -->
   </ion-navbar>
 
 </ion-header>
@@ -20,7 +19,7 @@
   </ion-list>
   <h3 text-center *ngIf="filteredPosts?.length == 0">No Posts Found</h3>
 
-  <ion-fab *ngIf="event.allowInviteePosts || event.isAdmin" bottom right #fab>
+  <ion-fab *ngIf="event.allowInviteePosts || isAdmin" bottom right #fab>
     <button color="secondary" ion-fab (click)="addPost()">
       <ion-icon id="addPost" name="add"></ion-icon>
     </button>
