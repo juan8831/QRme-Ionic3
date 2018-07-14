@@ -19,7 +19,7 @@
     </ion-list>
     <h3 text-center *ngIf="filteredPolls?.length == 0">No Polls Found</h3>
   
-    <ion-fab *ngIf="isAdmin" bottom right #fab>
+    <ion-fab *ngIf="event.allowInviteePolls || isAdmin" bottom right #fab>
       <button color="secondary" ion-fab (click)="addPoll()">
         <ion-icon id="addPoll" name="add"></ion-icon>
       </button>

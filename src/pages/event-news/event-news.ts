@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, App, ViewController, ModalController } from 'ionic-angular';
 import { Event } from '../../models/event';
 import { EventDetailPage } from '../event-detail/event-detail';
@@ -27,7 +27,7 @@ import { EventQrcodePage } from '../event-qrcode/event-qrcode';
   selector: 'page-event-news',
   templateUrl: 'event-news.html',
 })
-export class EventNewsPage {
+export class EventNewsPage implements OnInit {
 
   event: Event;
   eventAttendancePage = EventAttendancePage;
@@ -39,9 +39,9 @@ export class EventNewsPage {
 
 
   constructor(
-    public navCtrl: NavController, 
-    public navParams: NavParams, 
-    public app: App, 
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public app: App,
     private viewCtrl: ViewController,
     private selectedEventProvider: SelectedEventProvider,
     private modalCtrl: ModalController,
@@ -51,20 +51,18 @@ export class EventNewsPage {
     private storage: AngularFireStorage,
     private firebase: FirebaseApp
   ) {
-    this.event = this.selectedEventProvider.getEvent();
+  }
 
-    this.eventProvider.getAdminUsersForEvent(this.event).take(1).subscribe(users => {
-      this.isManaging = this.afAuth.auth.currentUser.uid in users? true: false
-      
-    });
-
-    let next = this.eventProvider.getNextEventDate(this.event);
-
-   // this.event.eventImageUrl = 'assets/imgs/calendar.png';
-
-    
+  ngOnInit(): void {
+    let event = this.selectedEventProvider.getEvent();
+    this.eventProvider.getEvent(event.id).subscribe(event => {
+      this.event = event;
+      this.isManaging = this.eventProvider.isEventAdmin(this.event, undefined, undefined);
+    })
 
   }
+
+
 
   // ionViewDidEnter(){
   //   //this.isManaging = this.event.adminList[this.userProvider.userProfile.id] == true ? true : false;
@@ -84,28 +82,28 @@ export class EventNewsPage {
     console.log('ionViewDidLoad EventNewsPage');
   }
 
-  onOpenInfo(){
-    this.navCtrl.push(EventDetailPage, {event: this.event, 'isManaging': this.isManaging});
+  onOpenInfo() {
+    this.navCtrl.push(EventDetailPage, { event: this.event, 'isManaging': this.isManaging });
     //this.navCtrl.p
   }
 
- 
-  onAttendance(){
+
+  onAttendance() {
     console.log("onAttendace");
     this.modalCtrl.create(EventAttendancePage).present();
   }
 
-  openAttendance(){
-    if(this.isManaging){
+  openAttendance() {
+    if (this.isManaging) {
       this.navCtrl.push(EventAttendanceAdminPage, this.event);
     }
-    else{
+    else {
       this.navCtrl.push(EventAttendancePage, this.event);
     }
   }
 
-  openQrpage(){
-    let modal = this.modalCtrl.create(EventQrcodePage, {'event': this.event});
+  openQrpage() {
+    let modal = this.modalCtrl.create(EventQrcodePage, { 'event': this.event });
     modal.present();
   }
 }

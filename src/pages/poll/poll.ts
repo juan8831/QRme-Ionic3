@@ -69,7 +69,7 @@ export class PollPage implements OnInit {
         });
         this.doughnutChart.update();
 
-        if(this.poll.creatorId = this.afAuth.auth.currentUser.uid){
+        if(this.poll.creatorId === this.afAuth.auth.currentUser.uid){
           this.isAdminOrCreator = true;
         }
       }

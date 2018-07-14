@@ -36,6 +36,7 @@ export class Event{
     minutesBeforeAttendance: number
     minutesAfterAttendance: number
     allowInviteePosts: boolean
+    allowInviteePolls: boolean;
 
     
     constructor(){}

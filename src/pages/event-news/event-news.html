@@ -57,21 +57,21 @@
     <hr>
     <ion-row>
       <ion-col>
-        <img [src]="event.eventImageUrl" />
+        <img [src]="event?.eventImageUrl" />
       </ion-col>
       <ion-col text-center>
         <p>{{event?.location}} </p>
-        <p *ngIf="!event.allDay" text-center>
+        <p *ngIf="event && !event?.allDay" text-center>
           <span text-center>Next Date</span>
           <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy, h:mm a'}}
           <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy, h:mm a'}}
         </p>
-        <p *ngIf="event.allDay" text-center>
+        <p *ngIf="event && event?.allDay" text-center>
           <span text-center>Next Date</span>
           <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy'}} - All Day
           <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy'}} - All Day
         </p>
-        <p *ngIf="event.repeat != 'Never'">{{event?.repeat}}</p>
+        <p *ngIf="event?.repeat != 'Never'">{{event?.repeat}}</p>
         <!-- <p *ngIf="!event.endRepeat != 'Never'">End Repeat Date: {{event?.endRepeatDate | date:'M/d/yy, h:mm a'}}</p> -->
       </ion-col>
     </ion-row>
@@ -109,7 +109,7 @@
     </ion-row>
   </ion-grid>
 
-  <h3 text-center>News</h3>
+  <!-- <h3 text-center>News</h3>
   <ion-list>
     <ion-list-header>
       <button outline round ion-button style="float: right;">Clear All</button>
@@ -151,6 +151,6 @@
     </ion-item-sliding>
 
 
-  </ion-list>
+  </ion-list> -->
 
 </ion-content>

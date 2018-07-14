@@ -29,7 +29,7 @@
 <ion-content padding [id]='content'>
 
   <ion-list *ngIf="(filteredEvents)?.length > 0" >
-      <ion-list-header>Today</ion-list-header>
+      <ion-list-header>Your Events</ion-list-header>
       <ion-item  *ngFor="let event of filteredEvents" (click)="onLoadEvent(event)">
           <ion-avatar item-start>
               <img [src]="event.eventImageUrl">
@@ -41,18 +41,6 @@
           <p *ngIf="event.repeat != 'Never'">{{event.repeat }}</p>        
       </ion-item>
   </ion-list>
-
-  <ion-list *ngIf="(filteredEvents)?.length > 0">
-      <ion-list-header>Next Week</ion-list-header>
-      <ion-item *ngFor="let event of filteredEvents">
-          
-          <h2>{{event.name}}</h2>
-          <h3>{{event.description}}</h3>
-          <p>{{event.date | date}}</p>
-          <ion-note item-end>{{event.time }}</ion-note>     
-      </ion-item>
-  </ion-list>
-
 
   <h2 *ngIf="(filteredEvents)?.length == 0">No Events! Create or Join an Event!</h2>
 

@@ -168,6 +168,7 @@ export class EditEventPage implements OnInit {
     this.event.minutesAfterAttendance = parseInt(f.value.minutesAfterAttendance)
     this.event.minutesBeforeAttendance = parseInt(f.value.minutesBeforeAttendance);
     this.event.allowInviteePosts = f.value.allowInviteePosts ? f.value.allowInviteePosts : false;
+    this.event.allowInviteePolls = f.value.allowInviteePolls ? f.value.allowInviteePolls : false;
 
     if(this.event.allDay){
       let startDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
