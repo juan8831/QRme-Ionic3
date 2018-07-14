@@ -45,7 +45,7 @@ export class EditPollPage implements OnInit {
       this.event = this.navParams.get('event');
     }
     else{
-      this.poll = this.navParams.get('post');
+      this.poll = this.navParams.get('poll');
     }
 
   }
@@ -92,7 +92,7 @@ export class EditPollPage implements OnInit {
     }
 
     if(this.create){    
-      let loader = this.mProv.getLoader('Creating new blog post...');
+      let loader = this.mProv.getLoader('Creating new poll...');
       loader.present();
      
       this.poll.date = new Date();
@@ -132,12 +132,12 @@ export class EditPollPage implements OnInit {
 
     let confirm = this.alertCtrl.create({
       title: 'Delete?',
-      message: 'Are you sure you want to delete this blog post?',
+      message: 'Are you sure you want to delete this poll?',
       buttons: [
         {
           text: 'Yes',
           handler: () => {
-            this.deletePost();
+            this.deletePoll();
           }
         },
         {
@@ -148,7 +148,7 @@ export class EditPollPage implements OnInit {
     confirm.present();
   }
 
-  deletePost(){
+  deletePoll(){
     let loader = this.mProv.getLoader('Deleting poll...');
     loader.present();
     this.pollProvider.deletePoll(this.poll)

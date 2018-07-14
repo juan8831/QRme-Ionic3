@@ -66,6 +66,7 @@ import { BlogProvider } from '../providers/blog/blog';
 import { PollProvider } from '../providers/poll/poll';
 import { EditPollPage } from '../pages/edit-poll/edit-poll';
 import { PollPage } from '../pages/poll/poll';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -113,7 +114,8 @@ import { PollPage } from '../pages/poll/poll';
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
-    NgxQRCodeModule
+    NgxQRCodeModule,
+    ChartsModule
    // AngularFirestoreModule.enablePersistence()
 
   ],

@@ -1,7 +1,11 @@
 <ion-header>
 
   <ion-navbar>
-  
+      <ion-buttons end>
+          <button *ngIf="isAdminOrCreator" ion-button icon-only (click)="openEditPoll()">
+            <ion-icon item-left name="settings"></ion-icon>
+          </button>
+        </ion-buttons>
   </ion-navbar>
 
 </ion-header>
@@ -11,13 +15,23 @@
   <h1 text-center>{{poll?.name}}</h1>
   <hr>
   <h4 text-center>Results</h4>
-  <p text-center>No Votes Yet!</p>
-  <hr>
-  <h4 text-center>{{!hasVotedInPoll? 'Vote' : 'You have already voted' }}</h4>
-  <ion-list *ngIf="poll?.options">
-    <ion-item  *ngFor="let option of poll?.options; let i = index" (click)="vote(option)">
-      <button ion-button full [ngClass]="{'notVoted': !hasVoted(option), 'voted': hasVoted(option)}" >{{i+1}}. {{option.name}} </button>   
+
+  <!-- <canvas #doughnutCanvas></canvas> -->
+  <ion-list>
+    <ion-item *ngFor="let option of poll?.options; let i = index">
+        <ion-badge color="yellow" style="font-size:30px;" item-left>{{option.count}}</ion-badge>
+      <h2>{{i+1}}. {{option.name}}  </h2>  
+      <button ion-button round item-end (click)="vote(option)" [ngClass]="{'notVoted': !hasVoted(option), 'voted': hasVoted(option)}">
+        Vote
+      </button>
     </ion-item>
   </ion-list>
-
+  <ion-card >
+    <ion-card-content >
+      <div style="height:100%">
+          <canvas #doughnutCanvas></canvas>
+      </div>
+      
+    </ion-card-content>
+  </ion-card>
 </ion-content>
