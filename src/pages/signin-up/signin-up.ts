@@ -20,6 +20,7 @@ export class SigninUpPage {
   create = false;
   password: string;
   confirmPassword: string;
+  private opt: string = 'signin';
 
   constructor(
     public navCtrl: NavController,

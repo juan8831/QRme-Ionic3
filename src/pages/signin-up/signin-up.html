@@ -1,17 +1,5 @@
-<ion-content padding>
-  <h1 text-center>QRme</h1>
-  <h3 text-center>An Event Management Application</h3>
 
-  <button block color="blue" ion-button (click)="create = false;">Sign In</button>
-  <br>
-  <button block color="yellow" ion-button (click)="create = true;">Create Account</button>
-
-  <button block color="danger" ion-button (click)="onGoogle()">Google</button>
-
-  <br>
-  <br>
-
-  <form *ngIf="!create" #f="ngForm" (ngSubmit)="onSignIn(f)">
+  <!-- <form *ngIf="!create" #f="ngForm" (ngSubmit)="onSignIn(f)">
     <ion-list>
       <ion-item>
         <ion-label floating>Email</ion-label>
@@ -23,9 +11,9 @@
       </ion-item>
     </ion-list>
     <button ion-button block type="submit" [disabled]="!f.valid">Sign In</button>
-  </form>
+  </form> -->
 
-  <form *ngIf="create" #f="ngForm" (ngSubmit)="onCreate(f)">
+  <!-- <form *ngIf="create" #f="ngForm" (ngSubmit)="onCreate(f)">
     <ion-list>
       <ion-item>
         <ion-label floating>Name</ion-label>
@@ -46,4 +34,82 @@
     </ion-list>
     <button ion-button block type="submit" [disabled]="!f.valid || password != confirmPassword">Create Account</button>
   </form>
+</ion-content> --> -->
+
+
+<ion-content padding>
+    <img src="./assets/imgs/logo.png" style="display:block; margin:auto;">
+  <!-- <ion-slides style="height:40%" pager="true" autoplay="4000" loop="true" effect="cube">
+    <ion-slide>
+      <img src="./assets/imgs/logo.png">
+    </ion-slide>
+    <ion-slide>
+      <img src="./assets/imgs/calendar.png">
+    </ion-slide>
+    <ion-slide>
+      <img src="./assets/imgs/logo.png">
+    </ion-slide>
+  </ion-slides> -->
+
+  <div padding>
+    <ion-segment [(ngModel)]="opt" color="primary">
+      <ion-segment-button value="signin">
+        Sign In
+      </ion-segment-button>
+      <ion-segment-button value="signup">
+        Sign Up
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <div [ngSwitch]="opt">
+    <form (ngSubmit)="onSignIn(f)" #f="ngForm" *ngSwitchCase="'signin'">
+
+      <ion-label>Email</ion-label>
+      <ion-input type="email" clearInput ngModel required name="email"></ion-input>
+
+      <ion-label>Password</ion-label>
+      <ion-input type="password" clearInput ngModel required [minlength]="6" name="password"></ion-input>
+
+
+      <div padding text-center>
+        <button ion-button large round color="primary" type="submit" icon-right [disabled]="!f.valid">
+          Sign In
+          <ion-icon name="log-in"></ion-icon>
+        </button>
+        <h5>Forgot Password</h5>
+      </div>
+
+
+    </form>
+
+    <form (ngSubmit)="onCreate(f)" #f="ngForm" *ngSwitchCase="'signup'">
+      <ion-label float>Name</ion-label>
+      <ion-input type="text" ngModel name="name" required></ion-input>
+
+      <ion-label float>Email</ion-label>
+      <ion-input type="email" ngModel name="email" required></ion-input>
+
+
+      <ion-label float>Password</ion-label>
+      <ion-input type="password" [(ngModel)]="password" name="password" required [minlength]="6"></ion-input>
+
+
+
+      <ion-label float>Confirm Password</ion-label>
+      <ion-input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required [minlength]="6"></ion-input>
+
+
+      <div padding text-center>
+        <button ion-button round color="primary" type="submit" icon-right [disabled]="!f.valid || password != confirmPassword">
+          Sign Up
+          <ion-icon name="person-add"></ion-icon>
+        </button>
+
+      </div>
+
+
+    </form>
+
+  </div>
 </ion-content>

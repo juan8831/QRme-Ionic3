@@ -35,3 +35,7 @@ Thumbs.db
 UserInterfaceState.xcuserstate
 
 src/environment\.ts
+
+resources/
+
+src/assets/imgs/
