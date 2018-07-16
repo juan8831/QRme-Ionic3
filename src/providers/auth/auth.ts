@@ -23,7 +23,11 @@ export class AuthProvider {
 
   getEmail(){
    // return firebase.auth().currentUser.email;
-   return "juan@gmail.com";
+   if(this.afsAuth.auth.currentUser){
+    return this.afsAuth.auth.currentUser.email;
+   }
+   return "";
+   
   }
 
   getActiveUser(){

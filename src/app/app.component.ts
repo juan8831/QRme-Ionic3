@@ -17,6 +17,7 @@ import { AuthProvider } from '../providers/auth/auth';
 import { JoinEventsPage } from '../pages/join-events/join-events';
 import { UserProvider } from '../providers/user/user';
 import { MessagingProvider } from '../providers/messaging/messaging';
+import {timer} from 'rxjs/observable/timer';
 
 @Component({
   templateUrl: 'app.html'
@@ -31,6 +32,7 @@ export class MyApp {
 
   isAuthenticated = true;
   email = "";
+  showSplash = true;
   
 
   @ViewChild('nav') nav: NavController;
@@ -58,7 +60,7 @@ export class MyApp {
             console.log("logged in..");
             this.isAuthenticated = true;
             //this.userProvider.getUserProfile();
-            //this.email = user.email;
+            this.email = user.email;
             this.rootPage = EventsPage;
             //this.nav.setRoot(this.tabsPage);
           }
@@ -99,6 +101,9 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
+
+      timer(3000).subscribe((() => this.showSplash = false ));
+
     });
   }
 
