@@ -67,6 +67,7 @@ import { PollProvider } from '../providers/poll/poll';
 import { EditPollPage } from '../pages/edit-poll/edit-poll';
 import { PollPage } from '../pages/poll/poll';
 import { ChartsModule } from 'ng2-charts';
+import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 
 @NgModule({
   declarations: [
@@ -103,7 +104,8 @@ import { ChartsModule } from 'ng2-charts';
     EditCommentPage,
     PostPage,
     EditPollPage,
-    PollPage
+    PollPage,
+    ForgotPasswordPage
   ],
   imports: [
     BrowserModule,
@@ -154,7 +156,8 @@ import { ChartsModule } from 'ng2-charts';
     EditCommentPage,
     PostPage,
     EditPollPage,
-    PollPage
+    PollPage,
+    ForgotPasswordPage
   ],
   providers: [
     StatusBar,

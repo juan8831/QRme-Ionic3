@@ -8,6 +8,7 @@ import { AuthProvider } from '../../providers/auth/auth';
 import { firebase } from '@firebase/app';
 import { User } from '../../models/user';
 import { UserProvider } from '../../providers/user/user';
+import { ForgotPasswordPage } from '../forgot-password/forgot-password';
 
 
 @IonicPage()
@@ -137,6 +138,10 @@ export class SigninUpPage {
 
       });
 
+  }
+
+  forgotPassword(){
+    this.navCtrl.push(ForgotPasswordPage);
   }
 
 }

@@ -57,6 +57,7 @@ export class EventNewsPage implements OnInit {
     let event = this.selectedEventProvider.getEvent();
     this.eventProvider.getEvent(event.id).subscribe(event => {
       this.event = event;
+      console.log(event);
       this.isManaging = this.eventProvider.isEventAdmin(this.event, undefined, undefined);
     })
 
