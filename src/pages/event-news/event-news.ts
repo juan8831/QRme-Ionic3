@@ -21,6 +21,7 @@ import { AngularFireStorage } from 'angularfire2/storage';
 import { FirebaseApp } from 'angularfire2';
 import { EventAttendanceAdminPage } from '../event-attendance-admin/event-attendance-admin';
 import { EventQrcodePage } from '../event-qrcode/event-qrcode';
+import { MessagingProvider } from '../../providers/messaging/messaging';
 
 @IonicPage()
 @Component({
@@ -49,13 +50,18 @@ export class EventNewsPage implements OnInit {
     private afAuth: AngularFireAuth,
     private eventProvider: EventProvider,
     private storage: AngularFireStorage,
-    private firebase: FirebaseApp
+    private firebase: FirebaseApp,
+    private mProv: MessagingProvider
   ) {
   }
 
   ngOnInit(): void {
     let event = this.selectedEventProvider.getEvent();
     this.eventProvider.getEvent(event.id).subscribe(event => {
+      if(event == null || event.name == null){
+        this.navCtrl.popToRoot();
+        return;
+      }
       this.event = event;
       console.log(event);
       this.isManaging = this.eventProvider.isEventAdmin(this.event, undefined, undefined);

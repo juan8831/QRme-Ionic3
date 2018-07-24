@@ -94,6 +94,8 @@ export class EditEventPage implements OnInit {
       this.imageURL = defaultEventImage;
       this.event.endRepeat = 'Never';
       this.event.repeat = RepeatType.Never;
+      this.event.isVisibleInPublicSearch = this.event.allowInviteePolls = this.event.allowInviteePosts = true;
+      this.event.minutesAfterAttendance = this.event.minutesBeforeAttendance = 5;
     }
 
 
@@ -171,6 +173,10 @@ export class EditEventPage implements OnInit {
     this.event.allowInviteePolls = f.value.allowInviteePolls ? f.value.allowInviteePolls : false;
 
     if(this.event.allDay){
+      if(this.isnewEvent){
+        f.value.starts += "T00:00:00.000Z";
+        f.value.ends += "T00:00:00.000Z";
+      }
       let startDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
       startDate.setHours(0, 0, 0, 0);   
       f.value.starts = this.convertISO8601UTCtoLocalwZ(startDate.toISOString());
@@ -330,7 +336,9 @@ export class EditEventPage implements OnInit {
 
     this.eventProvider.deleteEvent(this.event)
       .then(_ => {
-        this.deleteEventImage();
+        if(this.event.eventImageUrl != defaultEventImage){
+          this.deleteEventImage();
+        }  
         this.toastCtrl.create({
           message: 'Event successfully deleted',
           duration: 3000

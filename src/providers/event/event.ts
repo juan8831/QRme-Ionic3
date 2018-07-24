@@ -284,12 +284,12 @@ export class EventProvider {
     return eventDocRef.update(event);
   }
 
-  //delete event and its users  subcollection
+  //delete event and its users and attedance subcollections
   deleteEvent(event: Event) {
     var batch = this.fb.firestore().batch();
     batch.delete(this.fb.firestore().doc(`events/${event.id}`));
-    batch.delete(this.fb.firestore().doc(`events/${event.id}`).collection('users').doc('admin'));
-    batch.delete(this.fb.firestore().doc(`events/${event.id}`).collection('users').doc('invitee'));
+    //batch.delete(this.fb.firestore().doc(`events/${event.id}`).collection('users').doc('admin'));
+    //batch.delete(this.fb.firestore().doc(`events/${event.id}`).collection('users').doc('invitee'));
     return batch.commit();
 
   }
