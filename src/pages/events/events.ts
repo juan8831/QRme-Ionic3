@@ -8,7 +8,6 @@ import { IfObservable } from 'rxjs/observable/IfObservable';
 import { Observable } from 'rxjs/Observable';
 import { EventDetailPage } from '../event-detail/event-detail';
 import { EventTabsPage } from '../event-tabs/event-tabs';
-import { SelectedEventProvider } from '../../providers/selected-event/selected-event';
 import { EventNewsPage } from '../event-news/event-news';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -53,7 +52,6 @@ export class EventsPage implements OnInit {
     public navParams: NavParams,
     private eventProvider: EventProvider,
     private modalCtrl: ModalController,
-    private selectEventProvider: SelectedEventProvider,
     private viewCtrl: ViewController,
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
@@ -238,21 +236,12 @@ export class EventsPage implements OnInit {
     this.filteredEvents = this.events.filter(event => event.name.toLowerCase().includes(this.searchText.toLowerCase()));
   }
 
-  ionViewWillLeave() {
-    // this.subscription.unsubscribe();
-    // console.log('unsubcribe events');
-  }
-
   addEvent() {
-    this.navCtrl.push(EditEventPage, { type: 'new' });
-    //this.navCtrl.push(EventTabsPage);    
+    this.navCtrl.push(EditEventPage, { type: 'new' }); 
   }
 
   onLoadEvent(event: Event) {
-
-    this.selectEventProvider.setEvent(event);
-    this.navCtrl.push(EventNewsPage);
-
+    this.navCtrl.push(EventNewsPage, {'eventId': event.id});
   }
 
   changeEventMode() {

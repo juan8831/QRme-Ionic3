@@ -30,7 +30,6 @@ import { EventNewsPage } from '../pages/event-news/event-news';
 import { EventBlogPage } from '../pages/event-blog/event-blog';
 import { EventPollsPage } from '../pages/event-polls/event-polls';
 import { RootPageProvider } from '../providers/root-page/root-page';
-import { SelectedEventProvider } from '../providers/selected-event/selected-event';
 import { AuthProvider } from '../providers/auth/auth';
 import { UserProvider } from '../providers/user/user';
 import { AngularFirestore, AngularFirestoreModule } from 'angularfire2/firestore';
@@ -165,7 +164,6 @@ import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     EventProvider,
     RootPageProvider,
-    SelectedEventProvider,
     AuthProvider,
     UserProvider,
     MessagingProvider,

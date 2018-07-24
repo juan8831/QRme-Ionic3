@@ -4,7 +4,6 @@ import { Event } from '../../models/event';
 import { EventDetailPage } from '../event-detail/event-detail';
 import { TabsPage } from '../tabs/tabs';
 import { EditEventPage } from '../edit-event/edit-event';
-import { SelectedEventProvider } from '../../providers/selected-event/selected-event';
 import { MyApp } from '../../app/app.component';
 import { EventsPage } from '../events/events';
 import { EventAttendancePage } from '../event-attendance/event-attendance';
@@ -44,7 +43,6 @@ export class EventNewsPage implements OnInit {
     public navParams: NavParams,
     public app: App,
     private viewCtrl: ViewController,
-    private selectedEventProvider: SelectedEventProvider,
     private modalCtrl: ModalController,
     private userProvider: UserProvider,
     private afAuth: AngularFireAuth,
@@ -56,8 +54,8 @@ export class EventNewsPage implements OnInit {
   }
 
   ngOnInit(): void {
-    let event = this.selectedEventProvider.getEvent();
-    this.eventProvider.getEvent(event.id).subscribe(event => {
+    let eventId = this.navParams.get('eventId');
+    this.eventProvider.getEvent(eventId).subscribe(event => {
       if(event == null || event.name == null){
         this.navCtrl.popToRoot();
         return;
@@ -94,18 +92,12 @@ export class EventNewsPage implements OnInit {
     //this.navCtrl.p
   }
 
-
-  onAttendance() {
-    console.log("onAttendace");
-    this.modalCtrl.create(EventAttendancePage).present();
-  }
-
   openAttendance() {
     if (this.isManaging) {
-      this.navCtrl.push(EventAttendanceAdminPage, this.event);
+      this.navCtrl.push(EventAttendanceAdminPage,{ 'event': this.event });
     }
     else {
-      this.navCtrl.push(EventAttendancePage, this.event);
+      this.navCtrl.push(EventAttendancePage, { 'event': this.event });
     }
   }
 

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, ActionSheetController } from 'ionic-angular';
 import { Event } from '../../models/event';
-import { SelectedEventProvider } from '../../providers/selected-event/selected-event';
 import { EventProvider } from '../../providers/event/event';
 import { InviteeAttendanceRecordPage } from '../invitee-attendance-record/invitee-attendance-record';
 import { MessagingProvider } from '../../providers/messaging/messaging';
@@ -19,7 +18,6 @@ export class EventAttendancePage implements OnInit {
   markedAttendance = true;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-    private selectedEventProvider: SelectedEventProvider,
     private viewCtrl: ViewController,
     private eventProvider: EventProvider,
     private actionSheetCtrl: ActionSheetController,
@@ -27,7 +25,7 @@ export class EventAttendancePage implements OnInit {
     private mProv: MessagingProvider
 
   ) {
-    this.event = this.selectedEventProvider.getEvent();
+    this.event = this.navParams.get('event');
   }
 
   ngOnInit() {

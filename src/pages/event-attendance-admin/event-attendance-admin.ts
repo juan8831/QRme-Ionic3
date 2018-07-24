@@ -25,7 +25,7 @@ export class EventAttendanceAdminPage implements OnInit {
   }
 
   ngOnInit(){
-    this.event = this.navParams.data;
+    this.event = this.navParams.get('event');
     let today = new Date();
 
     //if starts date is earlier than current date, then use starts date instead of current date

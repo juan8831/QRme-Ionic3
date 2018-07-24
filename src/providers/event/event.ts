@@ -409,7 +409,7 @@ export class EventProvider {
   getEventDates(event: Event, fromDate: Date, toDate: Date): Date[] {
     let result: Date[] = [];
     let nextDate = event.starts;
-
+    
     if (event.repeat == RepeatType.Never) {
       return [nextDate];
     }
