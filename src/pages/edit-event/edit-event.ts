@@ -337,7 +337,7 @@ export class EditEventPage implements OnInit {
     this.eventProvider.deleteEvent(this.event)
       .then(_ => {
         if(this.event.eventImageUrl != defaultEventImage){
-          this.deleteEventImage();
+          //this.deleteEventImage();
         }  
         this.toastCtrl.create({
           message: 'Event successfully deleted',

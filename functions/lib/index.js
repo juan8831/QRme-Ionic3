@@ -112,6 +112,13 @@ exports.onEventDelete = functions.firestore.document(`events/{messageId}`)
     catch (err) {
         console.log(err);
     }
+    admin.storage().bucket().file(`eventPictures/${event.id}`).delete()
+        .then(_ => {
+        console.log('Deleted event picture');
+    })
+        .catch(err => {
+        console.log(err);
+    });
 }));
 function removeEventFromUser(userId, eventId) {
     return __awaiter(this, void 0, void 0, function* () {
