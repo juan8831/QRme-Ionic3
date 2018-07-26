@@ -43,9 +43,6 @@ export class SigninUpPage {
     var user = new User();
     user.name = form.value.name;
     user.email = form.value.email;
-    user.eventAdminList = {};
-    user.eventInviteeList = {};
-
     const loading = this.loadingCtrl.create({
       content: 'Creating your account...'
     });

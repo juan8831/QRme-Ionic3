@@ -8,7 +8,10 @@
 
 
 <ion-content padding>
-  <h1 text-center>Attendance by Date</h1>
+  <h1 text-center ion-text color="darkRed">
+      <ion-icon name="checkmark-circle"></ion-icon>
+    Attendance
+  </h1>
 
 
   <div *ngIf="!event.allDay">
@@ -32,10 +35,7 @@
             </ion-item>
         </ion-list>
       
-        <button ion-button large block (click)="searchDate()" [disabled]="selectedDate == null">
-          Search
-          {{selectedDate | date:'MMM dd, y | h:mm a'}}
-        </button>
+        
   </div>
 
   <div *ngIf="event.allDay">
@@ -58,26 +58,11 @@
                   </ion-select>
             </ion-item>
         </ion-list>
-      
-        <button ion-button large block (click)="searchDate()" [disabled]="selectedDate == null">
-          Search
-          {{selectedDate | date:'MMM dd, y'}}
-        </button>
   </div>
-  
 
-  <!-- <ion-list>
-    <ion-list-header>
-      Event Dates
-    </ion-list-header>
-    <ion-item *ngFor="let date of eventDates">
-      <button full ion-button strong>
-        {{date | date:'M/d/yy, h:mm a' }}
-      </button>
-    </ion-item>
-  </ion-list> -->
-
- 
-
-
-</ion-content>
+  <button ion-button large block icon-start round (click)="searchDate()" [disabled]="selectedDate == null">
+      <ion-icon name="search"></ion-icon>
+      Search
+      {{selectedDate | date:'MMM dd, y | h:mm a'}}
+    </button>
+  </ion-content>

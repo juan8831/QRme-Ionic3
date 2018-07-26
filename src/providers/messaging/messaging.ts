@@ -43,7 +43,7 @@ export class MessagingProvider {
         {
           text: 'Yes',
           handler: () => {
-            yesAction();
+            console.log('dsd');
           }
         },
         {

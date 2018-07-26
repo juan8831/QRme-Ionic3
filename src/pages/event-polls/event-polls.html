@@ -7,7 +7,7 @@
   
   
   <ion-content padding>
-    <h1 text-center> <ion-icon item-left name="flag"></ion-icon> Polls</h1>
+    <h1 text-center ion-text color="yellow"> <ion-icon name="flag"></ion-icon> Polls</h1>
     <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search by Poll Name"></ion-searchbar>
     <ion-list *ngIf="filteredPolls?.length > 0">
       <ion-list-header>Polls</ion-list-header>

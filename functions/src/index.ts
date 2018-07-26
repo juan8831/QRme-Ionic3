@@ -6,6 +6,61 @@ import * as admin from 'firebase-admin';
 
 admin.initializeApp(functions.config().firebase);
 
+
+
+
+/*
+Delete events subcollection under user
+Delete all events that user was managing 
+Remove user from all events that he was invited to 
+*/
+export const onAccountDelete = functions.firestore.document(`users/{userId}`)
+    .onDelete(async event => {
+        const data = event.data();
+        const userId = event.id;
+        let managingEventIds = [];
+        event.ref.collection('events').doc('admin').get()
+        .then(result => {
+            managingEventIds = Object.keys(result.data().events);
+            console.log(managingEventIds);
+            managingEventIds.forEach(async eventId => {
+                await admin.firestore().doc(`events/${eventId}`).delete();
+                console.log('Deleted event: ' + eventId);
+            });
+        })
+        .catch(err => {
+            console.log('Could not get managing event ids');
+        });
+
+        let invitedEventIds = [];
+        event.ref.collection('events').doc('invitee').get()
+        .then(result => {
+            invitedEventIds = Object.keys(result.data().events);
+            console.log('Invite Ids: ' + invitedEventIds);
+            invitedEventIds.forEach(async eventId => {
+                await removeInviteeUserFromEvent(userId, eventId);
+            })
+
+        })
+        .catch(err => {
+            console.log('Could not get invitee event ids');
+        });
+
+        
+        
+
+
+        //delete events subcollection
+        try{
+         await event.ref.collection('events').doc('admin').delete();
+         await event.ref.collection('events').doc('invitee').delete();
+         console.log('deleted admin & invitee subcollection')
+        }
+        catch(err){
+            console.log(err);
+        }
+    });
+
 //Unsubscribe all invitees
 //delete attendance records
 //delete invite request
@@ -13,7 +68,7 @@ admin.initializeApp(functions.config().firebase);
 //delete polls
 //delete actual event
 // unsubscribe admin done in client code
-// delete picture done in client code
+// delete picture done in client code, but will be done here instead
 export const onEventDelete  = functions.firestore.document(`events/{messageId}`)
     .onDelete(async event => {
         const data = event.data();
@@ -96,6 +151,21 @@ async function removeEventFromUser(userId: string, eventId: string){
     });
     console.log(`Desynced ${userId} from ${eventId}`);
 
+
+}
+
+async function removeInviteeUserFromEvent(userId: string, eventId: string){
+    var usersDocRef = admin.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
+    console.log(`Starting transaction for user ${userId} with event ${eventId}`);
+    await admin.firestore().runTransaction(transaction => {
+      return transaction.get(usersDocRef).then(userDoc => {
+         //delete userId from event's invitee events
+         var users = userDoc.data().users;
+         delete users[userId];
+         transaction.update(usersDocRef, { 'users': users });
+      });
+    });
+    console.log(`Removed ${userId} from ${eventId} invitees`);
 
 }
 

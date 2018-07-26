@@ -28,6 +28,7 @@
 
 
 <ion-content padding [id]='content' text-center>
+        <h1 text-center ion-text color="primary"> <ion-icon name="contacts"></ion-icon> Invitees</h1>
         
         <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search by User Name">
         </ion-searchbar>
@@ -35,7 +36,7 @@
 
         <ion-list *ngIf="filteredInviteeUsers?.length > 0">
                 <ion-list-header>
-                  <p style="color:#F6AA1C;">Current Invitees: {{inviteeUsers.length}}</p>
+                  <p style="color:#F6AA1C;">Current Count: {{inviteeUsers.length}}</p>
                 </ion-list-header>
                 <ion-item-sliding *ngFor="let user of filteredInviteeUsers">
                   <ion-item>

@@ -85,10 +85,6 @@ export class UserProvider {
     return this.user;
   }
 
-
-
-
-
   getUser(id: string): Observable<User> {
     this.userDoc = this.afs.doc<User>(`users/${id}`);
     if (id = null) return null;
@@ -146,14 +142,6 @@ export class UserProvider {
 
   }
 
-  updateEventAdminList(user: User) {
-    this.afs.doc(`users/${user.id}`).collection('events').doc('admin').update({ 'events': user.eventAdminList });
-  }
-
-  updateEventInviteeList(user: User) {
-    this.afs.doc(`users/${user.id}`).collection('events').doc('invitee').update({ 'events': user.eventInviteeList });
-  }
-
   addEventToUserInviteeList(id: string){
     var inviteeDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
     return this.fb.firestore().runTransaction(transaction => {
@@ -176,9 +164,9 @@ export class UserProvider {
     });
   }
 
-  deleteUser(user: User) {
-    this.userDoc = this.afs.doc(`users/${user.id}`);
-    this.userDoc.delete();
+  deleteUser(userId: string) {
+    this.userDoc = this.afs.doc(`users/${userId}`);
+    return this.userDoc.delete();
   }
 
   //get signed in user
@@ -196,14 +184,6 @@ export class UserProvider {
   setUserProfile() {
     this.afAuth.authState.subscribe(user => {
       this.getUser(user.uid).subscribe(userProfile => this.userProfile = userProfile);
-    });
-  }
-
-
-  deleteEventForUser(userId: string, eventId: string) {
-    return this.getUser(userId).first().switchMap(user => {
-      delete user.eventAdminList[eventId];
-      return this.updateUser(user);
     });
   }
 

@@ -77,18 +77,6 @@ export class SearchEventsPage implements OnInit {
     console.log('search-events unsubscribe');
   }
 
-  getUserEvents(){
-    var userEventsList = Object.keys(this.userProvider.userProfile.eventAdminList);
-    Object.keys(this.userProvider.userProfile.eventInviteeList).map(event => userEventsList.push(event));
-    return userEventsList;
-  }
-
-  ionViewDidEnter() {
-   
-   // this.filterEvents();
-
-  }
-
   changeSearch() {
     if (!this.searchText)
       this.searchText = "";

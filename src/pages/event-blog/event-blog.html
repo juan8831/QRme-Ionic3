@@ -7,7 +7,7 @@
 
 
 <ion-content padding>
-  <h1 text-center> <ion-icon item-left name="text" style=""></ion-icon> Blog</h1>
+  <h1 text-center ion-text color="blue"> <ion-icon item-left name="text"></ion-icon> Blog</h1>
   <ion-searchbar color="white" [(ngModel)]="searchText" (ionInput)="changeSearch()" placeholder="Search by Post Title"></ion-searchbar>
   <ion-list *ngIf="filteredPosts?.length > 0">
     <ion-list-header>Posts</ion-list-header>
@@ -17,7 +17,7 @@
         <ion-note item-end>{{post.date | date:'M/d/yy, h:mm a'}}</ion-note>
       </ion-item>
   </ion-list>
-  <h3 text-center *ngIf="filteredPosts?.length == 0">No Posts Found</h3>
+  <h4 text-center *ngIf="filteredPosts?.length == 0">No Posts Found</h4>
 
   <ion-fab *ngIf="event.allowInviteePosts || isAdmin" bottom right #fab>
     <button color="secondary" ion-fab (click)="addPost()">

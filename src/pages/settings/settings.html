@@ -7,12 +7,26 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>settings</ion-title>
+    <ion-title>Settings</ion-title>
+    <ion-buttons start>
+        <button ion-button icon-only menuToggle>
+          <ion-icon name="menu"></ion-icon>
+        </button>
+      </ion-buttons>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+  <button ion-button large color="primary"icon-start full round (click)="changePassword()" >
+      <ion-icon name="refresh"></ion-icon>
+    Change Password
+  </button>
+  <br>
+  <button ion-button large color="danger" icon-start full round (click)="confirmDelete()" >
+      <ion-icon name="close"></ion-icon>
+    Delete Account 
+  </button>
 
 </ion-content>

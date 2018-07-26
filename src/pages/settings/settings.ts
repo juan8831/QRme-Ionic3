@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { ChangePasswordPage } from '../change-password/change-password';
+import { MessagingProvider } from '../../providers/messaging/messaging';
+import { AngularFireAuth } from '../../../node_modules/angularfire2/auth';
 
 /**
  * Generated class for the SettingsPage page.
@@ -15,11 +18,22 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class SettingsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private mProv: MessagingProvider,
+    private afAuth: AngularFireAuth
+  ) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SettingsPage');
+  changePassword(){
+    this.navCtrl.push(ChangePasswordPage, {'deleteAccount': false});
   }
+
+  confirmDelete(){
+    this.navCtrl.push(ChangePasswordPage, {'deleteAccount': true});
+  }
+
+
 
 }
