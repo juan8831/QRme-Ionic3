@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -68,11 +67,11 @@ import { PollPage } from '../pages/poll/poll';
 import { ChartsModule } from 'ng2-charts';
 import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { ChangePasswordPage } from '../pages/change-password/change-password';
+import { AboutPage } from '../pages/about/about';
 
 @NgModule({
   declarations: [
     MyApp,
-    AboutPage,
     ContactPage,
     HomePage,
     TabsPage,
@@ -106,7 +105,8 @@ import { ChangePasswordPage } from '../pages/change-password/change-password';
     EditPollPage,
     PollPage,
     ForgotPasswordPage,
-    ChangePasswordPage
+    ChangePasswordPage,
+    AboutPage
   ],
   imports: [
     BrowserModule,
@@ -125,7 +125,6 @@ import { ChangePasswordPage } from '../pages/change-password/change-password';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AboutPage,
     ContactPage,
     HomePage,
     TabsPage,
@@ -159,7 +158,8 @@ import { ChangePasswordPage } from '../pages/change-password/change-password';
     EditPollPage,
     PollPage,
     ForgotPasswordPage,
-    ChangePasswordPage
+    ChangePasswordPage,
+    AboutPage
   ],
   providers: [
     StatusBar,

@@ -18,6 +18,7 @@ import { JoinEventsPage } from '../pages/join-events/join-events';
 import { UserProvider } from '../providers/user/user';
 import { MessagingProvider } from '../providers/messaging/messaging';
 import {timer} from 'rxjs/observable/timer';
+import { AboutPage } from '../pages/about/about';
 
 @Component({
   templateUrl: 'app.html'
@@ -29,6 +30,7 @@ export class MyApp {
   signInUpPage = SigninUpPage;
   settings = SettingsPage;
   joinEventsPage = JoinEventsPage;
+  about = AboutPage;
 
   isAuthenticated = true;
   email = "";
