@@ -40,7 +40,7 @@ export class EventProvider {
     if (event.creatorId && event.creatorId === userId) {
       return true;
     }
-    if (event.creator === userEmail) {
+    if (event.creatorEmail === userEmail) {
       return true;
     }
     return false;

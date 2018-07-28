@@ -160,7 +160,6 @@ export class EditEventPage implements OnInit {
   async onSubmit(f: NgForm) {
 
     this.event.name = f.value.name;
-    this.event.recurring = f.value.recurring ? f.value.recurring : false;
     this.event.location = f.value.location;
     this.event.type = f.value.type;
     this.event.category = f.value.category;
@@ -187,18 +186,23 @@ export class EditEventPage implements OnInit {
       
     }
 
-    if (f.value.starts > f.value.ends) {
-      this.mProv.showAlertOkMessage('Error', 'Start Date must be before End Date.');
-      return;
-    }
     if (this.event.repeat != RepeatType.Never && this.event.endRepeat != RepeatType.Never  
       && (f.value.endRepeatDate < f.value.starts || f.value.endRepeatDate < f.value.ends)) {
       this.mProv.showAlertOkMessage('Error', 'End Repeat Date cannot be before Start Date or End Date.');
       return;
     }
-    
-    this.event.starts = new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
-    this.event.ends = new Date(this.convertISO8601LocalwZtoUTC(f.value.ends));
+
+    if(!(f.value.starts instanceof Date)){
+      this.event.starts = new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
+    }
+    if(!(f.value.ends instanceof Date)){
+      this.event.ends = new Date(this.convertISO8601LocalwZtoUTC(f.value.ends));
+    }
+
+    if (this.event.starts  > this.event.ends ) {
+      this.mProv.showAlertOkMessage('Error', 'Start Date must be before End Date.');
+      return;
+    }
 
     if (this.event.repeat != RepeatType.Never) {
       this.event.endRepeat = f.value.endRepeat;
@@ -221,11 +225,12 @@ export class EditEventPage implements OnInit {
     //this.event.date = f.value.date ? f.value.date : '';
     //this.event.time = f.value.time ? f.value.time : '';
     this.event.description = f.value.description ? f.value.description : '';
+    this.event.location = f.value.location ? f.value.location : '';
 
     if (this.isnewEvent) {
       let loader = this.loadingCtl.create({ spinner: 'dots', content: 'Creating new event...' });
       loader.present();
-      this.event.creator = this.afAuth.auth.currentUser.email;
+      this.event.creatorEmail = this.afAuth.auth.currentUser.email;
       this.event.creatorName = this.userProvider.userProfile.name;
       this.event.creatorId = this.afAuth.auth.currentUser.uid;
       let newEventRef = this.firebase.firestore().collection('events').doc();
@@ -260,7 +265,7 @@ export class EditEventPage implements OnInit {
         .catch(err => {
           console.log(err);
           loader.dismiss();
-          this.mProv.showAlertOkMessage('Error', 'Could not create event. Plase try again.');
+          this.mProv.showAlertOkMessage('Error', 'Could not create event. Please try again.');
         });
     }
     //.catch(err => console.log(err, 'You do not have access!'));

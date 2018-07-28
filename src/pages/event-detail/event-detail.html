@@ -65,7 +65,7 @@
                 <p><b>Repeats</b></p>
               </ion-col>
               <ion-col col-8 text-left class="right" >
-                <p>{{event.repeats}}</p>
+                <p>{{event.repeat}}</p>
               </ion-col>
           </ion-row>
           <ion-row no-padding>
@@ -74,6 +74,14 @@
               </ion-col>
               <ion-col col-8 text-left class="right" >
                 <p>{{event.creatorName}}</p>
+              </ion-col>
+          </ion-row>
+          <ion-row no-padding>
+              <ion-col col-4 class="left" >
+                <p><b>Allow Manual Attendance</b></p>
+              </ion-col>
+              <ion-col col-8 text-left class="right" >
+                <p>{{event.allowManualAttendance? 'Yes' : 'No'}}</p>
               </ion-col>
           </ion-row>
         </ion-card-content>

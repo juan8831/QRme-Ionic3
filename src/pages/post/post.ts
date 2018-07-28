@@ -63,10 +63,10 @@ export class PostPage implements OnInit {
       }
     }
     else{
-      if(this.post.authorId === this.userId || this.event.creator === this.userEmail){
+      if(this.post.authorId === this.userId || this.event.creatorEmail === this.userEmail){
         this.isAdminOrCreator = true;
       }
-      if(this.event.creator === this.userEmail ){
+      if(this.event.creatorEmail === this.userEmail ){
         this.isAdmin = true;
       }
     }

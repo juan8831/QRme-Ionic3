@@ -44,7 +44,7 @@ export class EventBlogPage implements OnInit {
         this.isAdmin = true;
     }
     else{
-      if(this.event.creator === this.userEmail ){
+      if(this.event.creatorEmail === this.userEmail ){
         this.isAdmin = true;
       }
     }

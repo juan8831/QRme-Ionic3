@@ -15,13 +15,10 @@ export class Event{
     description?: string
     creatorId: string
     location?: string
-    creator: string
+    creatorEmail?: string
     creatorName: string
     category: string
     type: string
-    recurring?: boolean
-    date: Date
-    time: Date
     isVisibleInPublicSearch: boolean
     eventImageUrl: string
     allDay: boolean
@@ -38,13 +35,5 @@ export class Event{
 
     
     constructor(){}
-
-    // constructor(name, description, location, recurring, type){
-    //     this.name = name;
-    //     this.description = description;
-    //     this.location = location;
-    //     this.recurring = recurring;
-    //     this.type = type;
-    // }
 
 }
