@@ -83,10 +83,6 @@ export class EventNewsPage implements OnInit {
   //       })
   // }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad EventNewsPage');
-  }
-
   onOpenInfo() {
     this.navCtrl.push(EventDetailPage, { event: this.event, 'isManaging': this.isManaging });
     //this.navCtrl.p

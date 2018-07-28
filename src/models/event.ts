@@ -15,8 +15,6 @@ export class Event{
     description?: string
     creatorId: string
     location?: string
-    locationLat?: number
-    locationLong?: number
     creator: string
     creatorName: string
     category: string

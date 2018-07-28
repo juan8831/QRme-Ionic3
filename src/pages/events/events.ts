@@ -1,26 +1,18 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, ViewController, Content, Events, AlertController, Loading } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { IonicPage, NavController, NavParams, ModalController, ViewController, AlertController, Loading } from 'ionic-angular';
 import { EditEventPage } from '../edit-event/edit-event';
 import { EventProvider } from '../../providers/event/event';
 //import { Observable } from '@firebase/util';
 import { Event } from '../../models/event';
-import { IfObservable } from 'rxjs/observable/IfObservable';
 import { Observable } from 'rxjs/Observable';
-import { EventDetailPage } from '../event-detail/event-detail';
-import { EventTabsPage } from '../event-tabs/event-tabs';
 import { EventNewsPage } from '../event-news/event-news';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { combineLatest } from 'rxjs/observable/combineLatest';
 import { of } from 'rxjs/observable/of';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { mergeAll } from 'rxjs/operator/mergeAll';
 import { UserProvider } from '../../providers/user/user';
 import { ISubscription } from 'rxjs/Subscription';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { FirebaseApp } from 'angularfire2';
-import { EventListener } from '@angular/core/src/debug/debug_node';
 
-const defaultEventImage = 'assets/imgs/calendar.png';
 
 @IonicPage()
 @Component({
@@ -51,11 +43,8 @@ export class EventsPage implements OnInit {
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private eventProvider: EventProvider,
-    private modalCtrl: ModalController,
-    private viewCtrl: ViewController,
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
-    private alertCtrl: AlertController,
     private mProv: MessagingProvider,
     private firebase: FirebaseApp
   ) {
@@ -69,7 +58,7 @@ export class EventsPage implements OnInit {
     this.loader = this.mProv.getLoader('');
     //this.loader.present();
 
-    this.afAuth.authState.take(1).subscribe(user => {
+    this.afAuth.authState.take(1).subscribe(() => {
       //this.userProvider.getAdminList(user.uid);
       this.loadManagingEvents();
       this.loadInvitedEvents();
@@ -262,9 +251,9 @@ export class EventsPage implements OnInit {
       .then(result => {
         return of(result);
       })
-      .catch(err => {
-        return of('assets/imgs/calendar.png');
-      })
+      .catch(() => {
+          return of('assets/imgs/calendar.png');
+        })
 
   }
 
