@@ -68,6 +68,7 @@ import { ChartsModule } from 'ng2-charts';
 import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { ChangePasswordPage } from '../pages/change-password/change-password';
 import { AboutPage } from '../pages/about/about';
+import { ErrorProvider } from '../providers/error/error';
 
 @NgModule({
   declarations: [
@@ -177,7 +178,8 @@ import { AboutPage } from '../pages/about/about';
     File,
     SocialSharing,
     BlogProvider,
-    PollProvider
+    PollProvider,
+    ErrorProvider
   ]
 })
 export class AppModule {}

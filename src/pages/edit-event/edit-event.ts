@@ -14,6 +14,7 @@ import { normalizeURL } from 'ionic-angular';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs/observable/of';
 import { FirebaseApp } from 'angularfire2';
+import { ErrorProvider } from '../../providers/error/error';
 
 declare var window: any;
 
@@ -34,6 +35,7 @@ export class EditEventPage implements OnInit {
   uploadNewImage = false;
   setDefaultImage = false;
   isDefaultImage = true;
+  pageName = 'EditEvent';
 
   selectOptions = {
     title: 'Repeat',
@@ -56,7 +58,8 @@ export class EditEventPage implements OnInit {
     private camera: Camera,
     private storage: AngularFireStorage,
     private file: File,
-    private firebase: FirebaseApp
+    private firebase: FirebaseApp,
+    private errorProvider: ErrorProvider
 
   ) {
     Object.keys(RepeatType).forEach(key => this.repeatValues.push(RepeatType[key]));
@@ -263,8 +266,8 @@ export class EditEventPage implements OnInit {
           this.navCtrl.pop();
         })
         .catch(err => {
-          console.log(err);
           loader.dismiss();
+          this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not create event'); 
           this.mProv.showAlertOkMessage('Error', 'Could not create event. Please try again.');
         });
     }
@@ -319,6 +322,7 @@ export class EditEventPage implements OnInit {
         })
         .catch(err => {
           this.mProv.showAlertOkMessage('Error', 'Could not update event. Plase try again.')
+          this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not update event'); 
         });
       this.navCtrl.pop();
     }
@@ -333,25 +337,14 @@ export class EditEventPage implements OnInit {
   //delete event && users subcollection 
 
   deleteEvent() {
-
-    // await Promise.all(Object.keys(this.event.adminList).map(async (userId) => {
-    //   await this.userProvider.deleteEventForUser(userId, this.event.id).toPromise();
-    //   console.log('deleted for user');
-    // }));
-
     this.eventProvider.deleteEvent(this.event)
       .then(_ => {
-        if(this.event.eventImageUrl != defaultEventImage){
-          //this.deleteEventImage();
-        }  
-        this.toastCtrl.create({
-          message: 'Event successfully deleted',
-          duration: 3000
-        }).present();
         this.navCtrl.popToRoot();
-      });
-    //todo invitee list delete
-
+      })
+      .catch(err => {
+        this.mProv.showAlertOkMessage('Error', 'Could not delete event. Please try again later');
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not delete event'); 
+      })
   }
 
   showConfirm() {
@@ -393,7 +386,7 @@ export class EditEventPage implements OnInit {
         this.setImageBlob(imageData);
       })
       .catch(err => {
-        console.log('Error: ' + err);
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not take picture'); 
         if (err != 'No Image Selected') {
           this.mProv.showAlertOkMessage('Error', 'Could not take picture. Please try again.');
         }
@@ -425,12 +418,12 @@ export class EditEventPage implements OnInit {
       )
       .catch(
         (err: FileError) => {
-          //this.imageURL = of('');
           const toast = this.toastCtrl.create({
             message: 'Could not save the image. Please try again',
             duration: 2500
           });
           toast.present();
+          this.errorProvider.reportError(this.pageName, err.message, this.event.id, 'Could not save image'); 
           this.camera.cleanup();
         }
       );
@@ -487,13 +480,10 @@ export class EditEventPage implements OnInit {
   deleteEventImage() {
     this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).delete()
       .then(result => {
-        //this.imageURL = of(result);
       })
       .catch(err => {
         this.mProv.showAlertOkMessage('Error', 'Could not delete event image.');
-        console.log('err');
-        //this.imageURL = of(defaultEventImage);
-
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not delete image');
       })
   }
 
