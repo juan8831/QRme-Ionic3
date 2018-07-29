@@ -10,20 +10,24 @@ export class ErrorProvider {
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth
   ) {
-    
+
   }
 
-  reportError(pageName, error, eventId = "", extraInfo = "" ){
+  reportError(pageName, error, eventId = "", extraInfo = "") {
     let newError = new Error();
     newError.pageName = pageName;
-    newError.error = error.ToString();
+    newError.error = error.message ? error.message : '';
     newError.eventId = eventId;
     newError.extraInfo = extraInfo;
     newError.date = new Date();
     newError.userId = this.afAuth.auth.currentUser.uid;
-    this.afs.collection('errors').add(Object.assign({}, newError))
-    .then()
-    .catch(err => console.log(err));
+
+    try {
+      this.afs.collection('errors').add(Object.assign({}, newError));
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
 
 }

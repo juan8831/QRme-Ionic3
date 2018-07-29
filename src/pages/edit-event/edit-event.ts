@@ -179,11 +179,11 @@ export class EditEventPage implements OnInit {
         f.value.starts += "T00:00:00.000Z";
         f.value.ends += "T00:00:00.000Z";
       }
-      let startDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
+      let startDate = (f.value.starts instanceof Date) ? f.value.starts : new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
       startDate.setHours(0, 0, 0, 0);   
       f.value.starts = this.convertISO8601UTCtoLocalwZ(startDate.toISOString());
 
-      let endDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.ends));
+      let endDate = (f.value.ends instanceof Date) ? f.value.ends : new Date(this.convertISO8601LocalwZtoUTC(f.value.ends));
       endDate.setHours(0, 0, 0, 0);   
       f.value.ends = this.convertISO8601UTCtoLocalwZ(endDate.toISOString());
       
@@ -300,7 +300,7 @@ export class EditEventPage implements OnInit {
           this.event.eventImageUrl = result.downloadURL;
         }
         catch (err) {
-          this.mProv.showAlertOkMessage('Error', 'Could not upload event image');
+          this.mProv.showAlertOkMessage('Error', 'Could not upload event image. Please try again');
           console.log('Upload error:' + err);
           this.event.eventImageUrl = this.eventProvider.defaultEventImage;;
         }
@@ -319,12 +319,13 @@ export class EditEventPage implements OnInit {
 
       this.eventProvider.updateEvent(this.event)
         .then(_ => {
+          this.mProv.showToastMessage('Event successfully updated!');
+          this.navCtrl.pop();
         })
         .catch(err => {
-          this.mProv.showAlertOkMessage('Error', 'Could not update event. Plase try again.')
+          this.mProv.showAlertOkMessage('Error', 'Could not update event. Please try again.')
           this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not update event'); 
         });
-      this.navCtrl.pop();
     }
 
 
