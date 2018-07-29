@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController, ViewController, AlertController, Loading } from 'ionic-angular';
 import { EditEventPage } from '../edit-event/edit-event';
 import { EventProvider } from '../../providers/event/event';
-//import { Observable } from '@firebase/util';
 import { Event } from '../../models/event';
 import { Observable } from 'rxjs/Observable';
 import { EventNewsPage } from '../event-news/event-news';

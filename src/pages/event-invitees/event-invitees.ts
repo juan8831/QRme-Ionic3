@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController, ToastController } from 'ionic-angular';
-import { InviteRequest } from '../../models/inviteRequest';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { InviteRequestProvider } from '../../providers/invite-request/invite-request';
 import { ISubscription } from 'rxjs/Subscription';
 import { Event } from '../../models/event';
@@ -38,7 +37,6 @@ export class EventInviteesPage implements OnInit {
     private userProvider: UserProvider,
     private alertCtrl: AlertController,
     private mProv: MessagingProvider,
-    private toastCtrl: ToastController,
     private errorProvider: ErrorProvider
   ) {
   }
@@ -80,13 +78,13 @@ export class EventInviteesPage implements OnInit {
     this.eventProvider.desynchronizeInviteeWithEvent(user.id, this.event.id)
       .then(_ => {
         loader.dismiss();
-        this.toastCtrl.create({ message: `Successfully removed user: ${user.name}`, duration: 5000 }).present();
+        this.mProv.showToastMessage(`Successfully removed user: ${user.name}`);
         this.navCtrl.popToRoot();
       })
       .catch(err => {
         loader.dismiss();
         this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not uninvite user');
-        this.toastCtrl.create({ message: `Error, unable to remove user.`, duration: 5000 }).present();
+        this.mProv.showAlertOkMessage('Error', 'Unable to remove user. Please try again later.' )
       });
   }
 

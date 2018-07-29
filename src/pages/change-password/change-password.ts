@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, Form, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { NgForm } from '../../../node_modules/@angular/forms';
 import { AngularFireAuth } from '../../../node_modules/angularfire2/auth';
-import { FirebaseApp } from 'angularfire2';
 import { firebase } from '../../../node_modules/@firebase/app';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { UserProvider } from '../../providers/user/user';
@@ -57,10 +56,10 @@ export class ChangePasswordPage implements OnInit {
         this.errorProvider.reportError(this.pageName, err, undefined, 'Could not update password');
       })
     })
-    .catch(err => {
-      loader.dismiss();
-      this.mProv.showAlertOkMessage('Error', 'Please check that old password is correct.');
-    });
+    .catch(() => {
+        loader.dismiss();
+        this.mProv.showAlertOkMessage('Error', 'Please check that old password is correct.');
+      });
   }
 
   onDeleteAccount(f: NgForm){
@@ -114,10 +113,10 @@ export class ChangePasswordPage implements OnInit {
         this.mProv.showAlertOkMessage('Error', 'Could not delete account. Please try again.');
       })
     })
-    .catch(err => {
-      loader.dismiss();
-      this.mProv.showAlertOkMessage('Error', 'Please check that your password is correct.');
-    });
+    .catch(() => {
+        loader.dismiss();
+        this.mProv.showAlertOkMessage('Error', 'Please check that your password is correct.');
+      });
     
   }
 

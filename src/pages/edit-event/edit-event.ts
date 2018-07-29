@@ -1,22 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, AlertController, LoadingController } from 'ionic-angular';
 import { Event, RepeatType } from '../../models/event';
-import { Form, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { EventProvider } from '../../providers/event/event';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { UserProvider } from '../../providers/user/user';
-import { User } from '../../models/user';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { AngularFireStorage } from 'angularfire2/storage';
-import { File, FileReader, FileError, Entry } from '@ionic-native/file';
+import { File, FileError, Entry } from '@ionic-native/file';
 import { normalizeURL } from 'ionic-angular';
-import { Observable } from 'rxjs';
-import { of } from 'rxjs/observable/of';
 import { FirebaseApp } from 'angularfire2';
 import { ErrorProvider } from '../../providers/error/error';
-
-declare var window: any;
 
 const defaultEventImage = 'assets/imgs/calendar.png';
 
@@ -56,7 +51,6 @@ export class EditEventPage implements OnInit {
     private loadingCtl: LoadingController,
     private mProv: MessagingProvider,
     private camera: Camera,
-    private storage: AngularFireStorage,
     private file: File,
     private firebase: FirebaseApp,
     private errorProvider: ErrorProvider
@@ -77,11 +71,9 @@ export class EditEventPage implements OnInit {
         .then(result => {
           this.imageURL = result;
         })
-        .catch(err => {
-
-          this.imageURL = defaultEventImage;
-
-        })
+        .catch(() => {
+            this.imageURL = defaultEventImage;
+          })
 
         this.event.starts = this.convertISO8601UTCtoLocalwZ(new Date(this.event.starts).toISOString());
         this.event.ends = this.convertISO8601UTCtoLocalwZ(new Date(this.event.ends).toISOString());
@@ -480,8 +472,8 @@ export class EditEventPage implements OnInit {
 
   deleteEventImage() {
     this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).delete()
-      .then(result => {
-      })
+      .then(() => {
+        })
       .catch(err => {
         this.mProv.showAlertOkMessage('Error', 'Could not delete event image.');
         this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not delete image');
