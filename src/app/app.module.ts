@@ -28,7 +28,6 @@ import { EventTabsPage } from '../pages/event-tabs/event-tabs';
 import { EventNewsPage } from '../pages/event-news/event-news';
 import { EventBlogPage } from '../pages/event-blog/event-blog';
 import { EventPollsPage } from '../pages/event-polls/event-polls';
-import { RootPageProvider } from '../providers/root-page/root-page';
 import { AuthProvider } from '../providers/auth/auth';
 import { UserProvider } from '../providers/user/user';
 import { AngularFirestore, AngularFirestoreModule } from 'angularfire2/firestore';
@@ -167,7 +166,6 @@ import { ErrorProvider } from '../providers/error/error';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     EventProvider,
-    RootPageProvider,
     AuthProvider,
     UserProvider,
     MessagingProvider,

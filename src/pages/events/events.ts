@@ -6,11 +6,13 @@ import { Event } from '../../models/event';
 import { Observable } from 'rxjs/Observable';
 import { EventNewsPage } from '../event-news/event-news';
 import { AngularFireAuth } from 'angularfire2/auth';
+import {BehaviorSubject} from 'rxjs';
 import { of } from 'rxjs/observable/of';
 import { UserProvider } from '../../providers/user/user';
 import { ISubscription } from 'rxjs/Subscription';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { FirebaseApp } from 'angularfire2';
+import 'rxjs/add/operator/take';
 
 
 @IonicPage()

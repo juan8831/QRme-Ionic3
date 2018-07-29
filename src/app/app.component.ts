@@ -11,7 +11,6 @@ import { SettingsPage } from '../pages/settings/settings';
 import { EventDetailPage } from '../pages/event-detail/event-detail';
 
 import firebase from 'firebase';
-import { RootPageProvider } from '../providers/root-page/root-page';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthProvider } from '../providers/auth/auth';
 import { JoinEventsPage } from '../pages/join-events/join-events';
@@ -44,7 +43,6 @@ export class MyApp {
     statusBar: StatusBar, 
     splashScreen: SplashScreen, 
     private menuCtrl: MenuController,
-    private rootPageProvider : RootPageProvider,
     private authProvider: AuthProvider,
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
