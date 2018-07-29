@@ -3,16 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { ContactPage } from '../pages/contact/contact';
-import { HomePage } from '../pages/home/home';
-import { TabsPage } from '../pages/tabs/tabs';
-
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { EventAttendancePage } from '../pages/event-attendance/event-attendance';
 import { EventDetailPage } from '../pages/event-detail/event-detail';
 import { EventsPage } from '../pages/events/events';
-import { PublicEventsPage } from '../pages/public-events/public-events';
 import { SigninUpPage } from '../pages/signin-up/signin-up';
 import { SettingsPage } from '../pages/settings/settings';
 import { EditEventPage } from '../pages/edit-event/edit-event';
@@ -24,7 +19,6 @@ import {AngularFireModule} from 'angularfire2';
 import {AngularFireAuthModule} from 'angularfire2/auth';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import { AngularFireStorageModule } from 'angularfire2/storage';
-import { EventTabsPage } from '../pages/event-tabs/event-tabs';
 import { EventNewsPage } from '../pages/event-news/event-news';
 import { EventBlogPage } from '../pages/event-blog/event-blog';
 import { EventPollsPage } from '../pages/event-polls/event-polls';
@@ -72,17 +66,12 @@ import { ErrorProvider } from '../providers/error/error';
 @NgModule({
   declarations: [
     MyApp,
-    ContactPage,
-    HomePage,
-    TabsPage,
     EventAttendancePage,
     EventDetailPage,
     EventsPage,
-    PublicEventsPage,
     SigninUpPage,
     SettingsPage,
     EditEventPage,
-    EventTabsPage,
     EventNewsPage,
     EventAttendancePage,
     EventBlogPage,
@@ -125,17 +114,12 @@ import { ErrorProvider } from '../providers/error/error';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    ContactPage,
-    HomePage,
-    TabsPage,
     EventAttendancePage,
     EventDetailPage,
     EventsPage,
-    PublicEventsPage,
     SigninUpPage,
     SettingsPage,
     EditEventPage,
-    EventTabsPage,
     EventNewsPage,
     EventAttendancePage,
     EventBlogPage,

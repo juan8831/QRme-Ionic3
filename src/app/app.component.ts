@@ -3,12 +3,9 @@ import { Platform, NavController, MenuController, AlertController } from 'ionic-
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { TabsPage } from '../pages/tabs/tabs';
 import { EventsPage } from '../pages/events/events';
-import { PublicEventsPage } from '../pages/public-events/public-events';
 import { SigninUpPage } from '../pages/signin-up/signin-up';
 import { SettingsPage } from '../pages/settings/settings';
-import { EventDetailPage } from '../pages/event-detail/event-detail';
 
 import firebase from 'firebase';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -25,7 +22,6 @@ import { AboutPage } from '../pages/about/about';
 export class MyApp {
   rootPage :any = EventsPage;
   eventsPage = EventsPage;
-  publicEventsPage = PublicEventsPage;
   signInUpPage = SigninUpPage;
   settings = SettingsPage;
   joinEventsPage = JoinEventsPage;
@@ -55,9 +51,8 @@ export class MyApp {
     databaseURL: "https://qrme-65e1e.firebaseio.com"
     });
 
-    afAuth.authState.subscribe(user => {
+    this.afAuth.authState.subscribe(user => {
       if(user){
-            console.log("logged in..");
             this.isAuthenticated = true;
             //this.userProvider.getUserProfile();
             this.email = user.email;
@@ -65,7 +60,6 @@ export class MyApp {
             //this.nav.setRoot(this.tabsPage);
           }
           else{
-            console.log("logged out..");
             this.isAuthenticated = false;
             this.email = "";
             this.userProvider.userProfile = null;
