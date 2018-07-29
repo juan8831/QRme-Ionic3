@@ -10,8 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
 admin.initializeApp(functions.config().firebase);
 /*
 Delete events subcollection under user
@@ -57,14 +55,18 @@ exports.onAccountDelete = functions.firestore.document(`users/{userId}`)
         console.log(err);
     }
 }));
-//Unsubscribe all invitees
-//delete attendance records
-//delete invite request
-//delete posts
-//delete polls
-//delete actual event
-// unsubscribe admin done in client code
-// delete picture done in client code, but will be done here instead
+/*
+Unsubscribe all invitees
+Unsubscribe admin
+
+delete invite request
+delete posts
+delete polls
+delete attendance records
+
+delete event invitees & admin subcollections
+delete event picture if any
+*/
 exports.onEventDelete = functions.firestore.document(`events/{messageId}`)
     .onDelete((event) => __awaiter(this, void 0, void 0, function* () {
     const data = event.data();
@@ -81,65 +83,46 @@ exports.onEventDelete = functions.firestore.document(`events/{messageId}`)
             usersList = Object.keys(result.data().users);
         }
         console.log(`Found ${usersList.length} invitees.`);
-        usersList.forEach((user) => __awaiter(this, void 0, void 0, function* () {
-            yield removeEventFromUser(user, eventId)
-                .then()
-                .catch(err => console.log(err));
+        usersList.forEach((userId) => __awaiter(this, void 0, void 0, function* () {
+            yield removeEventIdFromUser(userId, eventId, 'invitee');
         }));
-    }
-    catch (err) {
-        console.log(err);
-    }
-    yield deleteEventComponent('posts', eventId);
-    yield deleteEventComponent('polls', eventId);
-    yield deleteEventComponent('inviteRequests', eventId);
-    event.ref.collection('attendance').get()
-        .then(queryResults => {
-        console.log(`${queryResults.size} attendance records to delete.`);
-        queryResults.forEach(record => {
-            record.ref.delete()
-                .then()
-                .catch(err => {
-                console.log('unable to delete attendance record' + err);
-            });
-        });
-    })
-        .catch(err => console.log(err));
-    try {
+        yield removeEventIdFromUser(data.creatorId, eventId, 'admin');
+        yield deleteEventComponent('posts', eventId);
+        yield deleteEventComponent('polls', eventId);
+        yield deleteEventComponent('inviteRequests', eventId);
+        let queryResults = yield event.ref.collection('attendance').get();
+        if (queryResults != null) {
+            console.log(`${queryResults.size} attendance records to delete.`);
+            queryResults.forEach((record) => __awaiter(this, void 0, void 0, function* () {
+                yield record.ref.delete();
+            }));
+        }
         yield admin.firestore().doc(`events/${event.id}`).collection('users').doc('admin').delete();
         yield admin.firestore().doc(`events/${event.id}`).collection('users').doc('invitee').delete();
+        admin.storage().bucket().file(`eventPictures/${event.id}`).delete()
+            .then(_ => {
+            console.log('Deleted event picture');
+        })
+            .catch(err => {
+            console.log(err);
+        });
     }
     catch (err) {
         console.log(err);
     }
-    admin.storage().bucket().file(`eventPictures/${event.id}`).delete()
-        .then(_ => {
-        console.log('Deleted event picture');
-    })
-        .catch(err => {
-        console.log(err);
-    });
 }));
-function removeEventFromUser(userId, eventId) {
+function removeEventIdFromUser(userId, eventId, mode) {
     return __awaiter(this, void 0, void 0, function* () {
-        var eventsDocRef = admin.firestore().doc(`users/${userId}`).collection('events').doc('invitee');
-        var usersDocRef = admin.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
-        console.log(`Starting transaction for user ${userId} with event ${eventId}`);
+        var eventsDocRef = admin.firestore().doc(`users/${userId}`).collection('events').doc(mode);
         yield admin.firestore().runTransaction(transaction => {
-            return transaction.get(usersDocRef).then(userDoc => {
-                return transaction.get(eventsDocRef).then(eventDoc => {
-                    //delete userId from event's invitee events
-                    var users = userDoc.data().users;
-                    delete users[userId];
-                    //delete event from user's invitee events
-                    var events = eventDoc.data().events;
-                    delete events[eventId];
-                    transaction.update(usersDocRef, { 'users': users });
-                    transaction.update(eventsDocRef, { 'events': events });
-                });
+            return transaction.get(eventsDocRef).then(eventDoc => {
+                //delete event from user's events
+                var events = eventDoc.data().events;
+                delete events[eventId];
+                transaction.update(eventsDocRef, { 'events': events });
             });
         });
-        console.log(`Desynced ${userId} from ${eventId}`);
+        console.log(`Removed event: ${eventId} from user: ${userId}, mode: ${mode}`);
     });
 }
 function removeInviteeUserFromEvent(userId, eventId) {
@@ -172,9 +155,4 @@ function deleteEventComponent(componentName, eventId) {
         }
     });
 }
-// export const deleteEvent = functions.firestore.document(`events/{messageId}`)
-// .onDelete(event => {
-//     console.log('starting event delete');
-//     //
-// })
 //# sourceMappingURL=index.js.map
