@@ -6,6 +6,7 @@ import { InviteRequestProvider } from '../../providers/invite-request/invite-req
 import { Event } from '../../models/event';
 import { EventProvider } from '../../providers/event/event';
 import { MessagingProvider } from '../../providers/messaging/messaging';
+import { ErrorProvider } from '../../providers/error/error';
 
 @IonicPage()
 @Component({
@@ -18,15 +19,15 @@ export class EventInvitationsPage implements OnInit {
   pendingInviteRequests: InviteRequest[] = [];
   event: Event;
   isManaging = false;
+  pageName = 'EventInvitationsPage';
   
-  
-
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
     private inviteRequestProvider: InviteRequestProvider,
     private eventProvider: EventProvider,
-    private mProv: MessagingProvider
+    private mProv: MessagingProvider,
+    private errorProvider: ErrorProvider
   ) {
   }
 
@@ -52,10 +53,12 @@ export class EventInvitationsPage implements OnInit {
       .then()
       .catch(err => {
         this.mProv.showAlertOkMessage('Error', 'Could not update invite request, please try again.');
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not accept invite');
       });
     })
     .catch(err => {
       this.mProv.showAlertOkMessage('Error', 'Could not update invite request, please try again.');
+      this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not update invite request');
     });
   }
 

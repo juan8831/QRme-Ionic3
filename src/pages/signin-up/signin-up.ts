@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
-import { auth } from 'firebase';
 import { NgForm } from '@angular/forms';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthProvider } from '../../providers/auth/auth';
-
-import { firebase } from '@firebase/app';
 import { User } from '../../models/user';
 import { UserProvider } from '../../providers/user/user';
 import { ForgotPasswordPage } from '../forgot-password/forgot-password';
+import { ErrorProvider } from '../../providers/error/error';
+import { MessagingProvider } from '../../providers/messaging/messaging';
 
 
 @IonicPage()
@@ -21,33 +20,25 @@ export class SigninUpPage {
   create = false;
   password: string;
   confirmPassword: string;
-  private opt: string = 'signin';
+  pageName = 'SignInUpPage';
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private authProvider: AuthProvider,
-    private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController,
     private afAuth: AngularFireAuth,
-    private userProvider: UserProvider
+    private userProvider: UserProvider,
+    private errorProvider: ErrorProvider,
+    private mProv: MessagingProvider
   ) {
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SigninUpPage');
   }
 
   onCreate(form: NgForm) {
     var user = new User();
     user.name = form.value.name;
     user.email = form.value.email;
-    const loading = this.loadingCtrl.create({
-      content: 'Creating your account...'
-    });
+    let loading = this.mProv.getLoader('Creating your account...');
     loading.present();
-
     this.afAuth.auth.createUserWithEmailAndPassword(form.value.email, form.value.password)
       .then(data => {
         user.id = data.uid;
@@ -57,87 +48,33 @@ export class SigninUpPage {
           )
           .catch(error => {
             loading.dismiss();
-            this.alertCtrl.create({
-              title: 'Sign up error',
-              message: error.message,
-              buttons: ['Ok']
-            }).present();
+            this.errorProvider.reportError(this.pageName, error, undefined, 'Sign up error');
+            this.mProv.showAlertOkMessage('Error','Sign up error. Please try again later.');
           });
       })
       .catch(error => {
         loading.dismiss();
-        this.alertCtrl.create({
-          title: 'Sign up error',
-          message: error.message,
-          buttons: ['Ok']
-        }).present();
+        this.errorProvider.reportError(this.pageName, error, undefined, 'Sign up error');
+        this.mProv.showAlertOkMessage('Error','Sign up error. Please try again later.');
       });
   }
-
-
 
   onSignIn(form: NgForm) {
-    const loading = this.loadingCtrl.create({
-      content: 'Signing you in...'
-    });
+    let loading = this.mProv.getLoader('Signing you in...');
     loading.present();
-
-
-
     this.afAuth.auth.signInWithEmailAndPassword(form.value.email, form.value.password)
-      .then(data => {
+      .then(() => {
         loading.dismiss();
-        //form.reset();
-        this.toastCtrl.create({
-          message: `Welcome ${this.authProvider.getEmail()}`,
-          duration: 5000,
-          position: 'bottom'
-        }).present();
+        this.mProv.showToastMessage(`Welcome ${this.authProvider.getEmail()}`);
       })
       .catch(error => {
         loading.dismiss();
-        this.alertCtrl.create({
-          title: 'Sign in error',
-          message: error.message,
-          buttons: ['Ok']
-        }).present();
-
+        this.errorProvider.reportError(this.pageName, error, undefined, 'Sign in error');
+        this.mProv.showAlertOkMessage('Error','Sign in error. Please try again later.');
       });
-
   }
 
-  onGoogle() {
-
-    // const loading = this.loadingCtrl.create({
-    //   content: 'Signing you in...'
-    // });
-    //loading.present();
-
-    //this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-
-    this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then(data => {
-        //loading.dismiss();
-        //form.reset();
-        this.toastCtrl.create({
-          message: `Welcome ${this.authProvider.getEmail()}`,
-          duration: 5000,
-          position: 'bottom'
-        }).present();
-      })
-      .catch(error => {
-        //loading.dismiss();
-        this.alertCtrl.create({
-          title: 'Sign in error',
-          message: error.message,
-          buttons: ['Ok']
-        }).present();
-
-      });
-
-  }
-
-  forgotPassword(){
+  forgotPassword() {
     this.navCtrl.push(ForgotPasswordPage);
   }
 

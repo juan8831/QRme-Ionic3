@@ -5,6 +5,7 @@ import { EventProvider } from '../../providers/event/event';
 import { InviteeAttendanceRecordPage } from '../invitee-attendance-record/invitee-attendance-record';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { ErrorProvider } from '../../providers/error/error';
 
 @IonicPage()
 @Component({
@@ -16,13 +17,16 @@ export class EventAttendancePage implements OnInit {
   event: Event;
   eventDate: Date;
   markedAttendance = true;
+  pageName = 'EventAttendancePage';
+
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private viewCtrl: ViewController,
     private eventProvider: EventProvider,
     private actionSheetCtrl: ActionSheetController,
     private barcodeScanner: BarcodeScanner,
-    private mProv: MessagingProvider
+    private mProv: MessagingProvider,
+    private errorProvider: ErrorProvider
 
   ) {
     this.event = this.navParams.get('event');
@@ -90,7 +94,7 @@ export class EventAttendancePage implements OnInit {
     })
     .catch(err => {
       this.mProv.showAlertOkMessage('Error', 'Could not record attendance. Please ty again later.');
-      console.log(err);
+      this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not record attendance');
     })
 
   }
@@ -122,7 +126,6 @@ export class EventAttendancePage implements OnInit {
     this.barcodeScanner.scan({ disableSuccessBeep: true })
             .then(barcodeData => {
               loader.dismiss();
-              console.log('scanned!');
               if(!barcodeData.cancelled){
                 //var eventLoader = this.mProv.getLoader('Getting event information...');
                 //eventLoader.present();
@@ -136,7 +139,7 @@ export class EventAttendancePage implements OnInit {
             })
             .catch(err => {
               loader.dismiss();
-              console.log(err);
+              this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not scan qr code');
               if(err == 'Access to the camera has been prohibited; please enable it in the Settings app to continue.'){
                 this.mProv.showAlertOkMessage('Error', err);
                 //todo open only if user wants to change settings

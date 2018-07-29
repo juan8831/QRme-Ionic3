@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AngularFireAuth } from '../../../node_modules/angularfire2/auth';
 import { MessagingProvider } from '../../providers/messaging/messaging';
+import { ErrorProvider } from '../../providers/error/error';
 
 @IonicPage()
 @Component({
@@ -10,16 +11,15 @@ import { MessagingProvider } from '../../providers/messaging/messaging';
 })
 export class ForgotPasswordPage {
 
+  pageName = 'ForgotPasswordPage';
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private afAuth: AngularFireAuth,
-    private mProv: MessagingProvider
+    private mProv: MessagingProvider,
+    private errorProvider: ErrorProvider
   ) {
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ForgotPasswordPage');
   }
 
   onReset(f) {
@@ -30,14 +30,13 @@ export class ForgotPasswordPage {
         this.navCtrl.pop();
       })
       .catch(err => {
-        console.log(err);
         if(err.code == 'auth/user-not-found'){
           this.mProv.showAlertOkMessage('Error', 'This email is not registered.');
         }
         else{
           this.mProv.showAlertOkMessage('Error', 'Please try again later.');
-        }
-        
+          this.errorProvider.reportError(this.pageName, err, undefined, 'Could not send password reset email');
+        }       
       });
   }
 

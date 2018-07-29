@@ -9,6 +9,7 @@ import { EventProvider } from '../../providers/event/event';
 import { UserProvider } from '../../providers/user/user';
 import { EventInvitationsPage } from '../event-invitations/event-invitations';
 import { MessagingProvider } from '../../providers/messaging/messaging';
+import { ErrorProvider } from '../../providers/error/error';
 
 
 @IonicPage()
@@ -26,6 +27,7 @@ export class EventInviteesPage implements OnInit {
   searchText: string = "";
   filteredInviteeUsers: User[] = [];
   pendingInviteRequestsNumber: number = 0;
+  pageName = 'EventInviteesPage';
 
 
   constructor(
@@ -36,7 +38,8 @@ export class EventInviteesPage implements OnInit {
     private userProvider: UserProvider,
     private alertCtrl: AlertController,
     private mProv: MessagingProvider,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private errorProvider: ErrorProvider
   ) {
   }
 
@@ -82,7 +85,7 @@ export class EventInviteesPage implements OnInit {
       })
       .catch(err => {
         loader.dismiss();
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not uninvite user');
         this.toastCtrl.create({ message: `Error, unable to remove user.`, duration: 5000 }).present();
       });
   }

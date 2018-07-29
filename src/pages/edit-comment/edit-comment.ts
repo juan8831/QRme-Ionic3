@@ -7,13 +7,7 @@ import { MessagingProvider } from '../../providers/messaging/messaging';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { UserProvider } from '../../providers/user/user';
 import { BlogProvider } from '../../providers/blog/blog';
-
-/**
- * Generated class for the EditCommentPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { ErrorProvider } from '../../providers/error/error';
 
 @IonicPage()
 @Component({
@@ -25,6 +19,7 @@ export class EditCommentPage implements OnInit {
   comment: Comment;
   post: Post;
   create = true;
+  pageName = 'EditCommentPage';
 
   constructor(
     public navCtrl: NavController, 
@@ -33,7 +28,8 @@ export class EditCommentPage implements OnInit {
     private afAuth: AngularFireAuth,
     private alertCtrl: AlertController,
     private userProvider: UserProvider,
-    private blogProvider: BlogProvider
+    private blogProvider: BlogProvider,
+    private errorProvider: ErrorProvider
   ) {
   }
 
@@ -68,7 +64,7 @@ export class EditCommentPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not add comment.');
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.post.eventId, 'Could not add comment');
       });
     }
     else{
@@ -83,7 +79,7 @@ export class EditCommentPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not update comment');
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.post.eventId, 'Could not update comment');
       });
     }
   }
@@ -120,7 +116,7 @@ export class EditCommentPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not delete comment. Please try again later.');
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.post.eventId, 'Could not delete comment');
       })
   }
 

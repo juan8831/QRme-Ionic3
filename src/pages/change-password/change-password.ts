@@ -6,6 +6,7 @@ import { FirebaseApp } from 'angularfire2';
 import { firebase } from '../../../node_modules/@firebase/app';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { UserProvider } from '../../providers/user/user';
+import { ErrorProvider } from '../../providers/error/error';
 
 @IonicPage()
 @Component({
@@ -17,6 +18,7 @@ export class ChangePasswordPage implements OnInit {
   shouldDeleteAccount = false;
   opt: string;
   oldPassword: string;
+  pageName = 'ChangePasswordPage';
 
   constructor(
     public navCtrl: NavController, 
@@ -24,7 +26,8 @@ export class ChangePasswordPage implements OnInit {
     private afAuth: AngularFireAuth,
     private mProv: MessagingProvider,
     private alertCtrl: AlertController,
-    private userProvider: UserProvider
+    private userProvider: UserProvider,
+    private errorProvider: ErrorProvider
   ) {
   }
 
@@ -51,6 +54,7 @@ export class ChangePasswordPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not update password. Please try again.');
+        this.errorProvider.reportError(this.pageName, err, undefined, 'Could not update password');
       })
     })
     .catch(err => {
@@ -100,13 +104,13 @@ export class ChangePasswordPage implements OnInit {
         })
         .catch(err => {
           loader.dismiss();
-          console.log(err);
+          this.errorProvider.reportError(this.pageName, err, undefined, 'Could not delete account');
           this.mProv.showAlertOkMessage('Error', 'Could not delete account. Please try again.');
         });       
       })
       .catch(err => {
         loader.dismiss();
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, undefined, 'Could not delete account');
         this.mProv.showAlertOkMessage('Error', 'Could not delete account. Please try again.');
       })
     })

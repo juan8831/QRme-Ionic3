@@ -6,12 +6,11 @@ import { AngularFireAuth } from '../../../node_modules/angularfire2/auth';
 @Injectable()
 export class ErrorProvider {
 
-  constructor(
+  constructor
+  (
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth
-  ) {
-
-  }
+  ) { }
 
   reportError(pageName, error, eventId = "", extraInfo = "") {
     let newError = new Error();

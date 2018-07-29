@@ -7,13 +7,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { UserProvider } from '../../providers/user/user';
 import { Event } from '../../models/event';
 import { PollProvider } from '../../providers/poll/poll';
-
-/**
- * Generated class for the EditPollPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { ErrorProvider } from '../../providers/error/error';
 
 @IonicPage()
 @Component({
@@ -25,6 +19,7 @@ export class EditPollPage implements OnInit {
   event: Event;
   create = true;
   poll: Poll;
+  pageName = 'EditPollPage';
 
   constructor(
     public navCtrl: NavController, 
@@ -33,7 +28,8 @@ export class EditPollPage implements OnInit {
     private mProv: MessagingProvider,
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
-    private pollProvider: PollProvider
+    private pollProvider: PollProvider,
+    private errorProvider: ErrorProvider
   ) {
     this.create = this.navParams.get('create');
   }
@@ -108,7 +104,7 @@ export class EditPollPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not create poll');
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not create poll');
       });
     }
     else{
@@ -123,7 +119,7 @@ export class EditPollPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not update poll');
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not update poll');
       });
     }
   }
@@ -160,7 +156,7 @@ export class EditPollPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not delete poll. Please try again later.');
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not delete poll');
       })
   }
 

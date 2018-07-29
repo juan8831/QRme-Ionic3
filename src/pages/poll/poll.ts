@@ -23,17 +23,15 @@ export class PollPage implements OnInit {
   hasVotedInPoll = false;
   isAdminOrCreator = false;
 
-  constructor(
+  constructor
+    (
     public navCtrl: NavController,
     public navParams: NavParams,
     private pollProvider: PollProvider,
     private mProv: MessagingProvider,
     private afAuth: AngularFireAuth,
     private eventProvider: EventProvider
-  ) {
-
-
-  }
+    ) { }
 
   @ViewChild('doughnutCanvas') doughnutCanvas;
 
@@ -69,14 +67,14 @@ export class PollPage implements OnInit {
         });
         this.doughnutChart.update();
 
-        if(this.poll.creatorId === this.afAuth.auth.currentUser.uid){
+        if (this.poll.creatorId === this.afAuth.auth.currentUser.uid) {
           this.isAdminOrCreator = true;
         }
       }
     });
     this.subscriptions.push(pollSubs);
 
-    if(this.eventProvider.isEventAdmin(this.event, undefined, undefined)){
+    if (this.eventProvider.isEventAdmin(this.event, undefined, undefined)) {
       this.isAdminOrCreator = true;
     }
   }
@@ -114,19 +112,6 @@ export class PollPage implements OnInit {
       this.mProv.showAlertOkMessage('Error', 'Could not record vote. Please try again later.');
       console.log('Could not record vote');
     }
-
-
-    // this.pollProvider.vote(this.poll, undefined, option )
-    // .then(_=> {
-    //   loader.dismiss();
-    //   this.mProv.showToastMessage('Vote successfully recorded');
-    // })
-    // .catch(err => {
-    //   loader.dismiss();
-    //   this.mProv.showAlertOkMessage('Error', 'Could not record vote. Please try again later.');
-    //   console.log(err);
-    // })
-
   }
 
   sendVoteRequest(userId, option) {
@@ -144,8 +129,8 @@ export class PollPage implements OnInit {
 
   }
 
-  openEditPoll(){
-    this.navCtrl.push(EditPollPage, {'poll': this.poll, 'create': false});
+  openEditPoll() {
+    this.navCtrl.push(EditPollPage, { 'poll': this.poll, 'create': false });
   }
 
 }

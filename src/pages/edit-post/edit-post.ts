@@ -7,6 +7,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { UserProvider } from '../../providers/user/user';
 import { BlogProvider } from '../../providers/blog/blog';
 import { MessagingProvider } from '../../providers/messaging/messaging';
+import { ErrorProvider } from '../../providers/error/error';
 
 @IonicPage()
 @Component({
@@ -18,6 +19,7 @@ export class EditPostPage implements OnInit {
   event: Event;
   create = true;
   post: Post;
+  pageName = 'EditPostPage';
 
   constructor(
     public navCtrl: NavController, 
@@ -26,7 +28,8 @@ export class EditPostPage implements OnInit {
     private userProvider: UserProvider,
     private blogProvider: BlogProvider,
     private mProv: MessagingProvider,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private errorProvider: ErrorProvider
   ) {    
       this.create = this.navParams.get('create');
   }
@@ -63,7 +66,7 @@ export class EditPostPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not create blog post');
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not create post');
       });
     }
     else{
@@ -78,7 +81,7 @@ export class EditPostPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not update blog post');
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not update post');
       });
     }
   }
@@ -116,7 +119,7 @@ export class EditPostPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.mProv.showAlertOkMessage('Error', 'Could not delete blog post. Please try again later.');
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not delete post');
       })
   }
 

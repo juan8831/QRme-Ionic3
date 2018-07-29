@@ -9,6 +9,7 @@ import { AngularFireStorage } from 'angularfire2/storage';
 import { of } from 'rxjs/observable/of';
 import { FirebaseApp } from 'angularfire2';
 import { EventQrcodePage } from '../event-qrcode/event-qrcode';
+import { ErrorProvider } from '../../providers/error/error';
 
 
 @IonicPage()
@@ -21,6 +22,7 @@ export class EventDetailPage {
   event: Event
   isManaging: boolean = false;
   eventPictureUrl: Observable<string | null>;
+  pageName = 'EventDetailPage';
 
   constructor(
     public navCtrl: NavController,
@@ -32,23 +34,12 @@ export class EventDetailPage {
     private alertCtrl: AlertController,
     private storage: AngularFireStorage,
     private firebase: FirebaseApp,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private errorProvider: ErrorProvider
   ) {
     this.event = navParams.get('event');
     this.isManaging = navParams.get('isManaging');
     this.eventPictureUrl = of('assets/imgs/calendar.png');
-
-    // this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).getDownloadURL()
-    //   .then(result => {
-    //     this.eventPictureUrl = of(result);
-    //     console.log('url event details ' + result);
-    //   })
-    //   .catch(err => {
-
-    //     this.eventPictureUrl = of('assets/imgs/calendar.png');
-
-    //   })
-
   }
 
   ionViewDidLoad() {
@@ -69,7 +60,7 @@ export class EventDetailPage {
       })
       .catch(err => {
         loader.dismiss();
-        console.log(err);
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not leave event');
         this.toastCtrl.create({ message: `Error, unable to leave event`, duration: 5000 }).present();
       });
 

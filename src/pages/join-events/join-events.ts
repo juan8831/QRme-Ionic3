@@ -21,14 +21,14 @@ import { SearchEventsCategoriesPage } from '../search-events-categories/search-e
 })
 export class JoinEventsPage implements OnInit {
 
-  subscriptions: ISubscription [] = [];
+  subscriptions: ISubscription[] = [];
   acceptedAndRejectedInvitesTotal: number = 0;
 
   searchEventsPage = SearchEventsPage;
   manageInvitesPage = ManageInvitesPage;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public navParams: NavParams,
     private inviteRequestProvider: InviteRequestProvider,
     private mProv: MessagingProvider,
@@ -37,16 +37,16 @@ export class JoinEventsPage implements OnInit {
     private qrScanner: QRScanner,
     private modalCtrl: ModalController,
     private actionSheetCtrl: ActionSheetController
-    ) {
+  ) {
   }
 
-  ngOnInit(){
+  ngOnInit() {
     var acceptedEvents$ = this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, 'accepted');
     var rejectedEvents$ = this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, 'rejected');
     var subs = combineLatest(acceptedEvents$, rejectedEvents$)
-    .subscribe(([acceptedInvites, rejectedInvites]) => {
-      this.acceptedAndRejectedInvitesTotal = acceptedInvites.length + rejectedInvites.length;
-    });
+      .subscribe(([acceptedInvites, rejectedInvites]) => {
+        this.acceptedAndRejectedInvitesTotal = acceptedInvites.length + rejectedInvites.length;
+      });
 
     this.subscriptions.push(subs);
   }
@@ -59,68 +59,68 @@ export class JoinEventsPage implements OnInit {
     var loader = this.mProv.getLoader('Loading...');
     loader.present();
     this.barcodeScanner.scan({ disableSuccessBeep: true })
-            .then(barcodeData => {
-              loader.dismiss();
-              console.log('scanned!');
-              if(!barcodeData.cancelled){
-                var eventLoader = this.mProv.getLoader('Getting event information...');
-                eventLoader.present();
-                this.eventProvider.getEvent(barcodeData.text).take(1).subscribe(event => {
-                  eventLoader.dismiss();
-                  if(event == null || event.name == null){
-                    this.mProv.showAlertOkMessage('Error', 'Could not find any event with this QR code');
-                  }
-                  else{
-                    this.navCtrl.push(SearchEventDetailPage, {event: event});
-                  }
-                })
-              }
-            })
-            .catch(err => {
-              loader.dismiss();
-              console.log(err);
-              if(err == 'Access to the camera has been prohibited; please enable it in the Settings app to continue.'){
-                this.mProv.showAlertOkMessage('Error', err);
-                //todo open only if user wants to change settings
-                this.qrScanner.openSettings();
-              }
-              this.mProv.showAlertOkMessage('Error', 'Could not scan QR Code');
-            });
-      loader.dismiss();        
+      .then(barcodeData => {
+        loader.dismiss();
+        console.log('scanned!');
+        if (!barcodeData.cancelled) {
+          var eventLoader = this.mProv.getLoader('Getting event information...');
+          eventLoader.present();
+          this.eventProvider.getEvent(barcodeData.text).take(1).subscribe(event => {
+            eventLoader.dismiss();
+            if (event == null || event.name == null) {
+              this.mProv.showAlertOkMessage('Error', 'Could not find any event with this QR code');
+            }
+            else {
+              this.navCtrl.push(SearchEventDetailPage, { event: event });
+            }
+          })
+        }
+      })
+      .catch(err => {
+        loader.dismiss();
+        console.log(err);
+        if (err == 'Access to the camera has been prohibited; please enable it in the Settings app to continue.') {
+          this.mProv.showAlertOkMessage('Error', err);
+          //todo open only if user wants to change settings
+          //this.qrScanner.openSettings();
+        }
+        this.mProv.showAlertOkMessage('Error', 'Could not scan QR Code');
+      });
+    loader.dismiss();
 
   }
 
-  openSearchPage(mode: string){
-    if(mode == 'all'){
-      this.navCtrl.push(SearchEventsPage, {category: 'all'});
+  openSearchPage(mode: string) {
+    if (mode == 'all') {
+      this.navCtrl.push(SearchEventsPage, { category: 'all' });
       return;
     }
-    
+
     let actionSheet = this.actionSheetCtrl.create({
       cssClass: 'categories-select',
       buttons: [
         {
           text: 'Ceremony',
           icon: 'ribbon',
-          cssClass : 'ceremony-select',
+          cssClass: 'ceremony-select',
           handler: () => {
-            this.searchByCategory('ceremony', actionSheet );
+            this.searchByCategory('ceremony', actionSheet);
             return false;
           }
         },
         {
           text: 'Education',
           icon: 'school',
-          cssClass : 'education-select',
+          cssClass: 'education-select',
           handler: () => {
-            this.searchByCategory('education',actionSheet);
+            this.searchByCategory('education', actionSheet);
             return false;
           }
         },
         {
           text: 'Conference',
           icon: 'contacts',
-          cssClass : 'conference-select',
+          cssClass: 'conference-select',
           handler: () => {
             this.searchByCategory('conference', actionSheet);
             return false;
@@ -129,7 +129,7 @@ export class JoinEventsPage implements OnInit {
         {
           text: 'Meeting',
           icon: 'briefcase',
-          cssClass : 'meeting-select',
+          cssClass: 'meeting-select',
           handler: () => {
             this.searchByCategory('meeting', actionSheet);
             return false;
@@ -138,7 +138,7 @@ export class JoinEventsPage implements OnInit {
         {
           text: 'Sports',
           icon: 'football',
-          cssClass : 'sports-select',
+          cssClass: 'sports-select',
           handler: () => {
             this.searchByCategory('sports', actionSheet);
             return false;
@@ -147,7 +147,7 @@ export class JoinEventsPage implements OnInit {
         {
           text: 'Festival',
           icon: 'bonfire',
-          cssClass : 'festival-select',
+          cssClass: 'festival-select',
           handler: () => {
             this.searchByCategory('festival', actionSheet);
             return false;
@@ -156,7 +156,7 @@ export class JoinEventsPage implements OnInit {
         {
           text: 'Concert',
           icon: 'musical-note',
-          cssClass : 'concert-select',
+          cssClass: 'concert-select',
           handler: () => {
             this.searchByCategory('concert', actionSheet);
             return false;
@@ -165,7 +165,7 @@ export class JoinEventsPage implements OnInit {
         {
           text: 'Party',
           icon: 'headset',
-          cssClass : 'party-select',
+          cssClass: 'party-select',
           handler: () => {
             this.searchByCategory('party', actionSheet);
             return false;
@@ -174,7 +174,7 @@ export class JoinEventsPage implements OnInit {
         {
           text: 'Other',
           icon: 'help',
-          cssClass : 'other-select',
+          cssClass: 'other-select',
           handler: () => {
             this.searchByCategory('other', actionSheet);
             return false;
@@ -183,23 +183,18 @@ export class JoinEventsPage implements OnInit {
         {
           text: 'Cancel',
           role: 'cancel',
-          cssClass : 'cancel-select',
+          cssClass: 'cancel-select',
           handler: () => {
           }
         }
-        
+
       ]
     });
     actionSheet.present();
   }
 
-  searchByCategory(category: string, actionSheet: ActionSheet){
+  searchByCategory(category: string, actionSheet: ActionSheet) {
     let transition = actionSheet.dismiss();
-    transition.then(() => this.navCtrl.push(SearchEventsPage, {category: category}));
+    transition.then(() => this.navCtrl.push(SearchEventsPage, { category: category }));
   }
-
-
-
-
-
 }
