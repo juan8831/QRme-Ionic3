@@ -2,6 +2,7 @@
 
   <ion-navbar>
     <ion-title>
+      Event Summary
     </ion-title>
     <ion-buttons start>
       <button ion-button icon-only menuToggle>
@@ -21,29 +22,6 @@
 
 
 <ion-content padding>
-
-  <!-- <div>
-        <button id="notification-button" ion-button clear>
-            <ion-icon name="notifications">
-              <ion-badge id="notifications-badge" color="danger">5</ion-badge>
-            </ion-icon> 
-            <span class="badge alert">1</span>             
-        </button>
-    </div>
-
-        <button id="cart-btn" ion-button icon-only (click)="onOpenInfo()">
-          <ion-icon name="person-add">
-              <ion-badge id="cart-badge">260k</ion-badge>
-          </ion-icon>
-          
-        </button>
-
-
-        <button id="notification-button" ion-button clear>
-            <ion-icon name="notifications">
-              <ion-badge id="notifications-badge" color="danger">7</ion-badge>
-            </ion-icon>              
-        </button> -->
   <ion-grid>
     <ion-row nowrap align-items-center>
       <ion-col text-center>
@@ -54,39 +32,35 @@
         <!-- <ion-icon class="titleIcon"  name="information-circle"></ion-icon>    -->
       </ion-col>
     </ion-row>
-    <hr>
-    <ion-row>
-      <ion-col>
-        <img [src]="event?.eventImageUrl" />
-      </ion-col>
-      <ion-col text-center>
-        <p>{{event?.location}} </p>
-        <p *ngIf="event && !event?.allDay" text-center>
-          <span text-center>Next Date</span>
-          <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy, h:mm a'}}
-          <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy, h:mm a'}}
-        </p>
-        <p *ngIf="event && event?.allDay" text-center>
-          <span text-center>Next Date</span>
-          <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy'}} - All Day
-          <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy'}} - All Day
-        </p>
-        <p *ngIf="event?.repeat != 'Never'">{{event?.repeat}}</p>
-        <!-- <p *ngIf="!event.endRepeat != 'Never'">End Repeat Date: {{event?.endRepeatDate | date:'M/d/yy, h:mm a'}}</p> -->
-      </ion-col>
-    </ion-row>
   </ion-grid>
-    <hr>
-    <ion-grid>
+  <hr>
+  <div text-center>
+    <p>{{event?.location}} </p>
+    <p *ngIf="event && !event?.allDay" text-center>
+      <span *ngIf="event?.repeat != 'Never'" text-center>Next Date: <br></span>
+       Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy, h:mm a'}}
+      <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy, h:mm a'}}
+    </p>
+    <p *ngIf="event && event?.allDay" text-center>
+      <span *ngIf="event?.repeat != 'Never'"  text-center>Next Date:  <br> </span>
+       Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy'}} - All Day
+      <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy'}} - All Day
+    </p>
+    <p *ngIf="event?.repeat != 'Never'">{{event?.repeat}}</p>
+    <!-- <p *ngIf="!event.endRepeat != 'Never'">End Repeat Date: {{event?.endRepeatDate | date:'M/d/yy, h:mm a'}}</p> -->
+  </div>
+  <img [src]="event?.eventImageUrl" />
+  <hr>
+  <ion-grid>
     <ion-row text-center>
       <ion-col>
-        <button ion-button block round (click)="openAttendance()" color="darkRed">
+        <button ion-button large block round (click)="openAttendance()" color="darkRed">
           <ion-icon item-left name="checkmark-circle" style="margin-right: 4px "></ion-icon>
           Attendance
         </button>
       </ion-col>
       <ion-col *ngIf="isManaging">
-        <button round block ion-button color="primary" [navPush]='eventInviteesPage' [navParams]="event">
+        <button round block ion-button large color="primary" [navPush]='eventInviteesPage' [navParams]="event">
           <ion-icon item-left name="contacts" style="margin-right: 4px "></ion-icon>
           Invitees
         </button>
@@ -94,13 +68,13 @@
     </ion-row>
     <ion-row text-center>
       <ion-col>
-        <button round block ion-button [navPush]='eventBlogPage' [navParams]="event" color="blue">
+        <button round block ion-button large [navPush]='eventBlogPage' [navParams]="event" color="blue">
           <ion-icon item-left name="text" style="margin-right: 4px "></ion-icon>
           Blog
         </button>
       </ion-col>
       <ion-col>
-        <button round block ion-button color="yellow" [navPush]='eventPollsPage' [navParams]="event">
+        <button round block ion-button large color="yellow" [navPush]='eventPollsPage' [navParams]="event">
           <ion-icon item-left name="flag" style="margin-right: 4px "></ion-icon>
           Polls
         </button>

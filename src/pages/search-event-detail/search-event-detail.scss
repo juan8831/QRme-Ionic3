@@ -13,4 +13,20 @@ page-search-event-detail {
         margin-bottom: 0 !important;
     }
 
+    hr {
+        //border: 2px solid red !important;
+       height: 1px !important;
+       width: 100% !important;
+        background: white !important;
+        //display: block !important;
+        //font-size: 2em !important;
+      }
+
+      img{
+        max-height: 35% !important;
+        max-width: 90% !important;
+        display:block; 
+        margin:auto;
+    }
+
 }

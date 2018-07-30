@@ -34,7 +34,7 @@
         </ion-item>
         <ion-item>
           <ion-label floating >Short Description</ion-label>
-          <ion-textarea clearInput name="description" [ngModel]="event?.description"></ion-textarea>
+          <ion-textarea clearInput maxLength="200" name="description" [ngModel]="event?.description"></ion-textarea>
         </ion-item>
         <ion-item>
           <ion-label floating >Location</ion-label>
@@ -172,7 +172,7 @@
       </ion-item> -->
 
     </ion-list>
-    <button ion-button type="submit" block round [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
+    <button ion-button type="submit" large block round [disabled]="!f.valid">{{isnewEvent? 'Create New Event' : 'Save'}}</button>
   </form>
 
 </ion-content>

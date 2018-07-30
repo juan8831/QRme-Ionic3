@@ -18,9 +18,9 @@
                 <img src="assets/imgs/festival.png">
               </ion-avatar>
             <h2>{{event.name}}</h2>
-            <h3>{{event.description}}</h3>
-            <h3>Created By: {{event.creator}}</h3>
-            <p>{{event.date | date}} | {{event.time }} </p>
+            <h3>Creator: {{event.creatorName}}</h3>
+            <p *ngIf="!event.allDay">{{eventProvider.getNextEventDate(event) | date:'M/d/yy, h:mm a'}}</p>
+            <p *ngIf="event.allDay">{{eventProvider.getNextEventDate(event) | date:'M/d/yy'}} - All Day</p>
             <ion-note *ngIf="event.type == 'Private'" style="color:red" item-end>Private</ion-note>
             <ion-note *ngIf="event.type == 'Public'" style="color: #40d647" item-end>Public</ion-note>     
         </ion-item>

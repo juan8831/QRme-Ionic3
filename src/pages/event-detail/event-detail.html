@@ -1,7 +1,9 @@
 <ion-header>
 
   <ion-navbar>
-    <!-- <ion-title text-center>{{event?.name}}</ion-title> -->
+      <ion-title>
+          Event Details
+        </ion-title>
     <ion-buttons end>
         <button ion-button icon-only *ngIf="isManaging" (click)="onOpenEdit()">
             <ion-icon name="settings"></ion-icon>
@@ -15,10 +17,6 @@
 
 <ion-content padding text-center>
   <h1 text-center>{{event?.name}}</h1>
-  <button ion-button icon-only outline rounded (click)="openQrpage()">
-      <ion-icon name="barcode"></ion-icon>
-    </button>
-
     <p *ngIf="!event.allDay" text-center>
         <span text-center>Next Date</span>
         <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy, h:mm a'}}
@@ -28,9 +26,7 @@
         <span text-center>Next Date</span>
         <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy'}} - All Day
         | Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy'}} - All Day
-      </p>
-      
-  <img [src]="event.eventImageUrl" />
+      </p>   
   <h4>
     {{event?.description}}
   </h4>
@@ -76,18 +72,10 @@
                 <p>{{event.creatorName}}</p>
               </ion-col>
           </ion-row>
-          <ion-row no-padding>
-              <ion-col col-4 class="left" >
-                <p><b>Allow Manual Attendance</b></p>
-              </ion-col>
-              <ion-col col-8 text-left class="right" >
-                <p>{{event.allowManualAttendance? 'Yes' : 'No'}}</p>
-              </ion-col>
-          </ion-row>
         </ion-card-content>
   </ion-card>
 
-  <button *ngIf="!isManaging" ion-button block color="danger" icon-start (click)="showConfirm()">
+  <button *ngIf="!isManaging" ion-button block large round color="danger" icon-start (click)="showConfirm()">
       <ion-icon item-left name="exit"></ion-icon>
     Leave Event
   </button>

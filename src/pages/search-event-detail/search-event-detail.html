@@ -1,7 +1,7 @@
 <ion-header>
 
     <ion-navbar>
-      <!-- <ion-title text-center>{{event?.name}}</ion-title> -->
+      <ion-title text-center>Event Info</ion-title>
       <!-- <ion-buttons end>
         <button ion-button (click)="onShowOptions($event)">
           Edit
@@ -20,8 +20,23 @@
   
   <ion-content padding>
     <h1 text-center>{{event?.name}}</h1>
-    <p text-center>{{event.date | date}} | {{event.time}} </p>
-    <img src="assets/imgs/festival.png"/>
+    <div text-center>
+      <p>{{event?.location}} </p>
+      <p *ngIf="event && !event?.allDay" text-center>
+          <span *ngIf="event?.repeat != 'Never'" text-center>Next Date: <br></span>
+           Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy, h:mm a'}}
+          <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy, h:mm a'}}
+        </p>
+        <p *ngIf="event && event?.allDay" text-center>
+          <span *ngIf="event?.repeat != 'Never'"  text-center>Next Date:  <br> </span>
+           Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy'}} - All Day
+          <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy'}} - All Day
+        </p>
+      <p *ngIf="event?.repeat != 'Never'">{{event?.repeat}}</p>
+      <!-- <p *ngIf="!event.endRepeat != 'Never'">End Repeat Date: {{event?.endRepeatDate | date:'M/d/yy, h:mm a'}}</p> -->
+    </div>
+    <img [src]="event?.eventImageUrl" />
+    <hr>
     <h4>
       {{event?.description}}
     </h4>
@@ -53,27 +68,33 @@
             </ion-row>
             <ion-row no-padding>
                 <ion-col col-4 class="left" >
-                  <p><b>Recurring</b></p>
+                  <p><b>Repeats</b></p>
                 </ion-col>
                 <ion-col col-8 text-left class="right" >
-                  <p>{{event.recurring == true ? 'Yes' : 'No'}}</p>
+                  <p>{{event.repeat}}</p>
                 </ion-col>
             </ion-row>
             <ion-row no-padding>
                 <ion-col col-4 class="left" >
-                  <p><b>Creator</b></p>
+                  <p><b>Event Creator</b></p>
                 </ion-col>
                 <ion-col col-8 text-left class="right" >
                   <p>{{event.creatorName}}</p>
                 </ion-col>
             </ion-row>
-            
           </ion-card-content>
     </ion-card>
+    <br>
   
-    <button block ion-button *ngIf="event.type ==='Private' && !inviteRequestExists" (click)="requestInvite()">Request Invite</button>
+    <button full large round ion-button *ngIf="event.type ==='Private' && !inviteRequestExists" icon-start (click)="requestInvite()">
+        <ion-icon item-left name="mail"></ion-icon>
+      Request Invite
+    </button>
     <h2 text-center *ngIf="event.type ==='Private' && inviteRequestExists">Invite Requested!</h2>
-    <button block ion-button *ngIf="event.type =='Public' && !isAdmin && !isInvitee" (click)="joinEvent()">Join Event</button>
+    <button full large round ion-button *ngIf="event.type =='Public' && !isAdmin && !isInvitee" icon-start  (click)="joinEvent()">
+      <ion-icon item-left name="add-circle"></ion-icon>
+      Join Event
+    </button>
     <h2 text-center *ngIf="isAdmin">You are managing this event!</h2>
     <h2 text-center *ngIf="isInvitee">You have already joined this event!</h2>
   
