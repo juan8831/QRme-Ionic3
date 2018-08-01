@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, AlertController, ToastController, ModalController } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthProvider } from '../../providers/auth/auth';
@@ -8,7 +8,9 @@ import { UserProvider } from '../../providers/user/user';
 import { ForgotPasswordPage } from '../forgot-password/forgot-password';
 import { ErrorProvider } from '../../providers/error/error';
 import { MessagingProvider } from '../../providers/messaging/messaging';
-
+import { AboutPage } from '../about/about';
+import { Storage } from '@ionic/storage';
+import { TutorialPage } from '../tutorial/tutorial';
 
 @IonicPage()
 @Component({
@@ -21,6 +23,7 @@ export class SigninUpPage {
   password: string;
   confirmPassword: string;
   pageName = 'SignInUpPage';
+  private opt: string = 'signin';
 
   constructor(
     public navCtrl: NavController,
@@ -29,8 +32,20 @@ export class SigninUpPage {
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
     private errorProvider: ErrorProvider,
-    private mProv: MessagingProvider
+    private mProv: MessagingProvider,
+    private storage: Storage,
+    private modalCtrl: ModalController
   ) {
+  }
+
+  ionViewDidLoad(){
+    this.storage.get('hasSeenTutorial')
+      .then((hasSeenTutorial) => {
+        if (!hasSeenTutorial) {
+          this.storage.set('hasSeenTutorial', 'true');
+          this.modalCtrl.create(TutorialPage).present();
+        }
+      });
   }
 
   onCreate(form: NgForm) {
@@ -76,6 +91,10 @@ export class SigninUpPage {
 
   forgotPassword() {
     this.navCtrl.push(ForgotPasswordPage);
+  }
+
+  openTutorialPage(){
+    this.modalCtrl.create(TutorialPage).present();
   }
 
 }

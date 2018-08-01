@@ -23,19 +23,23 @@
                 Navigate
             </ion-list-header>
             <button class="menuItem" ion-item icon-left menuClose (click)="onLoad(rootPage)">
-                <ion-icon item-start name="calendar"></ion-icon>
+                <ion-icon item-left name="calendar" color="primary"></ion-icon>
                 Your Events
             </button>
             <button class="menuItem" ion-item icon-left menuClose (click)="onLoad(joinEventsPage)" *ngIf="isAuthenticated">
-                <ion-icon item-start name="add-circle"></ion-icon>
+                <ion-icon item-left name="add-circle" color="primary"></ion-icon>
                 Join Events
             </button>
             <button class="menuItem" ion-item icon-left menuClose (click)="onLoad(settings)" *ngIf="isAuthenticated">
-                <ion-icon item-start name="cog"></ion-icon>
+                <ion-icon item-left name="cog" color="primary"></ion-icon>
                 Settings
             </button>
+            <!-- <button class="menuItem" ion-item icon-left menuClose (click)="onLoad(tutorial)" *ngIf="isAuthenticated">
+                <ion-icon item-left name="help-circle" color="primary"></ion-icon>
+                Tutorial
+            </button> -->
             <button class="menuItem" ion-item icon-left menuClose (click)="onLoad(about)">
-                <ion-icon item-start name="information-circle"></ion-icon>
+                <ion-icon item-left name="information-circle" color="primary"></ion-icon>
                 About
             </button>
 

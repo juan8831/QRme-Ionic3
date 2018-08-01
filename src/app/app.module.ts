@@ -62,6 +62,8 @@ import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { ChangePasswordPage } from '../pages/change-password/change-password';
 import { AboutPage } from '../pages/about/about';
 import { ErrorProvider } from '../providers/error/error';
+import { IonicStorageModule } from '@ionic/storage';
+import { TutorialPage } from '../pages/tutorial/tutorial';
 
 @NgModule({
   declarations: [
@@ -95,7 +97,8 @@ import { ErrorProvider } from '../providers/error/error';
     PollPage,
     ForgotPasswordPage,
     ChangePasswordPage,
-    AboutPage
+    AboutPage,
+    TutorialPage
   ],
   imports: [
     BrowserModule,
@@ -107,9 +110,8 @@ import { ErrorProvider } from '../providers/error/error';
     AngularFirestoreModule,
     AngularFireStorageModule,
     NgxQRCodeModule,
-    ChartsModule
-   // AngularFirestoreModule.enablePersistence()
-
+    ChartsModule,
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -143,7 +145,8 @@ import { ErrorProvider } from '../providers/error/error';
     PollPage,
     ForgotPasswordPage,
     ChangePasswordPage,
-    AboutPage
+    AboutPage,
+    TutorialPage
   ],
   providers: [
     StatusBar,

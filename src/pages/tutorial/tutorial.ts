@@ -1,25 +1,46 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
 
-/**
- * Generated class for the TutorialPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { MenuController, NavController, Slides, ViewController } from 'ionic-angular';
 
-@IonicPage()
+import { Storage } from '@ionic/storage';
+
 @Component({
   selector: 'page-tutorial',
-  templateUrl: 'tutorial.html',
+  templateUrl: 'tutorial.html'
 })
-export class TutorialPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+export class TutorialPage {
+  showSkip = true;
+
+	@ViewChild('slides') slides: Slides;
+
+  constructor(
+    public navCtrl: NavController,
+    public menu: MenuController,
+    public storage: Storage,
+    private viewCtrl: ViewController
+  ) { }
+
+  startApp() {
+    this.viewCtrl.dismiss();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad TutorialPage');
+  onSlideChangeStart(slider: Slides) {
+    this.showSkip = !slider.isEnd();
+  }
+
+  ionViewWillEnter() {
+    this.slides.update();
+  }
+
+  ionViewDidEnter() {
+    // the root left menu should be disabled on the tutorial page
+    this.menu.enable(false);
+  }
+
+  ionViewDidLeave() {
+    // enable the root left menu when leaving the tutorial page
+    this.menu.enable(true);
   }
 
 }

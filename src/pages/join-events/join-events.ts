@@ -10,6 +10,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { EventProvider } from '../../providers/event/event';
 import { SearchEventDetailPage } from '../search-event-detail/search-event-detail';
 import { QRScanner } from '@ionic-native/qr-scanner';
+import { ErrorProvider } from '../../providers/error/error';
 
 @IonicPage()
 @Component({
@@ -31,7 +32,8 @@ export class JoinEventsPage implements OnInit {
     private mProv: MessagingProvider,
     private barcodeScanner: BarcodeScanner,
     private eventProvider: EventProvider,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    private errorProvider: ErrorProvider
   ) {
   }
 
@@ -157,5 +159,41 @@ export class JoinEventsPage implements OnInit {
   searchByCategory(category: string, actionSheet: ActionSheet) {
     let transition = actionSheet.dismiss();
     transition.then(() => this.navCtrl.push(SearchEventsPage, { category: category }));
+  }
+
+  private scanQRCode() {
+    var loader = this.mProv.getLoader('Loading...');
+    loader.present();
+    this.barcodeScanner.scan({ disableSuccessBeep: true })
+      .then(barcodeData => {
+        loader.dismiss();
+        if (!barcodeData.cancelled) {
+          var eventLoader = this.mProv.getLoader('Getting event information...');
+          eventLoader.present();
+          this.eventProvider.getEvent(barcodeData.text).take(1).subscribe(event => {
+            eventLoader.dismiss();
+            if (event == null || event.name == null) {
+              this.mProv.showAlertOkMessage('Error', 'Could not find any event with this QR code');
+            }
+            else {
+              this.navCtrl.push(SearchEventDetailPage, { event: event });
+            }
+          })
+        }
+      })
+      .catch(err => {
+        loader.dismiss();
+        if (err == 'Access to the camera has been prohibited; please enable it in the Settings app to continue.') {
+          this.mProv.showAlertOkMessage('Error', err);
+          //todo open only if user wants to change settings
+          //this.qrScanner.openSettings();
+        }
+        else{
+          this.mProv.showAlertOkMessage('Error', 'Could not scan QR Code');
+          this.errorProvider.reportError('JoinEventsPage', err, undefined);
+        }
+      });
+    loader.dismiss();
+
   }
 }

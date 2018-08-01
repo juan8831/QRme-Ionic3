@@ -15,6 +15,7 @@ import { UserProvider } from '../providers/user/user';
 import { MessagingProvider } from '../providers/messaging/messaging';
 import {timer} from 'rxjs/observable/timer';
 import { AboutPage } from '../pages/about/about';
+import { TutorialPage } from '../pages/tutorial/tutorial';
 
 @Component({
   templateUrl: 'app.html'
@@ -26,6 +27,7 @@ export class MyApp {
   settings = SettingsPage;
   joinEventsPage = JoinEventsPage;
   about = AboutPage;
+  tutorial = TutorialPage;
 
   isAuthenticated = true;
   email = "";
@@ -43,7 +45,7 @@ export class MyApp {
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
     private mProv: MessagingProvider,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
   ) {
     firebase.initializeApp({
       apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",

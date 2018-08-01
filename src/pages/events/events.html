@@ -7,6 +7,12 @@
       </button>
     </ion-buttons>
 
+    <ion-buttons end>
+      <button ion-button icon-only (click)="openTutorialPage()">
+        <ion-icon color="yellow" style="font-size: 30px !important;" name="help-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+
     <ion-segment [(ngModel)]="segment" (ionChange)="changeEventMode()">
       <ion-segment-button value="managing">
         Managing

@@ -1,18 +1,65 @@
-<!--
-  Generated template for the TutorialPage page.
+<ion-header no-border>
+    <ion-navbar>
+      <ion-buttons end *ngIf="showSkip">
+        <button ion-button (click)="startApp()" color="primary">Skip</button>
+      </ion-buttons>
+    </ion-navbar>
+  </ion-header>
+  
+  <ion-content no-bounce>
+    <ion-slides #slides (ionSlideWillChange)="onSlideChangeStart($event)" pager>
+  
+      <ion-slide>
+        <img src="assets/imgs/logo.png" class="slide-image"/>
+        <h2 class="slide-title">
+          Welcome to <b>QRme!</b>
+        </h2>
+        <p>
+          An event management app built to simplify your life.
+        </p>
+      </ion-slide>
+  
+      <ion-slide>
+        <!-- <h2 class="slide-title" >Access your events either as an admin or invitee.</h2> -->
+        <!-- <p>Create your own events and invite others to join...</p> -->
+        <img src="assets/imgs/t1-iphone.jpg" class="slide-image"/>
+      </ion-slide>
 
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
+      <ion-slide>
+        <!-- <h2 class="slide-title" >Create events with personalized settings...</h2> -->
+        <!-- <p>Create your own events and invite others to join...</p> -->
+        <img src="assets/imgs/t2-iphone.jpg" class="slide-image"/>
+      </ion-slide>
 
-  <ion-navbar>
-    <ion-title>tutorial</ion-title>
-  </ion-navbar>
+      <ion-slide>
+        <!-- <h2 class="slide-title" >Or join existing events by searching or scanning a QR Code.</h2> -->
+        <img src="assets/imgs/t3-iphone.jpg" class="slide-image"/>
+      </ion-slide>
 
-</ion-header>
+      <ion-slide>
+        <!-- <h2 class="slide-title">Manage attendance records for your event.</h2> -->
+        <img src="assets/imgs/t4-iphone.jpg" class="slide-image"/>
+      </ion-slide>
 
+      <ion-slide>
+        <!-- <h2 class="slide-title">Allow invitees to mark their attendance by scanning a QR Code...</h2> -->
+        <img src="assets/imgs/t5-iphone.jpg" class="slide-image"/>
+      </ion-slide>
 
-<ion-content padding>
-
-</ion-content>
+      <!-- <ion-slide>
+        <h2 class="slide-title">Manage attendance records and create blog posts and polls for your event.</h2>
+        <img src="assets/img/ica-slidebox-img-2.png" class="slide-image"/>
+      </ion-slide> -->
+  
+      <ion-slide>
+        <img src="assets/imgs/logo.png" class="slide-image"/>
+        <h2 class="slide-title">Ready to Start?</h2>
+        <button ion-button icon-end large clear (click)="startApp()">
+          Continue
+          <ion-icon name="arrow-forward"></ion-icon>
+        </button>
+      </ion-slide>
+  
+    </ion-slides>
+  </ion-content>
+  

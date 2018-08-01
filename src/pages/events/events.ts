@@ -13,6 +13,7 @@ import { ISubscription } from 'rxjs/Subscription';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { FirebaseApp } from 'angularfire2';
 import 'rxjs/add/operator/take';
+import { TutorialPage } from '../tutorial/tutorial';
 
 
 @IonicPage()
@@ -47,7 +48,8 @@ export class EventsPage implements OnInit {
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
     private mProv: MessagingProvider,
-    private firebase: FirebaseApp
+    private firebase: FirebaseApp,
+    private modalCtrl: ModalController
   ) {
   }
 
@@ -256,6 +258,10 @@ export class EventsPage implements OnInit {
           return of('assets/imgs/calendar.png');
         })
 
+  }
+
+  openTutorialPage(){
+    this.modalCtrl.create(TutorialPage).present();
   }
 
 }
