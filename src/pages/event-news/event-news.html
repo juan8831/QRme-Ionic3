@@ -49,7 +49,7 @@
     <p *ngIf="event?.repeat != 'Never'">{{event?.repeat}}</p>
     <!-- <p *ngIf="!event.endRepeat != 'Never'">End Repeat Date: {{event?.endRepeatDate | date:'M/d/yy, h:mm a'}}</p> -->
   </div>
-  <img [src]="event?.eventImageUrl" />
+  <img *ngIf="event?.eventImageUrl" [src]="event?.eventImageUrl" />
   <hr>
   <ion-grid>
     <ion-row text-center>

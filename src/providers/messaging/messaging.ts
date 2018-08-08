@@ -2,12 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController, AlertController, ToastController } from 'ionic-angular';
 
-/*
-  Generated class for the MessagingProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class MessagingProvider {
 
@@ -31,8 +25,11 @@ export class MessagingProvider {
     alert.present();
   }
 
-  getLoader(message: string){
-    return this.loadingCtrl.create({ spinner: 'dots', content: message});
+  getLoader(message: string, duration = 5000){
+    if(duration == 0){
+      return this.loadingCtrl.create({ spinner: 'dots', content: message});
+    }
+    return this.loadingCtrl.create({ spinner: 'dots', content: message, duration: duration });
   }
 
   showYesNoConfirm(title: string, message: string, yesAction : () => void) {

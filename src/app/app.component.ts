@@ -45,7 +45,7 @@ export class MyApp {
     private afAuth: AngularFireAuth,
     private userProvider: UserProvider,
     private mProv: MessagingProvider,
-    private alertCtrl: AlertController,
+    private alertCtrl: AlertController
   ) {
     firebase.initializeApp({
       apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",

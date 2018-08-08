@@ -15,7 +15,7 @@
 <ion-content padding>
   <div class="container" (click)="setEventPicture()">
     <ion-avatar>
-      <img [src]="imageURL" style="display:block; margin:auto;" [ngClass]="{'opaqueImage': isDefaultImage, 'nonOpaqueImage': !isDefaultImage}">
+      <img *ngIf="imageURL" [src]="imageURL" style="display:block; margin:auto;" [ngClass]="{'opaqueImage': isDefaultImage, 'nonOpaqueImage': !isDefaultImage}">
 
     </ion-avatar>
     <ion-icon *ngIf="isDefaultImage" class="editImage" name="add-circle"></ion-icon>

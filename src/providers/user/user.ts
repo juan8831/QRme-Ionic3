@@ -109,6 +109,9 @@ export class UserProvider {
   }
 
   getEventAdminList() : Observable<DocumentData>  {
+    if(!this.afAuth.auth.currentUser){
+      return null;
+    }
     var eventsDoc = this.afs.doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('admin');
     //if (id = null) return null;
     this.adminEventsList = eventsDoc.snapshotChanges().map(action => {
@@ -127,6 +130,9 @@ export class UserProvider {
   }
 
   getEventInviteeList() : Observable<DocumentData> {
+    if(!this.afAuth.auth.currentUser){
+      return null;
+    }
     var eventsDoc = this.afs.doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
     //if (id = null) return null;
     return eventsDoc.snapshotChanges().map(action => {

@@ -28,8 +28,6 @@ export class EventNewsPage implements OnInit {
   eventBlogPage = EventBlogPage;
   eventPollsPage = EventPollsPage;
   isManaging: boolean = false;
-  imageURL: string;
-
 
   constructor(
     public navCtrl: NavController,
@@ -47,7 +45,6 @@ export class EventNewsPage implements OnInit {
         return;
       }
       this.event = event;
-      console.log(event);
       this.isManaging = this.eventProvider.isEventAdmin(this.event, undefined, undefined);
     })
 

@@ -42,10 +42,6 @@ export class EventDetailPage {
     this.eventPictureUrl = of('assets/imgs/calendar.png');
   }
 
-  ionViewDidLoad() {
-    console.log(this.event);
-  }
-
   //delete event from userProfile.inviteeList & from the event.inviteeList
   onLeaveEvent() {
     const loader = this.loadingCtrl.create({ content: 'Leaving event...' });

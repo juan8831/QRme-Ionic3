@@ -242,11 +242,10 @@ export class EditEventPage implements OnInit {
       this.event.creatorId = this.afAuth.auth.currentUser.uid;
       let newEventRef = this.firebase.firestore().collection('events').doc();
       let eventId = newEventRef.id;
-      console.log('new event id:' + eventId);
 
       if (this.uploadNewImage) {
         try {
-          let loader = this.mProv.getLoader('Uploading event picture...');
+          let loader = this.mProv.getLoader('Uploading event picture...', 0);
           loader.present();
           var result = await this.uploadPicture(this.event.id);
           this.event.eventImageUrl = result.downloadURL;
