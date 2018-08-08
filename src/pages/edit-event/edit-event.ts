@@ -31,15 +31,27 @@ export class EditEventPage implements OnInit {
   setDefaultImage = false;
   isDefaultImage = true;
   pageName = 'EditEvent';
-
-  selectOptions = {
-    title: 'Repeat',
-    subTitle: 'If and how often the event repeats.',
-  };
-
-
   repeatValues: string[] = [];
 
+  repeatOptionsHelp = {
+    title: 'Repeat',
+    subTitle: 'If and how often the event repeats.'
+  };
+
+  beforeAttendanceHelp = {
+    title: 'Allow Attendance Before Event Start',
+    subTitle: 'How long before event starts can invitees record their attendance.'
+  };
+
+  afterAttendanceHelp = {
+    title: 'Allow Attendance After Event Start',
+    subTitle: 'How long after event starts can invitees record their attendance.'
+  };
+
+  typeOptionsHelp = {
+    title: 'Type',
+    subTitle: 'Public Events: Anyone can join. Private Events: Users must request an invite.'
+  }
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
