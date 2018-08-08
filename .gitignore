@@ -39,3 +39,5 @@ src/environment\.ts
 resources/
 
 src/assets/imgs/
+
+config\.xml
