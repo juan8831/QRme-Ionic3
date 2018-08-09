@@ -34,13 +34,21 @@ export class EventNewsPage implements OnInit {
     public navParams: NavParams,
     public app: App,
     private modalCtrl: ModalController,
-    private eventProvider: EventProvider  ) {
+    private eventProvider: EventProvider,
+    private mProv: MessagingProvider
+  ) {
   }
 
   ngOnInit(): void {
     let eventId = this.navParams.get('eventId');
-    this.eventProvider.getEvent(eventId).subscribe(event => {
+    this.eventProvider.getEvent(eventId)
+    .catch(() => {
+      this.mProv.showAlertOkMessage('Error', 'Could not load event. Please try again later.')
+      return null;
+    })
+    .subscribe((event : Event) => {
       if(event == null || event.name == null){
+        this.mProv.showAlertOkMessage('Event Deleted', 'The event has been deleted.');
         this.navCtrl.popToRoot();
         return;
       }

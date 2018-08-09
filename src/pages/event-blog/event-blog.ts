@@ -8,6 +8,9 @@ import { EditPostPage } from '../edit-post/edit-post';
 import { PostPage } from '../post/post';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { AngularFireAuth } from 'angularfire2/auth';
+import 'rxjs';
+import { of } from 'rxjs/observable/of';
+
 
 @IonicPage()
 @Component({
@@ -26,38 +29,39 @@ export class EventBlogPage implements OnInit {
   userEmail: string;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public navParams: NavParams,
     private blogProvider: BlogProvider,
     private mProv: MessagingProvider,
     private afAuth: AngularFireAuth,
   ) {
-    
+
 
   }
 
-  ngOnInit(): void {  
+  ngOnInit(): void {
     this.event = this.navParams.data;
     this.userId = this.afAuth.auth.currentUser.uid;
-    this.userEmail = this.afAuth.auth.currentUser.email; 
-    if(this.event.creatorId && this.event.creatorId === this.userId ){
-        this.isAdmin = true;
+    this.userEmail = this.afAuth.auth.currentUser.email;
+    if (this.event.creatorId && this.event.creatorId === this.userId) {
+      this.isAdmin = true;
     }
-    else{
-      if(this.event.creatorEmail === this.userEmail ){
+    else {
+      if (this.event.creatorEmail === this.userEmail) {
         this.isAdmin = true;
       }
     }
-   
-    let loader = this.mProv.getLoader('Loading blog posts...');
-    loader.present();
+
     let postSubs = this.blogProvider.getPostsByEvent(this.event.id)
-    .map(posts => posts.filter(post => post != null && post.title.toLowerCase().includes(this.searchText.toLowerCase())))
-    .subscribe(posts => {
-      loader.dismiss();
-      this.posts = posts;
-      this.changeSearch();
-    })
+      .catch(() => {
+        this.mProv.showAlertOkMessage('Error', 'Could not load event blog posts. Please try again later.');
+        return of([]);
+      })
+      .map((posts: Post[]) => posts.filter(post => post != null && post.title.toLowerCase().includes(this.searchText.toLowerCase())))
+      .subscribe(posts => {
+        this.posts = posts;
+        this.changeSearch();
+      });
     this.subscriptions.push(postSubs);
   }
 
@@ -65,12 +69,12 @@ export class EventBlogPage implements OnInit {
     this.subscriptions.map(subscription => subscription.unsubscribe());
   }
 
-  addPost(){
-    this.navCtrl.push(EditPostPage, {'event' : this.event, 'create': true});
+  addPost() {
+    this.navCtrl.push(EditPostPage, { 'event': this.event, 'create': true });
   }
 
-  openPost(post: Post){
-    this.navCtrl.push(PostPage, {'post': post ,'event': this.event});
+  openPost(post: Post) {
+    this.navCtrl.push(PostPage, { 'post': post, 'event': this.event });
   }
 
   changeSearch() {

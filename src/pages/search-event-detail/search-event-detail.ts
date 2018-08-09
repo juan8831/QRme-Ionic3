@@ -41,8 +41,8 @@ export class SearchEventDetailPage implements OnInit {
   ) {
     this.event = navParams.get('event');
 
-    var adminEvents$ = this.userProvider.getEventAdminList();
-    var inviteeEvents$ = this.userProvider.getEventInviteeList();
+    var adminEvents$ = this.userProvider.getManagingEventIdsList();
+    var inviteeEvents$ = this.userProvider.getInvitedEventIdsList();
     this.subscription = combineLatest(adminEvents$, inviteeEvents$)
       .subscribe(([adminEvents, inviteeEvents]) => {
         this.isAdmin = (this.event.id in adminEvents.events) ? true : false;

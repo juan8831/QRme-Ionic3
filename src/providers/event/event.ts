@@ -108,23 +108,11 @@ export class EventProvider {
     return this.afs.doc(`events/${id}`).snapshotChanges().map(action => {
 
       if (action.payload.exists === false) {
-        var nonExistentEvent = new Event();
-        nonExistentEvent.id = id;
-        nonExistentEvent.name = null;
-        return nonExistentEvent;
+        return null;
       }
       else {
         const data = action.payload.data() as Event;
         data.id = action.payload.id;
-
-        // try{
-        //   data.eventImageUrl = await this.fb.storage().ref().child(`eventPictures/${data.id}`).getDownloadURL();
-        // }
-        // catch{
-        //   data.eventImageUrl = this.defaultEventImage;
-        // }
-
-
         return data;
       }
     });
@@ -271,10 +259,10 @@ export class EventProvider {
 
   // }
 
-  getEventsForAdmin(idList): Observable<Event[]> {
-
+  getEventsWithIds(idList): Observable<Event[]> {
+    if(!idList || idList.length == 0)
+      return of([]);
     return combineLatest(idList.map((eventId) => this.getEvent(eventId)));
-
   }
 
 

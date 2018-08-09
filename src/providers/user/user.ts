@@ -108,13 +108,16 @@ export class UserProvider {
     return this.userDoc.update(user);
   }
 
-  getEventAdminList() : Observable<DocumentData>  {
+  /*
+  Get list of event ids that user is managing
+  */
+  getManagingEventIdsList() : Observable<DocumentData>  {
     if(!this.afAuth.auth.currentUser){
       return null;
     }
     var eventsDoc = this.afs.doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('admin');
     //if (id = null) return null;
-    this.adminEventsList = eventsDoc.snapshotChanges().map(action => {
+    return eventsDoc.snapshotChanges().map(action => {
       if (action.payload.exists === false) {
         return null;
       }
@@ -124,12 +127,12 @@ export class UserProvider {
         return data;
       }
     });
-
-    return this.adminEventsList;
-
   }
 
-  getEventInviteeList() : Observable<DocumentData> {
+  /*
+  Get list of event ids for which user is invitee
+  */
+  getInvitedEventIdsList() : Observable<DocumentData> {
     if(!this.afAuth.auth.currentUser){
       return null;
     }
