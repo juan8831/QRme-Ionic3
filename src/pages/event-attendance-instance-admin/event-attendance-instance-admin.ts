@@ -66,10 +66,6 @@ export class EventAttendanceInstanceAdminPage implements OnInit {
     this.numOfMissing = this.numOfInvitees - this.numOfPresent;
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad EventAttendanceInstanceAdminPage');
-  }
-
   changeSearch() {
     this.filteredUsers = this.users.filter(user => user.name.toLowerCase().includes(this.searchText.toLowerCase()));
   }

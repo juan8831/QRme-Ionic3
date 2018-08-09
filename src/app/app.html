@@ -5,10 +5,7 @@
 
 <ion-menu [content]="nav">
     <ion-header text-center>
-        <ion-toolbar>
-            <!-- <ion-title>Menu {{email}}</ion-title> -->
-        </ion-toolbar>
-        <img style="height: 50%; width: 90%; display: block; margin: auto;" src="./assets/imgs/logo.png">
+        <img style="height: 20%; width: 80%; display: block; margin: auto;" src="./assets/imgs/logo.png">
         <br>
         <ion-title text-center>{{email}}</ion-title>
         <button ion-button round small outline color="danger" text-center icon-start (click)="onLogout()" *ngIf="isAuthenticated">
@@ -19,9 +16,6 @@
     <ion-content class="outer-content">
 
         <ion-list>
-            <ion-list-header>
-                Navigate
-            </ion-list-header>
             <button class="menuItem" ion-item icon-left menuClose (click)="onLoad(rootPage)">
                 <ion-icon item-left name="calendar" color="primary"></ion-icon>
                 Your Events

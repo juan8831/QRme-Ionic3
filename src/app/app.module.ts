@@ -34,8 +34,6 @@ import { ManageInvitesPage } from '../pages/manage-invites/manage-invites';
 import { InviteRequestProvider } from '../providers/invite-request/invite-request';
 import { EventInviteesPage } from '../pages/event-invitees/event-invitees';
 import { EventInvitationsPage } from '../pages/event-invitations/event-invitations';
-
-import { QRScanner } from '@ionic-native/qr-scanner';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
 import {BarcodeScanner} from '@ionic-native/barcode-scanner';
 import { SearchEventsCategoriesPage } from '../pages/search-events-categories/search-events-categories';
@@ -157,7 +155,6 @@ import { TutorialPage } from '../pages/tutorial/tutorial';
     UserProvider,
     MessagingProvider,
     InviteRequestProvider,
-    QRScanner,
     BarcodeScanner,
     Camera,
     File,

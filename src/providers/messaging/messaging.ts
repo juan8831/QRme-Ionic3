@@ -31,24 +31,4 @@ export class MessagingProvider {
     }
     return this.loadingCtrl.create({ spinner: 'dots', content: message, duration: duration });
   }
-
-  showYesNoConfirm(title: string, message: string, yesAction : () => void) {
-    let confirm = this.alertCtrl.create({
-      title: title,
-      subTitle: message,
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            console.log('dsd');
-          }
-        },
-        {
-          text: 'No',
-        }
-      ]
-    });
-    confirm.present();
-  }
-
 }

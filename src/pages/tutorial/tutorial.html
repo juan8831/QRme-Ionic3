@@ -7,10 +7,10 @@
   </ion-header>
   
   <ion-content no-bounce>
-    <ion-slides #slides (ionSlideWillChange)="onSlideChangeStart($event)" pager>
+    <ion-slides *ngIf="this.platform.is('ios')" #slides (ionSlideWillChange)="onSlideChangeStart($event)" pager>
   
       <ion-slide>
-        <img src="assets/imgs/logo.png" class="slide-image"/>
+        <img src="assets/imgs/logo.png" class="slide-image-half"/>
         <h2 class="slide-title">
           Welcome to <b>QRme!</b>
         </h2>
@@ -20,39 +20,69 @@
       </ion-slide>
   
       <ion-slide>
-        <!-- <h2 class="slide-title" >Access your events either as an admin or invitee.</h2> -->
-        <!-- <p>Create your own events and invite others to join...</p> -->
-        <img src="assets/imgs/t1-iphone.jpg" class="slide-image"/>
+        <img src="assets/imgs/i0.jpg" class="slide-image"/>
       </ion-slide>
 
       <ion-slide>
-        <!-- <h2 class="slide-title" >Create events with personalized settings...</h2> -->
-        <!-- <p>Create your own events and invite others to join...</p> -->
-        <img src="assets/imgs/t2-iphone.jpg" class="slide-image"/>
+        <img src="assets/imgs/i1.jpg" class="slide-image"/>
       </ion-slide>
 
       <ion-slide>
-        <!-- <h2 class="slide-title" >Or join existing events by searching or scanning a QR Code.</h2> -->
-        <img src="assets/imgs/t3-iphone.jpg" class="slide-image"/>
+        <img src="assets/imgs/i2.jpg" class="slide-image"/>
       </ion-slide>
 
       <ion-slide>
-        <!-- <h2 class="slide-title">Manage attendance records for your event.</h2> -->
-        <img src="assets/imgs/t4-iphone.jpg" class="slide-image"/>
+        <img src="assets/imgs/i3.jpg" class="slide-image"/>
       </ion-slide>
 
       <ion-slide>
-        <!-- <h2 class="slide-title">Allow invitees to mark their attendance by scanning a QR Code...</h2> -->
-        <img src="assets/imgs/t5-iphone.jpg" class="slide-image"/>
+        <img src="assets/imgs/i4.jpg" class="slide-image"/>
       </ion-slide>
-
-      <!-- <ion-slide>
-        <h2 class="slide-title">Manage attendance records and create blog posts and polls for your event.</h2>
-        <img src="assets/img/ica-slidebox-img-2.png" class="slide-image"/>
-      </ion-slide> -->
   
       <ion-slide>
-        <img src="assets/imgs/logo.png" class="slide-image"/>
+        <img src="assets/imgs/logo.png" class="slide-image-half"/>
+        <h2 class="slide-title">Ready to Start?</h2>
+        <button ion-button icon-end large clear (click)="startApp()">
+          Continue
+          <ion-icon name="arrow-forward"></ion-icon>
+        </button>
+      </ion-slide>
+  
+    </ion-slides>
+    <ion-slides *ngIf="!this.platform.is('ios')" #slides (ionSlideWillChange)="onSlideChangeStart($event)" pager>
+  
+      <ion-slide>
+        <img src="assets/imgs/logo.png" class="slide-image-half"/>
+        <h2 class="slide-title">
+          Welcome to <b>QRme!</b>
+        </h2>
+        <p>
+          An event management app built to simplify your life.
+        </p>
+      </ion-slide>
+  
+      <ion-slide>
+        <img src="assets/imgs/a0.jpg" class="slide-image"/>
+      </ion-slide>
+
+      <ion-slide>
+        <img src="assets/imgs/a1.jpg" class="slide-image"/>
+      </ion-slide>
+
+      <ion-slide>
+        <img src="assets/imgs/a2.jpg" class="slide-image"/>
+      </ion-slide>
+
+      <ion-slide>
+        <img src="assets/imgs/a3.jpg" class="slide-image"/>
+      </ion-slide>
+
+      <ion-slide>
+        <img src="assets/imgs/a4.jpg" class="slide-image"/>
+      </ion-slide>
+
+      <ion-slide>
+        <img src="assets/imgs/logo.png" class="slide-image-half"/>
         <h2 class="slide-title">Ready to Start?</h2>
         <button ion-button icon-end large clear (click)="startApp()">
           Continue

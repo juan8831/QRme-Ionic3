@@ -17,7 +17,6 @@ export class InviteRequestProvider {
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth
   ) {
-    console.log('Hello InviteRequestProvider Provider');
     this.inviteRequestCollection = this.afs.collection('inviteRequests', ref => ref.orderBy('requestDate', 'asc'));
   }
 
