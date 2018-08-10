@@ -56,41 +56,17 @@ export class MyApp {
     this.afAuth.authState.subscribe(user => {
       if(user){
             this.isAuthenticated = true;
-            //this.userProvider.getUserProfile();
             this.email = user.email;
             this.rootPage = EventsPage;
-            //this.nav.setRoot(this.tabsPage);
           }
           else{
             this.isAuthenticated = false;
             this.email = "";
             this.userProvider.userProfile = null;
-            //this.nav.setRoot(this.signinPage)
             this.rootPage = SigninUpPage;
           }
       
     });
-
-    // firebase.auth().onAuthStateChanged(user => {
-    //   if(user){
-    //     this.isAuthenticated = true;
-    //     //this.email = user.email;
-    //     this.rootPage = EventsPage;
-    //     //this.nav.setRoot(this.tabsPage);
-    //   }
-    //   else{
-    //     this.isAuthenticated = false;
-    //     this.email = "";
-    //     //this.nav.setRoot(this.signinPage)
-    //     this.rootPage = SigninUpPage;
-    //   }
-    // });
-
-    // this.rootPageProvider.getPage().subscribe(page => {
-    //   if(page){
-    //     this.nav.setRoot(EventsPage);
-    //   }
-    // });
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -109,8 +85,6 @@ export class MyApp {
   }
 
   onLogout(){
-   // this.afAuth.auth.signOut();
-   //this.mProv.showYesNoConfirm('Log out?', , this.authProvider.logout)
    let confirm = this.alertCtrl.create({
     title: 'Log out?',
     subTitle: 'Are you sure you want to log out?',

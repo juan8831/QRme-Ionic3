@@ -10,6 +10,8 @@ import {FirebaseApp} from 'angularfire2';
 import { DocumentData } from '@firebase/firestore-types';
 import { Event } from '../../models/event';
 import { combineLatest } from 'rxjs/observable/combineLatest';
+import { of } from 'rxjs/observable/of';
+
 
 @Injectable()
 export class UserProvider {
@@ -88,7 +90,7 @@ export class UserProvider {
   getUser(id: string): Observable<User> {
     this.userDoc = this.afs.doc<User>(`users/${id}`);
     if (id = null) return null;
-    this.user = this.userDoc.snapshotChanges().map(action => {
+    return this.userDoc.snapshotChanges().map(action => {
       if (action.payload.exists === false) {
         return null;
       }
@@ -98,8 +100,6 @@ export class UserProvider {
         return data;
       }
     });
-
-    return this.user;
   }
 
   updateUser(user: User) {
@@ -113,7 +113,7 @@ export class UserProvider {
   */
   getManagingEventIdsList() : Observable<DocumentData>  {
     if(!this.afAuth.auth.currentUser){
-      return null;
+      return of(null);
     }
     var eventsDoc = this.afs.doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('admin');
     //if (id = null) return null;
@@ -134,7 +134,7 @@ export class UserProvider {
   */
   getInvitedEventIdsList() : Observable<DocumentData> {
     if(!this.afAuth.auth.currentUser){
-      return null;
+      return of(null);
     }
     var eventsDoc = this.afs.doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('invitee');
     //if (id = null) return null;

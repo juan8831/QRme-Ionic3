@@ -52,7 +52,7 @@ export class SigninUpPage {
     var user = new User();
     user.name = form.value.name;
     user.email = form.value.email;
-    let loading = this.mProv.getLoader('Creating your account...');
+    let loading = this.mProv.getLoader('Creating your account...', 0);
     loading.present();
     this.afAuth.auth.createUserWithEmailAndPassword(form.value.email, form.value.password)
       .then(data => {
@@ -63,13 +63,11 @@ export class SigninUpPage {
           )
           .catch(error => {
             loading.dismiss();
-            this.errorProvider.reportError(this.pageName, error, undefined, 'Sign up error');
             this.mProv.showAlertOkMessage('Error','Sign up error. Please try again later.');
           });
       })
       .catch(error => {
         loading.dismiss();
-        this.errorProvider.reportError(this.pageName, error, undefined, 'Sign up error');
         this.mProv.showAlertOkMessage('Error','Sign up error. Please try again later.');
       });
   }
@@ -84,7 +82,6 @@ export class SigninUpPage {
       })
       .catch(error => {
         loading.dismiss();
-        this.errorProvider.reportError(this.pageName, error, undefined, 'Sign in error');
         this.mProv.showAlertOkMessage('Error','Sign in error. Please try again later.');
       });
   }

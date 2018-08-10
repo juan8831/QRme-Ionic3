@@ -16,8 +16,6 @@ import 'rxjs/add/operator/take';
 import { TutorialPage } from '../tutorial/tutorial';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
-
-
 @IonicPage()
 @Component({
   selector: 'page-events',
@@ -34,6 +32,7 @@ export class EventsPage implements OnInit {
   subscriptions: ISubscription[] = [];
   segment = "managing";
   filteredEvents: Event[];
+  loaderVisible = false;
 
   constructor(
     public navCtrl: NavController,
@@ -48,11 +47,12 @@ export class EventsPage implements OnInit {
   }
 
   ngOnInit() {
-    this.afAuth.authState.take(1).subscribe(user => {
-      if (user) {
-        this.loadEvents();
+    this.afAuth.authState.take(1).subscribe(authUser => {
+      if (authUser) {
+        this.loadEvents(); 
       }
     });
+    
   }
 
   ngOnDestroy(): void {
@@ -61,11 +61,15 @@ export class EventsPage implements OnInit {
 
   private loadEvents() {
     let loader = this.mProv.getLoader('Loading your events...', 10000);
+    this.loaderVisible = true;
     loader.present();
     let managingEvents$ = this.userProvider.getManagingEventIdsList()
       .flatMap(managingEvents => {
         if (managingEvents) {
           return this.eventProvider.getEventsWithIds(Object.keys(managingEvents.events));
+        }
+        else{
+          return of(null);
         }
       });
     let invitedEvents$ = this.userProvider.getInvitedEventIdsList()
@@ -73,9 +77,12 @@ export class EventsPage implements OnInit {
         if (invitedEvents) {
           return this.eventProvider.getEventsWithIds(Object.keys(invitedEvents.events));
         }
+        else{
+          return of(null);
+        }
       });
     let subs = combineLatest(managingEvents$, invitedEvents$)
-      .catch(() => {
+      .catch(err => {
         this.mProv.showAlertOkMessage('Error', 'Could not load events. Please try again later.')
         return of([]);
       })
@@ -83,15 +90,22 @@ export class EventsPage implements OnInit {
         if (managingEvents) {
           managingEvents = managingEvents.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase()));
           this.managingEvents = managingEvents;
+          this.dismissLoader(loader);
         }
         if (invitedEvents) {
           invitedEvents = invitedEvents.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase()));
           this.invitedEvents = invitedEvents;
-        }
-        loader.dismiss();
+        }       
         this.changeEventMode();
       });
     this.subscriptions.push(subs);
+  }
+
+  private dismissLoader(loader: Loading) {
+    if(this.loaderVisible){
+      this.loaderVisible = false;
+      loader.dismiss();
+    }
   }
 
   changeSearch() {
