@@ -42,7 +42,7 @@ export class EventNewsPage implements OnInit {
   }
 
   ngOnInit(): void {
-    timer(400).subscribe((() => this.showSplash = false ));
+    timer(500).subscribe((() => this.showSplash = false ));
     let eventId = this.navParams.get('eventId');
     this.eventProvider.getEvent(eventId)
     .catch(() => {

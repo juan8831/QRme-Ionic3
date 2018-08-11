@@ -62,41 +62,40 @@ import { AboutPage } from '../pages/about/about';
 import { ErrorProvider } from '../providers/error/error';
 import { IonicStorageModule } from '@ionic/storage';
 import { TutorialPage } from '../pages/tutorial/tutorial';
+import { AboutPageModule } from '../pages/about/about.module';
+import { EventAttendancePageModule } from '../pages/event-attendance/event-attendance.module';
+import { EventDetailPageModule } from '../pages/event-detail/event-detail.module';
+import { EventsPageModule } from '../pages/events/events.module';
+import { SigninUpPageModule } from '../pages/signin-up/signin-up.module';
+import { SettingsPageModule } from '../pages/settings/settings.module';
+import { EditEventPageModule } from '../pages/edit-event/edit-event.module';
+import { EventNewsPageModule } from '../pages/event-news/event-news.module';
+import { EventBlogPageModule } from '../pages/event-blog/event-blog.module';
+import { EventPollsPageModule } from '../pages/event-polls/event-polls.module';
+import { JoinEventsPageModule } from '../pages/join-events/join-events.module';
+import { SearchEventsPageModule } from '../pages/search-events/search-events.module';
+import { SearchEventDetailPageModule } from '../pages/search-event-detail/search-event-detail.module';
+import { ManageInvitesPageModule } from '../pages/manage-invites/manage-invites.module';
+import { EventInviteesPageModule } from '../pages/event-invitees/event-invitees.module';
+import { EventInvitationsPageModule } from '../pages/event-invitations/event-invitations.module';
+import { SearchEventsCategoriesPageModule } from '../pages/search-events-categories/search-events-categories.module';
+import { EditEventPicturePageModule } from '../pages/edit-event-picture/edit-event-picture.module';
+import { EventQrcodePageModule } from '../pages/event-qrcode/event-qrcode.module';
+import { EventAttendanceAdminPageModule } from '../pages/event-attendance-admin/event-attendance-admin.module';
+import { EventAttendanceInstanceAdminPageModule } from '../pages/event-attendance-instance-admin/event-attendance-instance-admin.module';
+import { InviteeAttendanceRecordPageModule } from '../pages/invitee-attendance-record/invitee-attendance-record.module';
+import { EditPostPageModule } from '../pages/edit-post/edit-post.module';
+import { EditCommentPageModule } from '../pages/edit-comment/edit-comment.module';
+import { PostPageModule } from '../pages/post/post.module';
+import { EditPollPageModule } from '../pages/edit-poll/edit-poll.module';
+import { PollPageModule } from '../pages/poll/poll.module';
+import { ForgotPasswordPageModule } from '../pages/forgot-password/forgot-password.module';
+import { ChangePasswordPageModule } from '../pages/change-password/change-password.module';
+import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 
 @NgModule({
   declarations: [
-    MyApp,
-    EventAttendancePage,
-    EventDetailPage,
-    EventsPage,
-    SigninUpPage,
-    SettingsPage,
-    EditEventPage,
-    EventNewsPage,
-    EventAttendancePage,
-    EventBlogPage,
-    EventPollsPage,
-    JoinEventsPage,
-    SearchEventsPage,
-    SearchEventDetailPage,
-    ManageInvitesPage,
-    EventInviteesPage,
-    EventInvitationsPage,
-    SearchEventsCategoriesPage,
-    EditEventPicturePage,
-    EventQrcodePage,
-    EventAttendanceAdminPage,
-    EventAttendanceInstanceAdminPage,
-    InviteeAttendanceRecordPage,
-    EditPostPage,
-    EditCommentPage,
-    PostPage,
-    EditPollPage,
-    PollPage,
-    ForgotPasswordPage,
-    ChangePasswordPage,
-    AboutPage,
-    TutorialPage
+    MyApp
   ],
   imports: [
     BrowserModule,
@@ -107,9 +106,39 @@ import { TutorialPage } from '../pages/tutorial/tutorial';
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
-    NgxQRCodeModule,
     ChartsModule,
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    AboutPageModule,
+    EventAttendancePageModule,
+    EventDetailPageModule,
+    EventsPageModule,
+    SigninUpPageModule,
+    SettingsPageModule,
+    EditEventPageModule,
+    EventNewsPageModule,
+    EventAttendancePageModule,
+    EventBlogPageModule,
+    EventPollsPageModule,
+    JoinEventsPageModule,
+    SearchEventsPageModule,
+    SearchEventDetailPageModule,
+    ManageInvitesPageModule,
+    EventInviteesPageModule,
+    EventInvitationsPageModule,
+    SearchEventsCategoriesPageModule,
+    EditEventPicturePageModule,
+    EventQrcodePageModule,
+    EventAttendanceAdminPageModule,
+    EventAttendanceInstanceAdminPageModule,
+    InviteeAttendanceRecordPageModule,
+    EditPostPageModule,
+    EditCommentPageModule,
+    PostPageModule,
+    EditPollPageModule,
+    PollPageModule,
+    ForgotPasswordPageModule,
+    ChangePasswordPageModule,
+    TutorialPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -143,7 +172,7 @@ import { TutorialPage } from '../pages/tutorial/tutorial';
     PollPage,
     ForgotPasswordPage,
     ChangePasswordPage,
-    AboutPage,
+    //AboutPage,
     TutorialPage
   ],
   providers: [

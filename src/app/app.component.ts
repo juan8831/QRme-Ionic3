@@ -16,6 +16,7 @@ import { MessagingProvider } from '../providers/messaging/messaging';
 import {timer} from 'rxjs/observable/timer';
 import { AboutPage } from '../pages/about/about';
 import { TutorialPage } from '../pages/tutorial/tutorial';
+import { firebaseConfig } from '../environment';
 
 @Component({
   templateUrl: 'app.html'
@@ -47,35 +48,30 @@ export class MyApp {
     private mProv: MessagingProvider,
     private alertCtrl: AlertController
   ) {
-    firebase.initializeApp({
-      apiKey: "AIzaSyCIbx9StXPYu0Dohg3VadKgONnV5vCqKqY",
-    authDomain: "qrme-65e1e.firebaseapp.com",
-    databaseURL: "https://qrme-65e1e.firebaseio.com"
-    });
-
-    this.afAuth.authState.subscribe(user => {
-      if(user){
-            this.isAuthenticated = true;
-            this.email = user.email;
-            this.rootPage = EventsPage;
-          }
-          else{
-            this.isAuthenticated = false;
-            this.email = "";
-            this.userProvider.userProfile = null;
-            this.rootPage = SigninUpPage;
-          }
-      
-    });
-
+    firebase.initializeApp(firebaseConfig);
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-
-      timer(3000).subscribe((() => this.showSplash = false ));
-
+    
+      timer(1500).subscribe((() => {
+        this.showSplash = false
+        this.afAuth.authState.subscribe(user => {
+          if(user){
+                this.isAuthenticated = true;
+                this.email = user.email;
+                this.rootPage = EventsPage;
+              }
+              else{
+                this.isAuthenticated = false;
+                this.email = "";
+                this.userProvider.userProfile = null;
+                this.rootPage = SigninUpPage;
+              }
+          
+        });
+      })); 
     });
   }
 
