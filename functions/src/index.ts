@@ -119,6 +119,21 @@ export const onEventDelete = functions.firestore.document(`events/{messageId}`)
     });
 
 
+/*
+Delete all comments from post
+*/
+export const onPostDelete = functions.firestore.document(`posts/{messageId}`)
+    .onDelete(async post => {
+        let queryResults = await post.ref.collection('comments').get();
+        if(queryResults != null){
+            console.log(`${queryResults.size} comments to delete.`);
+                queryResults.forEach(async record => {
+                    await record.ref.delete()
+                });
+        }
+    });
+
+
 
 async function removeEventIdFromUser(userId: string, eventId: string, mode: string) {
     var eventsDocRef = admin.firestore().doc(`users/${userId}`).collection('events').doc(mode);

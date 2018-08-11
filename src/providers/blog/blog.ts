@@ -27,9 +27,6 @@ export class BlogProvider {
 
   deletePost(post: Post) {
     const postDoc = this.afs.doc(`posts/${post.id}`);
-    this.getCommentsByPost(post.id).take(1).subscribe(comments => {
-      comments.forEach(comment => this.deleteComment(comment));
-    });
     return postDoc.delete();
   }
 

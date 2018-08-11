@@ -111,6 +111,19 @@ exports.onEventDelete = functions.firestore.document(`events/{messageId}`)
         console.log(err);
     }
 }));
+/*
+Delete all comments from post
+*/
+exports.onPostDelete = functions.firestore.document(`posts/{messageId}`)
+    .onDelete((post) => __awaiter(this, void 0, void 0, function* () {
+    let queryResults = yield post.ref.collection('comments').get();
+    if (queryResults != null) {
+        console.log(`${queryResults.size} comments to delete.`);
+        queryResults.forEach((record) => __awaiter(this, void 0, void 0, function* () {
+            yield record.ref.delete();
+        }));
+    }
+}));
 function removeEventIdFromUser(userId, eventId, mode) {
     return __awaiter(this, void 0, void 0, function* () {
         var eventsDocRef = admin.firestore().doc(`users/${userId}`).collection('events').doc(mode);
