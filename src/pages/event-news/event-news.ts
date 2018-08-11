@@ -14,6 +14,7 @@ import { FirebaseApp } from 'angularfire2';
 import { EventAttendanceAdminPage } from '../event-attendance-admin/event-attendance-admin';
 import { EventQrcodePage } from '../event-qrcode/event-qrcode';
 import { MessagingProvider } from '../../providers/messaging/messaging';
+import {timer} from 'rxjs/observable/timer';
 
 @IonicPage()
 @Component({
@@ -28,6 +29,7 @@ export class EventNewsPage implements OnInit {
   eventBlogPage = EventBlogPage;
   eventPollsPage = EventPollsPage;
   isManaging: boolean = false;
+  showSplash = true;
 
   constructor(
     public navCtrl: NavController,
@@ -40,6 +42,7 @@ export class EventNewsPage implements OnInit {
   }
 
   ngOnInit(): void {
+    timer(400).subscribe((() => this.showSplash = false ));
     let eventId = this.navParams.get('eventId');
     this.eventProvider.getEvent(eventId)
     .catch(() => {

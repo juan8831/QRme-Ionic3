@@ -11,7 +11,6 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import 'rxjs';
 import { of } from 'rxjs/observable/of';
 
-
 @IonicPage()
 @Component({
   selector: 'page-event-blog',
