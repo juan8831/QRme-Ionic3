@@ -6,6 +6,7 @@ import { InviteeAttendanceRecordPage } from '../invitee-attendance-record/invite
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { ErrorProvider } from '../../providers/error/error';
+import { ISubscription } from '../../../node_modules/rxjs/Subscription';
 
 @IonicPage()
 @Component({
@@ -18,6 +19,12 @@ export class EventAttendancePage implements OnInit {
   eventDate: Date;
   markedAttendance = true;
   pageName = 'EventAttendancePage';
+  selectedDate: Date;
+  toDate: string;
+  fromDate: string;
+  eventDates: Date[] = [];
+  loadAttendance = false;
+  subscriptions: ISubscription [] = [];
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -33,20 +40,26 @@ export class EventAttendancePage implements OnInit {
   }
 
   ngOnInit() {
-    this.eventDate = this.eventProvider.getNextEventDate(this.event);
-    this.eventProvider.getAttendanceRecordByEventAndDateAndUser(this.event, this.eventDate, undefined).subscribe(record => {
-      if(record){
-        this.markedAttendance = true;
-      }
-      else{
-        this.markedAttendance = false;
-      }
-    })
+    let today = new Date();
+    //if starts date is earlier than current date, then use starts date instead of current date
+    today = today > this.event.starts ? this.event.starts : today;
+    let twoWeeksFromToday = this.eventProvider.addDays(today, 14);
+    this.fromDate = this.eventProvider.convertISO8601UTCtoBogusLocalwZ(today.toISOString());
+    this.toDate = this.eventProvider.convertISO8601UTCtoBogusLocalwZ(twoWeeksFromToday.toISOString());
+    this.changeDate();  
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.map(subscription => subscription.unsubscribe());
   }
 
   onGoToEvent() {
     this.viewCtrl.dismiss();
 
+  }
+
+  selectChange(){
+    this.loadAttendance = false;
   }
 
   recordAttendance() {
@@ -111,6 +124,37 @@ export class EventAttendancePage implements OnInit {
     }
 
     return true;
+  }
+
+  changeDate(){
+    let fromDate = new Date(this.eventProvider.convertBogusISO8601LocalwZtoRealUTC(this.fromDate));
+    let toDate = new Date(this.eventProvider.convertBogusISO8601LocalwZtoRealUTC(this.toDate));
+
+    if(this.event.allDay){
+      fromDate = this.eventProvider.getDateWithoutTime(fromDate);
+      toDate = this.eventProvider.getDateWithoutTime(toDate);
+    }
+
+    this.eventDates = this.eventProvider.getEventDates(this.event, fromDate, toDate);
+    this.selectedDate =  this.selectedDate = this.eventProvider.getNextEventDate(this.event);
+  }
+
+  searchDate(){
+    if(this.selectedDate != null){
+      this.selectedDate = this.event.allDay ? this.eventProvider.getDateWithoutTime(this.selectedDate) : this.selectedDate;
+      this.eventDate = this.selectedDate;
+      let subs = this.eventProvider.getAttendanceRecordByEventAndDateAndUser(this.event, this.eventDate, undefined).subscribe(record => {
+        if(record){
+          this.markedAttendance = true;
+        }
+        else{
+          this.markedAttendance = false;
+        }
+        this.loadAttendance = true
+      });
+      this.subscriptions.push(subs);
+      //this.navCtrl.push(EventAttendanceInstanceAdminPage, {'event' : this.event, 'selectedDate' : this.selectedDate});
+    }
   }
 
   openAttendanceRecord(){

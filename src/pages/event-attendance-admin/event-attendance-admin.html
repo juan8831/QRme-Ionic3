@@ -34,8 +34,11 @@
                   </ion-select>
             </ion-item>
         </ion-list>
-      
-        
+        <button ion-button large block icon-start text-wrap round (click)="searchDate()" [disabled]="selectedDate == null">
+            <ion-icon name="search"></ion-icon>
+            Search
+            {{selectedDate | date:'MMM dd, y | h:mm a'}}
+          </button>  
   </div>
 
   <div *ngIf="event.allDay">
@@ -58,11 +61,10 @@
                   </ion-select>
             </ion-item>
         </ion-list>
+          <button ion-button large block icon-start round text-wrap (click)="searchDate()" [disabled]="selectedDate == null">
+              <ion-icon name="search"></ion-icon>
+              Search
+              {{selectedDate | date:'MMM dd, y'}}
+            </button>
   </div>
-
-  <button ion-button large block icon-start round (click)="searchDate()" [disabled]="selectedDate == null">
-      <ion-icon name="search"></ion-icon>
-      Search
-      {{selectedDate | date:'MMM dd, y | h:mm a'}}
-    </button>
   </ion-content>
