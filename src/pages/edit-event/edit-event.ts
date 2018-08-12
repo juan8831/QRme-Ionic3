@@ -12,6 +12,7 @@ import { File, FileError, Entry } from '@ionic-native/file';
 import { normalizeURL } from 'ionic-angular';
 import { FirebaseApp } from 'angularfire2';
 import { ErrorProvider } from '../../providers/error/error';
+import { UploadTaskSnapshot } from '../../../node_modules/@firebase/storage-types';
 
 const defaultEventImage = 'assets/imgs/calendar.png';
 
@@ -23,10 +24,9 @@ const defaultEventImage = 'assets/imgs/calendar.png';
 })
 export class EditEventPage implements OnInit {
 
-  event: Event;
+  event: Event = new Event();
   isnewEvent: boolean;
   eventImgBlob: Blob;
-  imageURL: string;
   uploadNewImage = false;
   setDefaultImage = false;
   isDefaultImage = true;
@@ -39,13 +39,13 @@ export class EditEventPage implements OnInit {
   };
 
   beforeAttendanceHelp = {
-    title: 'Allow Attendance Before Event Start',
-    subTitle: 'How long before event starts can invitees record their attendance.'
+    title: 'Attendance Before Event Start',
+    subTitle: 'How long before event starts can invitees record their attendance. All day events start at 12:00AM'
   };
 
   afterAttendanceHelp = {
-    title: 'Allow Attendance After Event Start',
-    subTitle: 'How long after event starts can invitees record their attendance.'
+    title: 'Attendance After Event Start',
+    subTitle: 'How long after event starts can invitees record their attendance. All day events start at 12:00AM'
   };
 
   typeOptionsHelp = {
@@ -75,30 +75,15 @@ export class EditEventPage implements OnInit {
   ngOnInit() {
     this.isnewEvent = this.navParams.get('type') == 'new' ? true : false;
     if (!this.isnewEvent) {
-      this.event = this.navParams.get('event');
-      // const ref = this.storage.ref(`eventPictures/${this.event.id}`);
-      // this.imageURL = ref.getDownloadURL();
-
-      this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).getDownloadURL()
-        .then(result => {
-          this.imageURL = result;
-        })
-        .catch(() => {
-            this.imageURL = defaultEventImage;
-          })
-
-        this.event.starts = this.convertISO8601UTCtoLocalwZ(new Date(this.event.starts).toISOString());
-        this.event.ends = this.convertISO8601UTCtoLocalwZ(new Date(this.event.ends).toISOString());
-
-        if(this.event.endRepeatDate && this.event.endRepeatDate != ''){
-          this.event.endRepeatDate = this.convertISO8601UTCtoLocalwZ(new Date(this.event.endRepeatDate).toISOString());
-        }
-
-     // this.event.starts = 
+      let event: Event = this.navParams.get('event');
+      this.eventProvider.getEvent(event.id).take(1).subscribe(event => {
+        this.event = event;
+        this.convertDatesToISO8601();
+      });
     }
     else {
       this.event = new Event();
-      this.imageURL = defaultEventImage;
+      this.event.eventImageUrl = defaultEventImage;
       this.event.endRepeat = 'Never';
       this.event.repeat = RepeatType.Never;
       this.event.isVisibleInPublicSearch = this.event.allowInviteePolls = this.event.allowInviteePosts = true;
@@ -108,14 +93,20 @@ export class EditEventPage implements OnInit {
 
   }
 
-  ngOnDestroy(): void {
-    this.camera.cleanup();
-
+  private convertDatesToISO8601() {
+    if (this.event.starts instanceof Date) {
+      this.event.starts = this.convertISO8601UTCtoLocalwZ(new Date(this.event.starts).toISOString());
+    }
+    if (this.event.ends instanceof Date) {
+      this.event.ends = this.convertISO8601UTCtoLocalwZ(new Date(this.event.ends).toISOString());
+    }
+    if (this.event.endRepeatDate && this.event.endRepeatDate instanceof Date) {
+        this.event.endRepeatDate = this.convertISO8601UTCtoLocalwZ(new Date(this.event.endRepeatDate).toISOString());
+    }
   }
 
-  ionViewDidLoad() {
-
-
+  ngOnDestroy(): void {
+    this.camera.cleanup();
   }
 
   /* Convert a BOGUS ISO 8601 Local date string (with a Z) to a real ISO 8601 UTC date string.
@@ -123,6 +114,9 @@ export class EditEventPage implements OnInit {
    */
   convertISO8601LocalwZtoUTC(localDateString: string): string {
     const ISO_8601_UTC_REGEXP = /^(\d{4})(-\d{2})(-\d{2})T(\d{2})(\:\d{2}(\:\d{2}(\.\d{3})?)?)?Z$/;
+    if(!localDateString.endsWith('Z')){
+      localDateString += "T00:00:00.000Z";
+    }
     try {
       if (localDateString.match(ISO_8601_UTC_REGEXP)) {
         let utcDateString: string;
@@ -133,17 +127,17 @@ export class EditEventPage implements OnInit {
         utcDateString = utcDate.toJSON()
         return utcDateString;
       } else {
-       // throw 'Incorrect BOGUS local ISO8601 date string';
+        // throw 'Incorrect BOGUS local ISO8601 date string';
       }
     }
-    catch(err) {
+    catch (err) {
       alert('Date string is formatted incorrectly: \n' + err);
     }
   }
 
-   /* Convert a real ISO 8601 UTC date stringto a BOGUS ISO 8601 local date string (with a Z).
-   * utcDateString should be of format:  YYYY-MM-DDTHH-mm-ss.sssZ
-   */
+  /* Convert a real ISO 8601 UTC date stringto a BOGUS ISO 8601 local date string (with a Z).
+  * utcDateString should be of format:  YYYY-MM-DDTHH-mm-ss.sssZ
+  */
   convertISO8601UTCtoLocalwZ(utcDateString: string): string {
     const ISO_8601_UTC_REGEXP = /^(\d{4})(-\d{2})(-\d{2})T(\d{2})(\:\d{2}(\:\d{2}(\.\d{3})?)?)?Z$/;
     try {
@@ -159,187 +153,163 @@ export class EditEventPage implements OnInit {
         //throw 'Incorrect UTC ISO8601 date string';
       }
     }
-    catch(err) {
+    catch (err) {
       alert('Date string is formatted incorrectly: \n' + err);
     }
   }
 
-  async onSubmit(f: NgForm) {
+  /*
+  Convert to Date object, set time to 0, and convert back to ISO8601
+  */
+  resetTime(date){
+    let convertedDate = (date instanceof Date) ? date : new Date(this.convertISO8601LocalwZtoUTC(date));
+    convertedDate.setHours(0, 0, 0, 0);
+    return this.convertISO8601UTCtoLocalwZ(convertedDate.toISOString());
+  }
 
+  /*
+  We use ionic date time which returns ISO8601 Date string. We store dates in DB as Javascript Date objects. 
+  On page load, we need to convert Date object => ISO8601
+  On submit, we need to convert ISO8601 => Date object. Need to keep dates as ISO8601 until they have passed all checks
+  */
+  async onSubmit(f: NgForm) {
     this.event.name = f.value.name;
+    this.event.description = f.value.description;
     this.event.location = f.value.location;
-    this.event.type = f.value.type;
     this.event.category = f.value.category;
+    this.event.type = f.value.type;
     this.event.isVisibleInPublicSearch = f.value.isVisibleInPublicSearch ? f.value.isVisibleInPublicSearch : false;
-    this.event.repeat = f.value.repeat;
-    this.event.allowManualAttendance = f.value.allowManualAttendance ? f.value.allowManualAttendance : false;
-    this.event.minutesAfterAttendance = parseInt(f.value.minutesAfterAttendance)
-    this.event.minutesBeforeAttendance = parseInt(f.value.minutesBeforeAttendance);
     this.event.allowInviteePosts = f.value.allowInviteePosts ? f.value.allowInviteePosts : false;
     this.event.allowInviteePolls = f.value.allowInviteePolls ? f.value.allowInviteePolls : false;
 
-    if(this.event.allDay){
-      if(this.isnewEvent){
-        f.value.starts += "T00:00:00.000Z";
-        f.value.ends += "T00:00:00.000Z";
+    this.event.allDay = f.value.allDay ? f.value.allDay : false;
+    this.event.repeat = f.value.repeat;
+
+    this.event.allowManualAttendance = f.value.allowManualAttendance ? f.value.allowManualAttendance : false;
+    this.event.minutesAfterAttendance = parseInt(f.value.minutesAfterAttendance)
+    this.event.minutesBeforeAttendance = parseInt(f.value.minutesBeforeAttendance);
+    
+    if (this.event.allDay) {
+      f.value.starts = this.resetTime(f.value.starts);
+      f.value.ends = this.resetTime(f.value.ends);
+      if (f.value.endRepeatDate) {
+        f.value.endRepeatDate = this.resetTime(f.value.endRepeatDate);
       }
-      let startDate = (f.value.starts instanceof Date) ? f.value.starts : new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
-      startDate.setHours(0, 0, 0, 0);   
-      f.value.starts = this.convertISO8601UTCtoLocalwZ(startDate.toISOString());
-
-      let endDate = (f.value.ends instanceof Date) ? f.value.ends : new Date(this.convertISO8601LocalwZtoUTC(f.value.ends));
-      endDate.setHours(0, 0, 0, 0);   
-      f.value.ends = this.convertISO8601UTCtoLocalwZ(endDate.toISOString());
-      
     }
 
-    if (this.event.repeat != RepeatType.Never && this.event.endRepeat != RepeatType.Never  
-      && (f.value.endRepeatDate < f.value.starts || f.value.endRepeatDate < f.value.ends)) {
-      this.mProv.showAlertOkMessage('Error', 'End Repeat Date cannot be before Start Date or End Date.');
-      return;
-    }
-
-    if(!(f.value.starts instanceof Date)){
+    if (!(f.value.starts instanceof Date)) {
       this.event.starts = new Date(this.convertISO8601LocalwZtoUTC(f.value.starts));
     }
-    if(!(f.value.ends instanceof Date)){
+    if (!(f.value.ends instanceof Date)) {
       this.event.ends = new Date(this.convertISO8601LocalwZtoUTC(f.value.ends));
     }
+    if (f.value.endRepeatDate && !(f.value.endRepeatDate instanceof Date)) {
+      this.event.endRepeatDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.endRepeatDate));
+    }
 
-    if (this.event.starts  > this.event.ends ) {
+    //check dates are valid
+    if (this.event.starts > this.event.ends) {
       this.mProv.showAlertOkMessage('Error', 'Start Date must be before End Date.');
       return;
     }
 
-    if (this.event.repeat != RepeatType.Never) {
-      this.event.endRepeat = f.value.endRepeat;
-      if (this.event.endRepeat != RepeatType.Never) {
-        this.event.endRepeatDate = new Date(this.convertISO8601LocalwZtoUTC(f.value.endRepeatDate));
-      }
+    if (this.event.repeat != RepeatType.Never && this.event.endRepeat != RepeatType.Never
+      && (this.event.endRepeatDate < this.event.starts || this.event.endRepeatDate < this.event.ends)) {
+      this.mProv.showAlertOkMessage('Error', 'End Repeat Date cannot be before Start Date or End Date.');
+      return;
     }
-
-    if (this.event.allDay) {
-      let startDate = new Date(this.event.starts);
-      startDate.setHours(0, 0, 0, 0);
-      let endDate = new Date(this.event.ends);
-      endDate.setHours(0, 0, 0, 0);
-      this.event.starts = startDate;
-      this.event.ends = endDate;
-    }
-
-
-    //optional 
-    //this.event.date = f.value.date ? f.value.date : '';
-    //this.event.time = f.value.time ? f.value.time : '';
-    this.event.description = f.value.description ? f.value.description : '';
-    this.event.location = f.value.location ? f.value.location : '';
 
     if (this.isnewEvent) {
-      let loader = this.loadingCtl.create({ spinner: 'dots', content: 'Creating new event...' });
-      loader.present();
-      this.event.creatorEmail = this.afAuth.auth.currentUser.email;
-      this.event.creatorName = this.userProvider.userProfile.name;
-      this.event.creatorId = this.afAuth.auth.currentUser.uid;
-      let newEventRef = this.firebase.firestore().collection('events').doc();
-      let eventId = newEventRef.id;
-
-      if (this.uploadNewImage) {
-        try {
-          let loader = this.mProv.getLoader('Uploading event picture...', 0);
-          loader.present();
-          var result = await this.uploadPicture(this.event.id);
-          this.event.eventImageUrl = result.downloadURL;
-          loader.dismiss();
-        }
-        catch (err) {
-          this.mProv.showAlertOkMessage('Error', 'Could not upload event image');
-          console.log('Upload error:' + err);
-          this.event.eventImageUrl = defaultEventImage;
-        }
-      }
-      else {
-        this.event.eventImageUrl = defaultEventImage;
-      }
-
-      this.eventProvider.CreateNewEventAndSynchronizeWithUser(this.event, newEventRef)
-        .then(_ => {
-          loader.dismiss();
-
-          this.mProv.showToastMessage('You have created a new event!');
-          this.navCtrl.pop();
-        })
-        .catch(err => {
-          loader.dismiss();
-          this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not create event'); 
-          this.mProv.showAlertOkMessage('Error', 'Could not create event. Please try again.');
-        });
+      await this.createNewEvent();
     }
-    //.catch(err => console.log(err, 'You do not have access!'));
-
-    // .then((data) => {
-    //   console.log(data);
-    //   this.userProvider.getUser(this.afAuth.auth.currentUser.email).subscribe(user => {
-    //     var updateUser : User = user;
-    //     console.log(data);
-    //     //updateUser.eventAdminList.push(data);
-
-
-
-
-    //     //this.userProvider.updateUser()
-    //   });
-
-    // });
-
     else {
-
-      if (this.uploadNewImage) {
-
-        try {
-          let loader = this.mProv.getLoader('Uploading event picture...');
-          loader.present();
-          var result = await this.uploadPicture(this.event.id);
-          loader.dismiss();
-          this.event.eventImageUrl = result.downloadURL;
-        }
-        catch (err) {
-          this.mProv.showAlertOkMessage('Error', 'Could not upload event image. Please try again');
-          console.log('Upload error:' + err);
-          this.event.eventImageUrl = this.eventProvider.defaultEventImage;;
-        }
-      }
-
-      if (this.setDefaultImage) {
-        if (this.event.eventImageUrl != defaultEventImage) {
-          this.deleteEventImage();
-        }
-        this.event.eventImageUrl = this.eventProvider.defaultEventImage;;
-      }
-
-      if (this.event.eventImageUrl == "" || this.event.eventImageUrl == null) {
-        this.event.eventImageUrl = this.eventProvider.defaultEventImage;
-      }
-
-      this.eventProvider.updateEvent(this.event)
-        .then(_ => {
-          this.mProv.showToastMessage('Event successfully updated!');
-          this.navCtrl.pop();
-        })
-        .catch(err => {
-          this.mProv.showAlertOkMessage('Error', 'Could not update event. Please try again.')
-          this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not update event'); 
-        });
+      await this.updateEvent();
     }
-
-
-
-
 
   }
 
-  //delete event from each user's list (admin & invitee)
-  //delete event && users subcollection 
+  private async updateEvent() {
+    if (this.uploadNewImage) {
+      try {
+        let result = await this.uploadPicture(this.event.id);
+        if (result != null) {
+          this.event.eventImageUrl = result.downloadURL;
+        }
+        else {
+          this.mProv.showAlertOkMessage('Error', 'Could not upload event image. Please try again later.');
+        }
+      }
+      catch (err) {
+        this.mProv.showAlertOkMessage('Error', 'Could not upload event image. Please try again later.');
+        console.log('Upload error:' + err);
+        this.event.eventImageUrl = this.eventProvider.defaultEventImage;
+        ;
+      }
+    }
+    if (this.setDefaultImage) {
+      if (this.event.eventImageUrl != defaultEventImage) {
+        this.deleteEventImage();
+      }
+      this.event.eventImageUrl = this.eventProvider.defaultEventImage;
+      ;
+    }
+    if (this.event.eventImageUrl == "" || this.event.eventImageUrl == null) {
+      this.event.eventImageUrl = this.eventProvider.defaultEventImage;
+    }
+    this.eventProvider.updateEvent(this.event)
+      .then(_ => {
+        this.mProv.showToastMessage('Event successfully updated!');
+        this.navCtrl.pop();
+      })
+      .catch(err => {
+        this.mProv.showAlertOkMessage('Error', 'Could not update event. Please try again.');
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not update event');
+      });
+  }
 
+  private async createNewEvent() {
+    let loader = this.loadingCtl.create({ spinner: 'dots', content: 'Creating new event...' });
+    loader.present();
+    this.event.creatorEmail = this.afAuth.auth.currentUser.email;
+    this.event.creatorName = this.userProvider.userProfile.name;
+    this.event.creatorId = this.afAuth.auth.currentUser.uid;
+    let newEventRef = this.firebase.firestore().collection('events').doc();
+    let eventId = newEventRef.id;
+    if (this.uploadNewImage) {
+      try {
+        let result = await this.uploadPicture(eventId);
+        if (result != null) {
+          this.event.eventImageUrl = result.downloadURL;
+        }
+        else {
+          this.mProv.showAlertOkMessage('Error', 'Could not upload event image. Please try again later.');
+        }
+      }
+      catch (err) {
+        loader.dismiss();
+        this.mProv.showAlertOkMessage('Error', 'Could not upload event image');
+        console.log('Upload error:' + err);
+        this.event.eventImageUrl = defaultEventImage;
+      }
+    }
+    else {
+      this.event.eventImageUrl = defaultEventImage;
+    }
+    this.eventProvider.CreateNewEventAndSynchronizeWithUser(this.event, newEventRef)
+      .then(_ => {
+        loader.dismiss();
+        this.mProv.showToastMessage('You have created a new event!');
+        this.navCtrl.pop();
+      })
+      .catch(err => {
+        loader.dismiss();
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not create event');
+        this.mProv.showAlertOkMessage('Error', 'Could not create event. Please try again.');
+      });
+  }
+
+  //delete event from each user's list (admin & invitee) (cloud function)
+  //delete event (local) && users subcollection (cloud function)
   deleteEvent() {
     this.eventProvider.deleteEvent(this.event)
       .then(_ => {
@@ -347,13 +317,11 @@ export class EditEventPage implements OnInit {
       })
       .catch(err => {
         this.mProv.showAlertOkMessage('Error', 'Could not delete event. Please try again later');
-        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not delete event'); 
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not delete event');
       })
   }
 
   showConfirm() {
-    console.log(this.event.starts);
-
     let confirm = this.alertCtrl.create({
       title: 'Delete?',
       message: 'Are you sure you want to delete this event?',
@@ -390,7 +358,7 @@ export class EditEventPage implements OnInit {
         this.setImageBlob(imageData);
       })
       .catch(err => {
-        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not take picture'); 
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not take picture');
         if (err != 'No Image Selected') {
           this.mProv.showAlertOkMessage('Error', 'Could not take picture. Please try again.');
         }
@@ -400,7 +368,30 @@ export class EditEventPage implements OnInit {
 
   private uploadPicture(eventId: string) {
     console.log('Upload attempting to upload with eventId: ' + eventId);
-    return this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).put(this.eventImgBlob);
+    let loader = this.mProv.getLoader(`Uploading event picture...`, 0);
+    loader.present();
+    let progress = 0;
+    if (eventId) {
+      let task = this.firebase.storage().ref().child(`eventPictures/${eventId}`).put(this.eventImgBlob);
+      if (task != null) {
+        task.on('state_changed', (snapshot: UploadTaskSnapshot) => {
+          progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          loader.setContent(`Progress: ${progress} %`);
+          if (progress >= 100) {
+            loader.dismiss();
+          }
+        })
+        task.catch(err => {
+          loader.dismiss();
+          this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not upload image');
+          this.mProv.showAlertOkMessage('Error', 'Could not upload event image. Please try again later.');
+        })
+        return task;
+      }
+    }
+    else {
+      return null;
+    }
   }
 
   setImageBlob(imageData) {
@@ -412,7 +403,7 @@ export class EditEventPage implements OnInit {
     this.file.moveFile(path, currentName, this.file.tempDirectory, newFileName)
       .then(
         (data: Entry) => {
-          this.imageURL = normalizeURL(data.nativeURL);
+          this.event.eventImageUrl = normalizeURL(data.nativeURL);
 
           this.file.readAsArrayBuffer(this.file.tempDirectory, newFileName).then(buffer => {
             console.log('Finished read as array');
@@ -427,10 +418,11 @@ export class EditEventPage implements OnInit {
             duration: 2500
           });
           toast.present();
-          this.errorProvider.reportError(this.pageName, err.message, this.event.id, 'Could not save image'); 
+          this.errorProvider.reportError(this.pageName, err.message, this.event.id, 'Could not move image');
           this.camera.cleanup();
         }
       );
+
   }
 
   setEventPicture() {
@@ -454,28 +446,24 @@ export class EditEventPage implements OnInit {
     let deleteCurrentPhotoButton = {
       text: 'Delete current image...',
       handler: () => {
-        this.imageURL = defaultEventImage;
+        this.event.eventImageUrl = defaultEventImage;
         this.setDefaultImage = true;
       }
     };
 
     let cancelButton = {
       text: 'Cancel',
-      role: 'cancel',
-      handler: () => {
-        console.log('Agree clicked');
-      }
+      role: 'cancel'
     };
 
     var buttons = [chooseLibraryButton, takePhotoButton, cancelButton]
 
-    if (this.imageURL != defaultEventImage) {
+    if (this.event.eventImageUrl != defaultEventImage) {
       buttons.splice(2, 0, deleteCurrentPhotoButton);
     }
 
     const confirm = this.alertCtrl.create({
       title: 'Change Event Picture',
-      //message: 'Do you agree to use this lightsaber to do good across the intergalactic galaxy?',
       buttons: buttons
     });
     confirm.present();
@@ -484,14 +472,14 @@ export class EditEventPage implements OnInit {
   deleteEventImage() {
     this.firebase.storage().ref().child(`eventPictures/${this.event.id}`).delete()
       .then(() => {
-        })
+      })
       .catch(err => {
         this.mProv.showAlertOkMessage('Error', 'Could not delete event image.');
         this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not delete image');
       })
   }
 
-  openRepeatHelp(){
+  openRepeatHelp() {
     this.mProv.showAlertOkMessage('Repeat', 'Event will repeat based on selected interval');
   }
 

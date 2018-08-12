@@ -15,7 +15,7 @@
 <ion-content padding>
   <div class="container" (click)="setEventPicture()">
     <ion-avatar>
-      <img *ngIf="imageURL" [src]="imageURL" style="display:block; margin:auto;" [ngClass]="{'opaqueImage': isDefaultImage, 'nonOpaqueImage': !isDefaultImage}">
+      <img *ngIf="event?.eventImageUrl" [src]="event?.eventImageUrl" style="display:block; margin:auto;" [ngClass]="{'opaqueImage': isDefaultImage, 'nonOpaqueImage': !isDefaultImage}">
 
     </ion-avatar>
     <ion-icon *ngIf="isDefaultImage" class="editImage" name="add-circle"></ion-icon>
@@ -90,21 +90,21 @@
         <ion-label>Date</ion-label>
         <ion-datetime displayFormat="MM/DD/YYYY" [ngModel]="event?.date" name="date"></ion-datetime>
       </ion-item> -->
-        <ion-item *ngIf="event.allDay">
+        <ion-item *ngIf="event?.allDay">
           <ion-label>Starts</ion-label>
           <ion-datetime displayFormat="MMM DD, YYYY" [ngModel]="event?.starts" name="starts" required></ion-datetime>
         </ion-item>
-        <ion-item *ngIf="event.allDay">
+        <ion-item *ngIf="event?.allDay">
           <ion-label>Ends</ion-label>
           <ion-datetime displayFormat="MMM DD, YYYY" [ngModel]="event?.ends" name="ends" required></ion-datetime>
         </ion-item>
-        <ion-item *ngIf="!event.allDay">
+        <ion-item *ngIf="!event?.allDay">
           <ion-label>Starts</ion-label>
-          <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" minuteValues="0,15,30,45" [(ngModel)]="event.starts" name="starts" required></ion-datetime>
+          <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" minuteValues="0,15,30,45" [ngModel]="event?.starts" name="starts" required></ion-datetime>
         </ion-item>
-        <ion-item *ngIf="!event.allDay">
+        <ion-item *ngIf="!event?.allDay">
           <ion-label>Ends</ion-label>
-          <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [ngModel]="event?.ends" name="ends" required></ion-datetime>
+          <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" minuteValues="0,15,30,45" [ngModel]="event?.ends" name="ends" required></ion-datetime>
         </ion-item>
         <ion-item>
           <ion-label>Repeat</ion-label>
@@ -118,17 +118,21 @@
             <ion-option value="1year">Every Year</ion-option> -->
           </ion-select>
         </ion-item>
-        <ion-item *ngIf="event.repeat != 'Never'">
+        <ion-item *ngIf="event?.repeat != 'Never'">
           <ion-label>End Repeat</ion-label>
           <ion-select [(ngModel)]="event.endRepeat" name="endRepeat" required>
             <ion-option value="Never">Never</ion-option>
             <ion-option value="onDate">On Date</ion-option>
           </ion-select>
         </ion-item>
-        <ion-item *ngIf="event.repeat != 'Never' && event.endRepeat != 'Never'" required>
+        <ion-item *ngIf="event?.repeat != 'Never' && event?.endRepeat != 'Never' && !event?.allDay" required>
           <ion-label>End Repeat Date</ion-label>
           <ion-datetime displayFormat="MMM DD, YYYY | hh:mm A" [ngModel]="event?.endRepeatDate" name="endRepeatDate" required></ion-datetime>
         </ion-item>
+        <ion-item *ngIf="event?.repeat != 'Never' && event?.endRepeat != 'Never' && event?.allDay" required>
+            <ion-label>End Repeat Date</ion-label>
+            <ion-datetime displayFormat="MMM DD, YYYY" [ngModel]="event?.endRepeatDate" name="endRepeatDate" required></ion-datetime>
+          </ion-item>
       </ion-item-group>
       <ion-item-group>
         <ion-item-divider color="primary" text-center>Attendance</ion-item-divider>
@@ -137,7 +141,7 @@
           <ion-toggle [ngModel]="event?.allowManualAttendance" name="allowManualAttendance"></ion-toggle>
         </ion-item>
         <ion-item text-wrap>
-          <ion-label>Allow Attendance Before Start</ion-label>
+          <ion-label>Attendance Before Start</ion-label>
           <ion-select [ngModel]="event?.minutesBeforeAttendance" name="minutesBeforeAttendance" [selectOptions]="beforeAttendanceHelp" required>
             <ion-option value=0>0 Minutes</ion-option>
             <ion-option value=5>5 Minutes</ion-option>
@@ -152,7 +156,7 @@
           </ion-select>
         </ion-item>
         <ion-item text-wrap>
-          <ion-label>Allow Attendance After Start</ion-label>
+          <ion-label>Attendance After Start</ion-label>
           <ion-select [ngModel]="event?.minutesAfterAttendance" name="minutesAfterAttendance" [selectOptions]="afterAttendanceHelp" required>
               <ion-option value=5>5 Minutes</ion-option>
               <ion-option value=15>15 Minutes</ion-option>
