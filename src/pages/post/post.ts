@@ -40,11 +40,38 @@ export class PostPage implements OnInit {
   ngOnInit(){
     this.userId = this.afAuth.auth.currentUser.uid;
     this.userEmail = this.afAuth.auth.currentUser.email;
-    this.post = this.navParams.get('post');
+
+    let post = this.navParams.get('post');
     this.event = this.navParams.get('event');
+    let blogSubs = this.blogProvider.getPost(post.id).subscribe(post => {
+      if(!post){
+        this.mProv.showAlertOkMessage('Post Deleted', 'This post has been deleted.');
+        this.navCtrl.pop();
+        return;
+      }
+      this.post = post;
+      if(this.event.creatorId){
+        if(this.post.authorId === this.userId || this.event.creatorId === this.userId){
+          this.isAdminOrCreator = true;
+        }
+        if(this.event.creatorId === this.userId ){
+          this.isAdmin = true;
+        }
+      }
+      else{
+        if(this.post.authorId === this.userId || this.event.creatorEmail === this.userEmail){
+          this.isAdminOrCreator = true;
+        }
+        if(this.event.creatorEmail === this.userEmail ){
+          this.isAdmin = true;
+        }
+      }
+    });
+    this.subscriptions.push(blogSubs);
+
     let loader = this.mProv.getLoader('Loading comments...');
     loader.present();
-    let commentSubs = this.blogProvider.getCommentsByPost(this.post.id)
+    let commentSubs = this.blogProvider.getCommentsByPost(post.id)
     .subscribe(comments => {
       loader.dismiss();
       this.comments = comments;
@@ -54,22 +81,7 @@ export class PostPage implements OnInit {
     });
     this.subscriptions.push(commentSubs);
 
-    if(this.event.creatorId){
-      if(this.post.authorId === this.userId || this.event.creatorId === this.userId){
-        this.isAdminOrCreator = true;
-      }
-      if(this.event.creatorId === this.userId ){
-        this.isAdmin = true;
-      }
-    }
-    else{
-      if(this.post.authorId === this.userId || this.event.creatorEmail === this.userEmail){
-        this.isAdminOrCreator = true;
-      }
-      if(this.event.creatorEmail === this.userEmail ){
-        this.isAdmin = true;
-      }
-    }
+   
     
   }
 
