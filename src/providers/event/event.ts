@@ -320,7 +320,7 @@ export class EventProvider {
     var usersDocRef = this.fb.firestore().doc(`events/${eventId}`).collection('users').doc('invitee');
     var eventsDocRef = this.fb.firestore().doc(`users/${userId}`).collection('events').doc('invitee');
     var leaveRequestRef = this.fb.firestore().collection('leaveEventRequests').doc();
-
+    
     return this.fb.firestore().runTransaction(transaction => {
       return transaction.get(usersDocRef).then(userDoc => {
         return transaction.get(eventsDocRef).then(eventDoc => {
