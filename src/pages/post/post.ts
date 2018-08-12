@@ -81,8 +81,6 @@ export class PostPage implements OnInit {
     });
     this.subscriptions.push(commentSubs);
 
-   
-    
   }
 
   ngOnDestroy(): void {

@@ -50,10 +50,7 @@ export class EventAttendancePage implements OnInit {
   }
 
   recordAttendance() {
-
-    let canMarkAttendance = true;
-    //this.event.canMarkAttendance
-
+    let canMarkAttendance = this.event.allowManualAttendance;
     let buttons = [
       {
         text: 'Scan QR Code',
