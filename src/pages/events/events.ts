@@ -89,11 +89,17 @@ export class EventsPage implements OnInit {
       .subscribe(([managingEvents, invitedEvents]) => {
         if (managingEvents) {
           managingEvents = managingEvents.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase()));
+          (managingEvents as Event []).forEach(event => {
+            event.calculatedStart = this.eventProvider.getNextEventDate(event);
+          });
           this.managingEvents = managingEvents;
           this.dismissLoader(loader);
         }
         if (invitedEvents) {
           invitedEvents = invitedEvents.filter(event => event != null && event.name.toLowerCase().includes(this.searchText.toLowerCase()));
+          (invitedEvents as Event []).forEach(event => {
+            event.calculatedStart = this.eventProvider.getNextEventDate(event);
+          });
           this.invitedEvents = invitedEvents;
         }       
         this.changeEventMode();

@@ -39,13 +39,13 @@
     <p>{{event?.location}} </p>
     <p *ngIf="event && !event?.allDay" text-center>
       <span *ngIf="event?.repeat != 'Never'" text-center>Next Date: <br></span>
-       Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy, h:mm a'}}
-      <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy, h:mm a'}}
+       Starts: {{startDate | date:'M/d/yy, h:mm a'}}
+      <br> Ends: {{endDate | date:'M/d/yy, h:mm a'}}
     </p>
     <p *ngIf="event && event?.allDay" text-center>
       <span *ngIf="event?.repeat != 'Never'"  text-center>Next Date:  <br> </span>
-       Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy'}} - All Day
-      <br> Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy'}} - All Day
+       Starts: {{startDate | date:'M/d/yy'}} - All Day
+      <br> Ends: {{endDate | date:'M/d/yy'}} - All Day
     </p>
     <p *ngIf="event?.repeat != 'Never'">{{event?.repeat}}</p>
     <!-- <p *ngIf="!event.endRepeat != 'Never'">End Repeat Date: {{event?.endRepeatDate | date:'M/d/yy, h:mm a'}}</p> -->

@@ -15,6 +15,7 @@ import { EventAttendanceAdminPage } from '../event-attendance-admin/event-attend
 import { EventQrcodePage } from '../event-qrcode/event-qrcode';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import {timer} from 'rxjs/observable/timer';
+import { ISubscription } from '../../../node_modules/rxjs/Subscription';
 
 @IonicPage()
 @Component({
@@ -30,6 +31,9 @@ export class EventNewsPage implements OnInit {
   eventPollsPage = EventPollsPage;
   isManaging: boolean = false;
   showSplash = true;
+  subscriptions: ISubscription[] = [];
+  startDate = new Date();
+  endDate = new Date();
 
   constructor(
     public navCtrl: NavController,
@@ -44,7 +48,7 @@ export class EventNewsPage implements OnInit {
   ngOnInit(): void {
     timer(500).subscribe((() => this.showSplash = false ));
     let eventId = this.navParams.get('eventId');
-    this.eventProvider.getEvent(eventId)
+    let subs = this.eventProvider.getEvent(eventId)
     .catch(() => {
       this.mProv.showAlertOkMessage('Error', 'Could not load event. Please try again later.')
       return null;
@@ -57,12 +61,18 @@ export class EventNewsPage implements OnInit {
       }
       this.event = event;
       this.isManaging = this.eventProvider.isEventAdmin(this.event, undefined, undefined);
-    })
+      this.startDate = this.eventProvider.getNextEventDate(this.event);
+      this.endDate = this.eventProvider.getNextEventDateEnd(this.event);
+    });
+    this.subscriptions.push(subs);
+  }
 
+  ngOnDestroy(): void {
+    this.subscriptions.map(subscription => subscription.unsubscribe());
   }
 
   onOpenInfo() {
-    this.navCtrl.push(EventDetailPage, { event: this.event, 'isManaging': this.isManaging });
+    this.navCtrl.push(EventDetailPage, { 'event': this.event, 'isManaging': this.isManaging });
   }
 
   openAttendance() {

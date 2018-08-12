@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 import { EventProvider } from '../../providers/event/event';
@@ -10,6 +10,7 @@ import { of } from 'rxjs/observable/of';
 import { FirebaseApp } from 'angularfire2';
 import { EventQrcodePage } from '../event-qrcode/event-qrcode';
 import { ErrorProvider } from '../../providers/error/error';
+import { ISubscription } from '../../../node_modules/rxjs/Subscription';
 
 
 @IonicPage()
@@ -17,12 +18,14 @@ import { ErrorProvider } from '../../providers/error/error';
   selector: 'page-event-detail',
   templateUrl: 'event-detail.html',
 })
-export class EventDetailPage {
+export class EventDetailPage implements OnInit {
 
-  event: Event
+  event: Event;
   isManaging: boolean = false;
-  eventPictureUrl: Observable<string | null>;
   pageName = 'EventDetailPage';
+  subscriptions: ISubscription[] = [];
+  startDate = new Date();
+  endDate = new Date();
 
   constructor(
     public navCtrl: NavController,
@@ -37,9 +40,23 @@ export class EventDetailPage {
     private modalCtrl: ModalController,
     private errorProvider: ErrorProvider
   ) {
-    this.event = navParams.get('event');
+    let eventId = navParams.get('event').id;
     this.isManaging = navParams.get('isManaging');
-    this.eventPictureUrl = of('assets/imgs/calendar.png');
+    let subs = this.eventProvider.getEvent(eventId).subscribe(event => {
+      if (event) {
+        this.event = event;
+        this.startDate = eventProvider.getNextEventDate(this.event);
+        this.endDate = eventProvider.getNextEventDateEnd(this.event);
+      }
+    });
+    this.subscriptions.push(subs);
+  }
+
+  ngOnInit() {
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.map(subscription => subscription.unsubscribe());
   }
 
   //delete event from userProfile.inviteeList & from the event.inviteeList
@@ -86,8 +103,8 @@ export class EventDetailPage {
     this.navCtrl.push(EditEventPage, { type: 'edit', event: this.event });
   }
 
-  openQrpage(){
-    let modal = this.modalCtrl.create(EventQrcodePage, {'event': this.event});
+  openQrpage() {
+    let modal = this.modalCtrl.create(EventQrcodePage, { 'event': this.event });
     modal.present();
   }
 

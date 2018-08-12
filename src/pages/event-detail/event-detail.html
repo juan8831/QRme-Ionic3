@@ -17,20 +17,22 @@
 
 <ion-content padding text-center>
   <h1 text-center>{{event?.name}}</h1>
-    <p *ngIf="!event.allDay" text-center>
-        <span text-center>Next Date</span>
-        <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy, h:mm a'}}
-        | Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy, h:mm a'}}
+  <div *ngIf="event"> 
+    <p *ngIf="!event?.allDay" text-center>
+        <span text-center>Next Date:</span>
+        <br> Starts: {{startDate | date:'M/d/yy, h:mm a'}}
+        | Ends: {{endDate | date:'M/d/yy, h:mm a'}}
       </p>
-      <p *ngIf="event.allDay" text-center>
-        <span text-center>Next Date</span>
-        <br> Starts: {{eventProvider.getNextEventDate(event) | date:'M/d/yy'}} - All Day
-        | Ends: {{eventProvider.getNextEventDateEnd(event) | date:'M/d/yy'}} - All Day
+      <p *ngIf="event?.allDay" text-center>
+        <span text-center>Next Date:</span>
+        <br> Starts: {{startDate | date:'M/d/yy'}} - All Day
+        | Ends: {{endDate | date:'M/d/yy'}} - All Day
       </p>   
+    </div>
   <h4>
     {{event?.description}}
   </h4>
-  <ion-card>
+  <ion-card *ngIf="event">
       <ion-card-content>
           <ion-row no-padding>
               <ion-col col-4 class="left" >
