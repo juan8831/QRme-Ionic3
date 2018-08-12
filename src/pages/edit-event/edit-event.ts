@@ -40,12 +40,12 @@ export class EditEventPage implements OnInit {
 
   beforeAttendanceHelp = {
     title: 'Attendance Before Event Start',
-    subTitle: 'How long before event starts can invitees record their attendance. All day events start at 12:00AM'
+    subTitle: 'How long before event starts can invitees record their attendance. All day events start at 12:00AM.'
   };
 
   afterAttendanceHelp = {
     title: 'Attendance After Event Start',
-    subTitle: 'How long after event starts can invitees record their attendance. All day events start at 12:00AM'
+    subTitle: 'How long after event starts can invitees record their attendance. All day events start at 12:00AM.'
   };
 
   typeOptionsHelp = {

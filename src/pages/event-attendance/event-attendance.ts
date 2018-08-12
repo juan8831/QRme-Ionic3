@@ -154,7 +154,6 @@ export class EventAttendancePage implements OnInit {
       this.eventDate = this.selectedDate;
       if(this.attendanceSubs){
         this.attendanceSubs.unsubscribe();
-        this.attendanceSubs.unsubscribe();
       }
       this.attendanceSubs = this.eventProvider.getAttendanceRecordByEventAndDateAndUser(this.event, this.eventDate, undefined)
       .subscribe(record => {

@@ -71,6 +71,11 @@ export class PollPage implements OnInit {
           this.isAdminOrCreator = true;
         }
       }
+      else{
+        this.mProv.showAlertOkMessage('Poll Deleted', 'The poll has been deleted.');
+        this.navCtrl.pop();
+        return;
+      }
     });
     this.subscriptions.push(pollSubs);
 
