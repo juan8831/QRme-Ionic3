@@ -174,8 +174,8 @@ export class EditEventPage implements OnInit {
   */
   async onSubmit(f: NgForm) {
     this.event.name = f.value.name;
-    this.event.description = f.value.description;
-    this.event.location = f.value.location;
+    this.event.description = f.value.description ? f.value.description : '';
+    this.event.location = f.value.location ? f.value.location : '';
     this.event.category = f.value.category;
     this.event.type = f.value.type;
     this.event.isVisibleInPublicSearch = f.value.isVisibleInPublicSearch ? f.value.isVisibleInPublicSearch : false;

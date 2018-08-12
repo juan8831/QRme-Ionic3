@@ -133,6 +133,39 @@ export const onPostDelete = functions.firestore.document(`posts/{messageId}`)
         }
     });
 
+/*
+- Delete all polls, posts, invite requests, attendance records,  that belong to user that left event 
+- Delete onLeaveRequest 
+-TODO: delete poll votes and comments
+*/
+export const onLeaveRequestCreate = functions.firestore.document(`leaveEventRequests/{id}`)
+.onCreate(async data => {
+    let eventId = data.data().eventId;
+    let userId = data.data().userId;
+    console.log(`Processing onLeaveRequest for user: ${userId} | event: ${eventId}`);
+
+    await deleteEventComponentWithUserId('polls', 'creatorId', eventId, userId);
+    await deleteEventComponentWithUserId('posts', 'authorId', eventId, userId);
+    await deleteEventComponentWithUserId('inviteRequests', 'userId', eventId, userId);
+
+    let attendanceQuery = admin.firestore().doc(`events/${eventId}`).collection('attendance').where('userId', '==', userId);
+    try {
+        var result = await attendanceQuery.get();
+        console.log(`${result.size} attendance records found for userId: ${userId} | event: ${eventId}`);
+        result.forEach(async doc => {
+            await doc.ref.delete();
+        });
+    }
+    catch (err) {
+        console.log(`Could not execute query for attendance records for userId: ${userId} | event: ${eventId}`);
+    }
+
+    data.ref.delete()
+    .then(() => console.log(`LeaveRequest deleted for userId: ${userId} | event: ${eventId}.`))
+    .catch(err => {
+        console.log(`Could not delete LeaveRequest userId: ${userId} | event: ${eventId}.` + err);
+    })
+});
 
 
 async function removeEventIdFromUser(userId: string, eventId: string, mode: string) {
@@ -166,6 +199,22 @@ async function removeInviteeUserFromEvent(userId: string, eventId: string) {
 
 async function deleteEventComponent(componentName: string, eventId: string) {
     let query = admin.firestore().collection(componentName).where('eventId', '==', eventId);
+
+    try {
+        var result = await query.get();
+        console.log(`${result.size} ${componentName} found for event ${eventId}`);
+        result.forEach(async doc => {
+            await doc.ref.delete();
+        });
+
+    }
+    catch (err) {
+        console.log(`Could not execute query: ${componentName}`)
+    }
+}
+
+async function deleteEventComponentWithUserId(componentName: string, creatorProperty: string, eventId: string, userId: string) {
+    let query = admin.firestore().collection(componentName).where('eventId', '==', eventId).where(creatorProperty, '==', userId);
 
     try {
         var result = await query.get();

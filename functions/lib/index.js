@@ -124,6 +124,36 @@ exports.onPostDelete = functions.firestore.document(`posts/{messageId}`)
         }));
     }
 }));
+/*
+- Delete all polls, posts, invite requests, attendance records,  that belong to user that left event
+- Delete onLeaveRequest
+-TODO: delete poll votes and comments
+*/
+exports.onLeaveRequestCreate = functions.firestore.document(`leaveEventRequests/{id}`)
+    .onCreate((data) => __awaiter(this, void 0, void 0, function* () {
+    let eventId = data.data().eventId;
+    let userId = data.data().userId;
+    console.log(`Processing onLeaveRequest for user: ${userId} | event: ${eventId}`);
+    yield deleteEventComponentWithUserId('polls', 'creatorId', eventId, userId);
+    yield deleteEventComponentWithUserId('posts', 'authorId', eventId, userId);
+    yield deleteEventComponentWithUserId('inviteRequests', 'userId', eventId, userId);
+    let attendanceQuery = admin.firestore().doc(`events/${eventId}`).collection('attendance').where('userId', '==', userId);
+    try {
+        var result = yield attendanceQuery.get();
+        console.log(`${result.size} attendance records found for userId: ${userId} | event: ${eventId}`);
+        result.forEach((doc) => __awaiter(this, void 0, void 0, function* () {
+            yield doc.ref.delete();
+        }));
+    }
+    catch (err) {
+        console.log(`Could not execute query for attendance records for userId: ${userId} | event: ${eventId}`);
+    }
+    data.ref.delete()
+        .then(() => console.log(`LeaveRequest deleted for userId: ${userId} | event: ${eventId}.`))
+        .catch(err => {
+        console.log(`Could not delete LeaveRequest userId: ${userId} | event: ${eventId}.` + err);
+    });
+}));
 function removeEventIdFromUser(userId, eventId, mode) {
     return __awaiter(this, void 0, void 0, function* () {
         var eventsDocRef = admin.firestore().doc(`users/${userId}`).collection('events').doc(mode);
@@ -156,6 +186,21 @@ function removeInviteeUserFromEvent(userId, eventId) {
 function deleteEventComponent(componentName, eventId) {
     return __awaiter(this, void 0, void 0, function* () {
         let query = admin.firestore().collection(componentName).where('eventId', '==', eventId);
+        try {
+            var result = yield query.get();
+            console.log(`${result.size} ${componentName} found for event ${eventId}`);
+            result.forEach((doc) => __awaiter(this, void 0, void 0, function* () {
+                yield doc.ref.delete();
+            }));
+        }
+        catch (err) {
+            console.log(`Could not execute query: ${componentName}`);
+        }
+    });
+}
+function deleteEventComponentWithUserId(componentName, creatorProperty, eventId, userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let query = admin.firestore().collection(componentName).where('eventId', '==', eventId).where(creatorProperty, '==', userId);
         try {
             var result = yield query.get();
             console.log(`${result.size} ${componentName} found for event ${eventId}`);
