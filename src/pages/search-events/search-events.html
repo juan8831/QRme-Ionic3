@@ -15,7 +15,7 @@
         <!-- <ion-list-header>Today</ion-list-header> -->
         <ion-item  *ngFor="let event of filteredEvents" (click)="onLoadEvent(event)">
             <ion-avatar item-start>
-                <img src="assets/imgs/festival.png">
+                <img *ngIf="event" [src]="event.eventImageUrl">
               </ion-avatar>
             <h2>{{event.name}}</h2>
             <h3>Creator: {{event.creatorName}}</h3>

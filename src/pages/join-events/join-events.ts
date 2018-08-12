@@ -176,7 +176,7 @@ export class JoinEventsPage implements OnInit {
               this.mProv.showAlertOkMessage('Error', 'Could not find any event with this QR code');
             }
             else {
-              this.navCtrl.push(SearchEventDetailPage, { event: event });
+              this.navCtrl.push(SearchEventDetailPage, { 'event': event });
             }
           })
         }

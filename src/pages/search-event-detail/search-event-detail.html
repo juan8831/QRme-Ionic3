@@ -86,15 +86,17 @@
     </ion-card>
     <br>
   
-    <button full large round ion-button *ngIf="event.type ==='Private' && !inviteRequestExists" icon-start (click)="requestInvite()">
+    <button full large round ion-button *ngIf="!isAdmin && !isInvitee && event.type ==='Private' && !inviteRequestExists" icon-start (click)="requestInvite()">
         <ion-icon item-left name="mail"></ion-icon>
       Request Invite
     </button>
-    <h2 text-center *ngIf="event.type ==='Private' && inviteRequestExists">Invite Requested!</h2>
+    <h2 text-center *ngIf="!isAdmin && !isInvitee && event.type ==='Private' && inviteRequestExists">Invite Requested!</h2>
+
     <button full large round ion-button *ngIf="event.type =='Public' && !isAdmin && !isInvitee" icon-start  (click)="joinEvent()">
       <ion-icon item-left name="add-circle"></ion-icon>
       Join Event
     </button>
+    
     <h2 text-center *ngIf="isAdmin">You are managing this event!</h2>
     <h2 text-center *ngIf="isInvitee">You have already joined this event!</h2>
   

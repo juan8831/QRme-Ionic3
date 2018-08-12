@@ -342,6 +342,9 @@ export class EventProvider {
 
   getNextEventDate(event: Event): Date {
     let today = new Date();
+    if(event.allDay){
+      today.setHours(0,0,0,0);
+    }
     let start = new Date(event.starts);
     let nextDate = event.starts;
 
@@ -350,7 +353,7 @@ export class EventProvider {
     }
 
     if (event.endRepeat != RepeatType.Never && event.endRepeatDate < today) {
-      return null;
+      return event.starts;
     }
 
     while (nextDate < today) {
@@ -379,7 +382,7 @@ export class EventProvider {
     }
 
     if (event.endRepeat != RepeatType.Never && nextDate > event.endRepeatDate) {
-      return null;
+      return event.starts;
     }
 
 
@@ -388,6 +391,9 @@ export class EventProvider {
 
   getNextEventDateEnd(event: Event): Date {
     let nextDate = this.getNextEventDate(event);
+    if(nextDate == null){
+      return event.ends;
+    }
     let diffInMs = Math.abs(new Date(event.ends).getTime() - new Date(event.starts).getTime());
     return this.addMinutes(nextDate, diffInMs / 60000);
   }

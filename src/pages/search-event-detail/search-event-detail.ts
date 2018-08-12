@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams} from 'ionic-angular';
 import { Event } from '../../models/event';
 import { UserProvider } from '../../providers/user/user';
 import { EventProvider } from '../../providers/event/event';
@@ -32,7 +32,6 @@ export class SearchEventDetailPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private loadingCtrl: LoadingController,
     private userProvider: UserProvider,
     private eventProvider: EventProvider,
     private inviteRequestProvider: InviteRequestProvider,
@@ -58,8 +57,6 @@ export class SearchEventDetailPage implements OnInit {
       }
     });
 
-    //var allEvents$ = this.eventProvider.getAllEvents()
-
   }
 
   ngOnInit() {
@@ -70,9 +67,6 @@ export class SearchEventDetailPage implements OnInit {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
 
-  }
-
-  ionViewDidLoad() {
   }
 
   //user wants to join private event. Create request invite
@@ -109,32 +103,8 @@ export class SearchEventDetailPage implements OnInit {
 
   //add user id to event invitee list && add the current even to the user's invitee list
   joinEvent() {
-    const loader = this.loadingCtrl.create({ content: 'Joining event...' });
+    const loader = this.mProv.getLoader('Joining event...')
     loader.present();
-
-    // this.userProvider.userProfile.eventInviteeList[this.event.id] = true;
-    // this.userProvider.addEventInviteeList(this.event.id)
-    // .then(_=> {
-    //   if(!this.event.inviteeList){
-    //     this.event.inviteeList = {};
-    //   }
-    //   this.event.inviteeList[this.userProvider.userProfile.id] = true;
-    //   this.eventProvider.addUserToInviteeList(this.userProvider.userProfile.id, this.event.id)
-    //   .then(_=> {
-    //     this.toastCtrl.create({message: 'You have successfully joined the event', duration: 4000}).present();
-    //     this.navCtrl.pop()
-    //     loader.dismiss();
-    //   })
-    //   .catch(err => {
-    //     this.toastCtrl.create({message: err, duration: 4000}).present();
-    //     loader.dismiss();
-    //   });
-    // })
-    // .catch(err => {
-    //   this.toastCtrl.create({message: err, duration: 4000}).present();
-    //   loader.dismiss();
-    // });
-
     this.eventProvider.synchronizeInviteeWithEvent(this.userProvider.userProfile.id, this.event.id, this.event.name)
       .then(_ => {
         this.mProv.showToastMessage('You have successfully joined the event');
