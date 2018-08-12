@@ -24,7 +24,8 @@ export class EventAttendancePage implements OnInit {
   fromDate: string;
   eventDates: Date[] = [];
   loadAttendance = false;
-  subscriptions: ISubscription [] = [];
+  subscriptions: ISubscription[] = [];
+  attendanceSubs : ISubscription;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -40,13 +41,21 @@ export class EventAttendancePage implements OnInit {
   }
 
   ngOnInit() {
-    let today = new Date();
-    //if starts date is earlier than current date, then use starts date instead of current date
-    today = today > this.event.starts ? this.event.starts : today;
-    let twoWeeksFromToday = this.eventProvider.addDays(today, 14);
-    this.fromDate = this.eventProvider.convertISO8601UTCtoBogusLocalwZ(today.toISOString());
-    this.toDate = this.eventProvider.convertISO8601UTCtoBogusLocalwZ(twoWeeksFromToday.toISOString());
-    this.changeDate();  
+    let subs = this.eventProvider.getEvent(this.event.id).subscribe(event => {
+      if (!event) {
+        this.mProv.showAlertOkMessage('Event Delete', 'This event has been deleted.');
+        return;
+      }
+      this.event = event;
+      let today = new Date();
+      //if starts date is earlier than current date, then use starts date instead of current date
+      today = today > this.event.starts ? this.event.starts : today;
+      let twoWeeksFromToday = this.eventProvider.addDays(today, 14);
+      this.fromDate = this.eventProvider.convertISO8601UTCtoBogusLocalwZ(today.toISOString());
+      this.toDate = this.eventProvider.convertISO8601UTCtoBogusLocalwZ(twoWeeksFromToday.toISOString());
+      this.changeDate();
+    });
+    this.subscriptions.push(subs);
   }
 
   ngOnDestroy(): void {
@@ -58,7 +67,7 @@ export class EventAttendancePage implements OnInit {
 
   }
 
-  selectChange(){
+  selectChange() {
     this.loadAttendance = false;
   }
 
@@ -87,7 +96,7 @@ export class EventAttendancePage implements OnInit {
       buttons.splice(1, 0, markAttendanceButton);
     }
     const actionSheet = this.actionSheetCtrl.create({
-      title: "Attendance: " +  this.eventDate.toLocaleDateString(),
+      title: "Attendance: " + this.eventDate.toLocaleDateString(),
       buttons: buttons
     });
     actionSheet.present();
@@ -95,30 +104,30 @@ export class EventAttendancePage implements OnInit {
   }
 
   markAttendance() {
-    if(!this.canMarkAttendance()){
+    if (!this.canMarkAttendance()) {
       return;
     }
     this.eventProvider.addAttendanceRecord(this.event, this.eventDate, undefined)
-    .then(_=> {
-      this.mProv.showToastMessage('Attendance successfully recorded!')
-    })
-    .catch(err => {
-      this.mProv.showAlertOkMessage('Error', 'Could not record attendance. Please ty again later.');
-      this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not record attendance');
-    })
+      .then(_ => {
+        this.mProv.showToastMessage('Attendance successfully recorded!')
+      })
+      .catch(err => {
+        this.mProv.showAlertOkMessage('Error', 'Could not record attendance. Please ty again later.');
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not record attendance');
+      })
 
   }
 
-  canMarkAttendance(){
+  canMarkAttendance() {
     let earliestDate = this.eventProvider.addMinutes(this.eventDate, -this.event.minutesBeforeAttendance);
     let latestDate = this.eventProvider.addMinutes(this.eventDate, this.event.minutesAfterAttendance);
     let now = new Date();
 
-    if(now < earliestDate){
+    if (now < earliestDate) {
       this.mProv.showAlertOkMessage('Too early', 'You cannot mark your attendance yet.');
       return false;
     }
-    if(now > latestDate){
+    if (now > latestDate) {
       this.mProv.showAlertOkMessage('Too late', 'The time to mark your attendance has expired.');
       return false;
     }
@@ -126,69 +135,73 @@ export class EventAttendancePage implements OnInit {
     return true;
   }
 
-  changeDate(){
+  changeDate() {
     let fromDate = new Date(this.eventProvider.convertBogusISO8601LocalwZtoRealUTC(this.fromDate));
     let toDate = new Date(this.eventProvider.convertBogusISO8601LocalwZtoRealUTC(this.toDate));
 
-    if(this.event.allDay){
+    if (this.event.allDay) {
       fromDate = this.eventProvider.getDateWithoutTime(fromDate);
       toDate = this.eventProvider.getDateWithoutTime(toDate);
     }
 
     this.eventDates = this.eventProvider.getEventDates(this.event, fromDate, toDate);
-    this.selectedDate =  this.selectedDate = this.eventProvider.getNextEventDate(this.event);
+    this.selectedDate = this.selectedDate = this.eventProvider.getNextEventDate(this.event);
   }
 
-  searchDate(){
-    if(this.selectedDate != null){
+  searchDate() {
+    if (this.selectedDate != null) {
       this.selectedDate = this.event.allDay ? this.eventProvider.getDateWithoutTime(this.selectedDate) : this.selectedDate;
       this.eventDate = this.selectedDate;
-      let subs = this.eventProvider.getAttendanceRecordByEventAndDateAndUser(this.event, this.eventDate, undefined).subscribe(record => {
-        if(record){
+      if(this.attendanceSubs){
+        this.attendanceSubs.unsubscribe();
+        this.attendanceSubs.unsubscribe();
+      }
+      this.attendanceSubs = this.eventProvider.getAttendanceRecordByEventAndDateAndUser(this.event, this.eventDate, undefined)
+      .subscribe(record => {
+        if (record) {
           this.markedAttendance = true;
         }
-        else{
+        else {
           this.markedAttendance = false;
         }
         this.loadAttendance = true
       });
-      this.subscriptions.push(subs);
-      //this.navCtrl.push(EventAttendanceInstanceAdminPage, {'event' : this.event, 'selectedDate' : this.selectedDate});
+      this.subscriptions.push(this.attendanceSubs);
     }
   }
 
-  openAttendanceRecord(){
-    this.navCtrl.push(InviteeAttendanceRecordPage, {'event': this.event});
+  openAttendanceRecord() {
+    this.navCtrl.push(InviteeAttendanceRecordPage, { 'event': this.event });
   }
 
   private scanQrCode() {
     var loader = this.mProv.getLoader('Loading...');
     loader.present();
     this.barcodeScanner.scan({ disableSuccessBeep: true })
-            .then(barcodeData => {
-              loader.dismiss();
-              if(!barcodeData.cancelled){
-                //var eventLoader = this.mProv.getLoader('Getting event information...');
-                //eventLoader.present();
-                if(this.event.id != barcodeData.text){
-                  this.mProv.showAlertOkMessage('Error', 'This QR code does not belong to this event.');
-                }
-                else{
-                  this.markAttendance();
-                }
-              }
-            })
-            .catch(err => {
-              loader.dismiss();
-              this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not scan qr code');
-              if(err == 'Access to the camera has been prohibited; please enable it in the Settings app to continue.'){
-                this.mProv.showAlertOkMessage('Error', err);
-                //todo open only if user wants to change settings
-                //this.qrScanner.openSettings();
-              }
-              this.mProv.showAlertOkMessage('Error', 'Could not scan QR Code');
-            });
-      loader.dismiss();        
+      .then(barcodeData => {
+        loader.dismiss();
+        if (!barcodeData.cancelled) {
+          //var eventLoader = this.mProv.getLoader('Getting event information...');
+          //eventLoader.present();
+          if (this.event.id != barcodeData.text) {
+            this.mProv.showAlertOkMessage('Error', 'This QR code does not belong to this event.');
+          }
+          else {
+            this.markAttendance();
+          }
+        }
+      })
+      .catch(err => {
+        loader.dismiss();
+        this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not scan qr code');
+        if (err == 'Access to the camera has been prohibited; please enable it in the Settings app to continue.') {
+          this.mProv.showAlertOkMessage('Error', err);
+          //todo open only if user wants to change settings
+          //this.qrScanner.openSettings();
+        }
+        this.mProv.showAlertOkMessage('Error', 'Could not scan QR Code');
+      });
+    loader.dismiss();
 
   }
 
