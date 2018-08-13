@@ -1,12 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the AboutPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { AppVersion } from '../../../node_modules/@ionic-native/app-version';
 
 @IonicPage()
 @Component({
@@ -15,7 +9,20 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class AboutPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  version = "";
+
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    private appVersion: AppVersion
+  ) {
+      this.appVersion.getVersionNumber()
+      .then(value => {
+        this.version = value;
+      })
+      .catch(err => {
+        console.log('Cannot get app verison: ' + err);
+      });
   }
 
 }

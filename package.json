@@ -22,6 +22,7 @@
     "@angular/platform-browser": "5.2.10",
     "@angular/platform-browser-dynamic": "5.2.10",
     "@firebase/app": "0.1.10",
+    "@ionic-native/app-version": "^4.11.0",
     "@ionic-native/barcode-scanner": "^4.7.0",
     "@ionic-native/camera": "^4.8.0",
     "@ionic-native/core": "4.7.0",
@@ -37,6 +38,7 @@
     "cordova-android": "7.0.0",
     "cordova-ios": "4.5.4",
     "cordova-plugin-add-swift-support": "^1.7.2",
+    "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-file": "^6.0.1",
@@ -77,7 +79,8 @@
       "cordova-plugin-file": {},
       "cordova-plugin-printer": {},
       "cordova-plugin-x-socialsharing": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-app-version": {}
     },
     "platforms": [
       "ios",

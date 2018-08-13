@@ -93,6 +93,7 @@ import { ForgotPasswordPageModule } from '../pages/forgot-password/forgot-passwo
 import { ChangePasswordPageModule } from '../pages/change-password/change-password.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { PercentPipe } from '../../node_modules/@angular/common';
+import { AppVersion } from '@ionic-native/app-version';
 
 @NgModule({
   declarations: [
@@ -192,7 +193,8 @@ import { PercentPipe } from '../../node_modules/@angular/common';
     BlogProvider,
     PollProvider,
     ErrorProvider,
-    PercentPipe
+    PercentPipe,
+    AppVersion
   ]
 })
 export class AppModule {}
