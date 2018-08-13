@@ -44,7 +44,8 @@ export class EditPollPage implements OnInit {
     }
     else{
       let poll = this.navParams.get('poll');
-      let subs = this.pollProvider.getPoll(poll.id).subscribe(poll => {
+      let subs = this.pollProvider.getPoll(poll.id)
+      .subscribe(poll => {
         if(poll){
           this.poll = poll;
         }
