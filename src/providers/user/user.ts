@@ -12,7 +12,6 @@ import { Event } from '../../models/event';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { of } from 'rxjs/observable/of';
 
-
 @Injectable()
 export class UserProvider {
 
@@ -22,10 +21,8 @@ export class UserProvider {
   users: Observable<User[]>;
   user: Observable<User>;
   userProfile: User = null;
-
   adminEventsList : Observable<any>;
   inviteeEventsList : Observable<any>;
-
 
   constructor(
     public http: HttpClient,
@@ -33,19 +30,25 @@ export class UserProvider {
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
     private fb: FirebaseApp
-
   ) {
     this.usersCollection = this.afs.collection('users', ref => ref.orderBy('name', 'asc'));
-    this.afAuth.authState.subscribe(user => {
+    let subs$ = this.afAuth.authState.switchMap(user => {
       if(user){
-        this.getUser(this.afAuth.auth.currentUser.uid).subscribe(user => {
-          this.userProfile = user;
-        });
+      return this.getUser(user.uid);
+      }
+      else{
+        return of(null);
+      }
+    })
+    .catch(err => {
+      return of(null);
+    });
+    subs$.subscribe(user => {
+      if(user){
+        this.userProfile = user;
       }
     });
   }
-
-  
 
   getUsers(): Observable<User[]> {
     this.users = this.usersCollection.snapshotChanges().map(changes => {

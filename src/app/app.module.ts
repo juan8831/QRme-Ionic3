@@ -173,7 +173,7 @@ import { PercentPipe } from '../../node_modules/@angular/common';
     PollPage,
     ForgotPasswordPage,
     ChangePasswordPage,
-    //AboutPage,
+    AboutPage,
     TutorialPage
   ],
   providers: [

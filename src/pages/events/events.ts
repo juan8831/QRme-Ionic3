@@ -64,7 +64,7 @@ export class EventsPage implements OnInit {
     this.loaderVisible = true;
     loader.present();
     let managingEvents$ = this.userProvider.getManagingEventIdsList()
-      .flatMap(managingEvents => {
+      .switchMap(managingEvents => {
         if (managingEvents) {
           return this.eventProvider.getEventsWithIds(Object.keys(managingEvents.events));
         }
@@ -73,7 +73,7 @@ export class EventsPage implements OnInit {
         }
       });
     let invitedEvents$ = this.userProvider.getInvitedEventIdsList()
-      .flatMap(invitedEvents => {
+      .switchMap(invitedEvents => {
         if (invitedEvents) {
           return this.eventProvider.getEventsWithIds(Object.keys(invitedEvents.events));
         }
