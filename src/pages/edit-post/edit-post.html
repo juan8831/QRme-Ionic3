@@ -17,12 +17,12 @@
     <ion-list>
       <ion-item>
         <ion-label floating>Post Title</ion-label>
-        <ion-input clearInput type="text" maxLength="100" name="title" [ngModel]="post?.title" required>
+        <ion-input autocorrect=“on” autocomplete="on" clearInput type="text" maxLength="100" name="title" [ngModel]="post?.title" required>
         </ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Post Message</ion-label>
-        <ion-textarea [attr.rows]="7" type="text" name="message" maxLength="500" [ngModel]="post?.message" required></ion-textarea>
+        <ion-textarea autocorrect=“on” autocomplete="on" [attr.rows]="7" type="text" name="message" maxLength="500" [ngModel]="post?.message" required></ion-textarea>
       </ion-item>
     </ion-list>
     <button ion-button type="submit" block round [disabled]="!f.valid">{{create? 'Create New Post' : 'Update Post'}}</button>
