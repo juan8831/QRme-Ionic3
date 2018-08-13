@@ -13,6 +13,7 @@ import { normalizeURL } from 'ionic-angular';
 import { FirebaseApp } from 'angularfire2';
 import { ErrorProvider } from '../../providers/error/error';
 import { UploadTaskSnapshot } from '../../../node_modules/@firebase/storage-types';
+import { PercentPipe } from '../../../node_modules/@angular/common';
 
 const defaultEventImage = 'assets/imgs/calendar.png';
 
@@ -65,7 +66,8 @@ export class EditEventPage implements OnInit {
     private camera: Camera,
     private file: File,
     private firebase: FirebaseApp,
-    private errorProvider: ErrorProvider
+    private errorProvider: ErrorProvider,
+    private percentPipe: PercentPipe
 
   ) {
     Object.keys(RepeatType).forEach(key => this.repeatValues.push(RepeatType[key]));
@@ -375,9 +377,9 @@ export class EditEventPage implements OnInit {
       let task = this.firebase.storage().ref().child(`eventPictures/${eventId}`).put(this.eventImgBlob);
       if (task != null) {
         task.on('state_changed', (snapshot: UploadTaskSnapshot) => {
-          progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          loader.setContent(`Progress: ${progress} %`);
-          if (progress >= 100) {
+          progress = (snapshot.bytesTransferred / snapshot.totalBytes);
+          loader.setContent(`Progress: ${this.percentPipe.transform(progress)}`);
+          if (progress >= 1) {
             loader.dismiss();
           }
         })
@@ -396,17 +398,26 @@ export class EditEventPage implements OnInit {
 
   setImageBlob(imageData) {
 
-    const currentName = imageData.replace(/^.*[\\\/]/, '');
-    console.log(currentName);
+    let currentName : string = imageData.replace(/^.*[\\\/]/, '');
+    //console.log(`ImageDate name: ${currentName}`);
+    let index = currentName.indexOf('?');
+    if(index != -1){
+      currentName = currentName.substring(0, index);
+    }
+    //console.log(`ImageDate name: ${currentName}`);
     const path = imageData.replace(/[^\/]*$/, '');
     const newFileName = new Date().getUTCMilliseconds() + '.jpg';
-    this.file.moveFile(path, currentName, this.file.tempDirectory, newFileName)
+    //console.log(`New File Name: ${newFileName}`);
+    this.file.moveFile(path, currentName, this.file.dataDirectory, newFileName)
       .then(
         (data: Entry) => {
           this.event.eventImageUrl = normalizeURL(data.nativeURL);
-
-          this.file.readAsArrayBuffer(this.file.tempDirectory, newFileName).then(buffer => {
+          this.file.readAsArrayBuffer(this.file.dataDirectory, newFileName).then(buffer => {
             console.log('Finished read as array');
+            this.file.removeFile(this.file.dataDirectory, newFileName)
+            .then(_=> console.log('Deleted image file'))
+            .catch(_=> console.log('Could not delete image file'));
+
             this.eventImgBlob = new Blob([buffer], { type: "image/jpeg" });
           });
         }
@@ -417,6 +428,7 @@ export class EditEventPage implements OnInit {
             message: 'Could not save the image. Please try again',
             duration: 2500
           });
+          console.log(`File moving error: ` + err.message);
           toast.present();
           this.errorProvider.reportError(this.pageName, err.message, this.event.id, 'Could not move image');
           this.camera.cleanup();

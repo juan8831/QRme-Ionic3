@@ -92,6 +92,7 @@ import { PollPageModule } from '../pages/poll/poll.module';
 import { ForgotPasswordPageModule } from '../pages/forgot-password/forgot-password.module';
 import { ChangePasswordPageModule } from '../pages/change-password/change-password.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
+import { PercentPipe } from '../../node_modules/@angular/common';
 
 @NgModule({
   declarations: [
@@ -190,7 +191,8 @@ import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
     SocialSharing,
     BlogProvider,
     PollProvider,
-    ErrorProvider
+    ErrorProvider,
+    PercentPipe
   ]
 })
 export class AppModule {}
