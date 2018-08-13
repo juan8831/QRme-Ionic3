@@ -30,13 +30,19 @@ export class ManageInvitesPage implements OnInit {
 
   ngOnInit(){
     let pendingInvites = this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, "pending").subscribe(invites => {
-      this.pendingInviteRequests = invites;
+      if(invites){
+        this.pendingInviteRequests = invites;
+      }
     });
     let acceptedInvites = this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, "accepted").subscribe(invites => {
-      this.acceptedInviteRequests = invites;
+      if(invites){
+        this.acceptedInviteRequests = invites;
+      }
     });
     let rejectedInvites = this.inviteRequestProvider.getInviteRequestsByUserAndType(undefined, "rejected").subscribe(invites => {
-      this.rejectedInviteRequests = invites;
+      if(invites){
+        this.rejectedInviteRequests = invites;
+      }
     });
     this.subscriptions.push(pendingInvites);
     this.subscriptions.push(acceptedInvites);

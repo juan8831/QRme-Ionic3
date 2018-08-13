@@ -3,13 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Event } from '../../models/event';
 import { AttendanceRecord } from '../../models/attendance';
 import { EventProvider } from '../../providers/event/event';
-
-/**
- * Generated class for the InviteeAttendanceRecordPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { ISubscription } from '../../../node_modules/rxjs/Subscription';
 
 @IonicPage()
 @Component({
@@ -20,6 +14,8 @@ export class InviteeAttendanceRecordPage implements OnInit {
 
   event: Event;
   records: AttendanceRecord [] = [];
+  subscriptions: ISubscription [] = [];
+  
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
@@ -29,8 +25,12 @@ export class InviteeAttendanceRecordPage implements OnInit {
 
   ngOnInit(){
     this.event = this.navParams.get('event');
-    this.eventProvider.getAttendanceRecordsByEventAndUser(this.event, undefined).subscribe(records => {
+    let subs = this.eventProvider.getAttendanceRecordsByEventAndUser(this.event, undefined).subscribe(records => {
       this.records = records;
-    })
+    });
+    this.subscriptions.push(subs);
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.map(subscription => subscription.unsubscribe());
   }
 }

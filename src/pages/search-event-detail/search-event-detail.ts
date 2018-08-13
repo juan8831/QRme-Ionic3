@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams} from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Event } from '../../models/event';
 import { UserProvider } from '../../providers/user/user';
 import { EventProvider } from '../../providers/event/event';
@@ -28,6 +28,7 @@ export class SearchEventDetailPage implements OnInit {
   isAdmin = false;
   isInvitee = false;
   pageName = 'SearchEventDetailsPage';
+  subscriptions: ISubscription[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -39,34 +40,33 @@ export class SearchEventDetailPage implements OnInit {
     private errorProvider: ErrorProvider
   ) {
     this.event = navParams.get('event');
-
     var adminEvents$ = this.userProvider.getManagingEventIdsList();
     var inviteeEvents$ = this.userProvider.getInvitedEventIdsList();
-    this.subscription = combineLatest(adminEvents$, inviteeEvents$)
+    let eventSubs = combineLatest(adminEvents$, inviteeEvents$)
       .subscribe(([adminEvents, inviteeEvents]) => {
         this.isAdmin = (this.event.id in adminEvents.events) ? true : false;
         this.isInvitee = (this.event.id in inviteeEvents.events) ? true : false;
       });
+    this.subscriptions.push(eventSubs);
 
-    this.inviteRequestProvider.getInviteRequestByUserAndEvent(undefined, this.event.id).subscribe(invites => {
-      if (invites.length == 0) {
-        this.inviteRequestExists == false;
-      }
-      else {
-        this.inviteRequestExists = true;
-      }
-    });
-
+    let inviteSubs = this.inviteRequestProvider.getInviteRequestByUserAndEvent(undefined, this.event.id)
+      .subscribe(invites => {
+        if (!invites || invites.length == 0) {
+          this.inviteRequestExists == false;
+        }
+        else {
+          this.inviteRequestExists = true;
+        }
+      });
+    this.subscriptions.push(inviteSubs);
   }
 
   ngOnInit() {
 
-
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-
+    this.subscriptions.map(subscription => subscription.unsubscribe());
   }
 
   //user wants to join private event. Create request invite

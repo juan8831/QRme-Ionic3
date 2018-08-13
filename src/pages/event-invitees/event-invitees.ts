@@ -9,6 +9,7 @@ import { UserProvider } from '../../providers/user/user';
 import { EventInvitationsPage } from '../event-invitations/event-invitations';
 import { MessagingProvider } from '../../providers/messaging/messaging';
 import { ErrorProvider } from '../../providers/error/error';
+import { of } from 'rxjs/observable/of';
 
 
 @IonicPage()
@@ -43,24 +44,32 @@ export class EventInviteesPage implements OnInit {
 
   ngOnInit() {
     this.event = this.navParams.data;
-    let inviteeSubs = this.eventProvider.getInviteeUsersForEvent(this.event)
-      .subscribe(users => {
-        this.userProvider.getUsersWithList(Object.keys(users))
-          .map(users => users.filter(user => user != null && user.name.toLowerCase().includes(this.searchText.toLowerCase())))
-          .subscribe(users => {
-            this.inviteeUsers = users;
-            this.changeSearch();
-          });
+    let invitees$ = this.eventProvider.getInviteeUsersForEvent(this.event)
+      .switchMap(users => {
+        if (users) {
+          return this.userProvider.getUsersWithList(Object.keys(users))
+            .map(users => users.filter(user => user != null && user.name.toLowerCase().includes(this.searchText.toLowerCase())));
+        }
+        else {
+          return of(null);
+        }
       });
-      this.subscriptions.push(inviteeSubs);
+
+    let inviteeSubs = invitees$.subscribe(users => {
+      if (users) {
+        this.inviteeUsers = users;
+        this.changeSearch();
+      }
+    });
+    this.subscriptions.push(inviteeSubs);
 
     if (this.event.type == 'Private') {
       let invitationSubs = this.inviteRequestProvider.getInviteRequestsByEventAndType(this.event.id, "pending")
         .subscribe(requests => {
           this.pendingInviteRequestsNumber = requests.length;
-          this.subscriptions.push(invitationSubs);
         });
-    } 
+      this.subscriptions.push(invitationSubs);
+    }
   }
 
   ngOnDestroy(): void {
@@ -84,7 +93,7 @@ export class EventInviteesPage implements OnInit {
       .catch(err => {
         loader.dismiss();
         this.errorProvider.reportError(this.pageName, err, this.event.id, 'Could not uninvite user');
-        this.mProv.showAlertOkMessage('Error', 'Unable to remove user. Please try again later.' )
+        this.mProv.showAlertOkMessage('Error', 'Unable to remove user. Please try again later.')
       });
   }
 

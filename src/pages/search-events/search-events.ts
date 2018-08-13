@@ -38,18 +38,19 @@ export class SearchEventsPage implements OnInit {
 
   ngOnInit() {
     this.category = this.navParams.get('category');
-    var allEvents$ = this.category == 'all'? this.eventProvider.getAllEvents() : this.eventProvider.getEventsByCategory(this.category);
+    var allEvents$ = this.category == 'all' ? this.eventProvider.getAllEvents() : this.eventProvider.getEventsByCategory(this.category);
     var adminEvents$ = this.userProvider.getManagingEventIdsList();
     var inviteeEvents$ = this.userProvider.getInvitedEventIdsList();
-    this.subscription = combineLatest( allEvents$, adminEvents$, inviteeEvents$)
-    .subscribe(([allEvents, adminEvents, inviteeEvents]) => {
-      this.events = allEvents;
-      this.events = this.events.filter(event => !(event.id in adminEvents.events)); //filter out events that the user is admin
-      this.events = this.events.filter(event => !(event.id in inviteeEvents.events)); //filter out events that the user is invited
-      this.sortEvents();
-      this.searchText = "";
-      this.changeSearch();
-    });
+    this.subscription = combineLatest(allEvents$, adminEvents$, inviteeEvents$)
+      .subscribe(([allEvents, adminEvents, inviteeEvents]) => {
+        if (allEvents && adminEvents && inviteeEvents) {
+          this.events = allEvents.filter(event => !(event.id in adminEvents.events)); //filter out events that the user is admin
+          this.events = this.events.filter(event => !(event.id in inviteeEvents.events)); //filter out events that the user is invited
+          this.sortEvents();
+          this.searchText = "";
+          this.changeSearch();
+        }
+      });
   }
 
   private sortEvents() {
@@ -68,13 +69,12 @@ export class SearchEventsPage implements OnInit {
   }
 
   private filterEvents() {
-    if(this.events.length >0)
-    this.events = this.events.filter(event => this.userEvents.indexOf(event.id) == -1);
+    if (this.events.length > 0)
+      this.events = this.events.filter(event => this.userEvents.indexOf(event.id) == -1);
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    console.log('search-events unsubscribe');
   }
 
   changeSearch() {
@@ -85,8 +85,8 @@ export class SearchEventsPage implements OnInit {
     }
   }
 
-  onLoadEvent(event: Event){
-    this.navCtrl.push(SearchEventDetailPage, {event: event});
+  onLoadEvent(event: Event) {
+    this.navCtrl.push(SearchEventDetailPage, { event: event });
   }
 
 

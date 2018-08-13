@@ -193,12 +193,6 @@ export class UserProvider {
 
   }
 
-  setUserProfile() {
-    this.afAuth.authState.subscribe(user => {
-      this.getUser(user.uid).subscribe(userProfile => this.userProfile = userProfile);
-    });
-  }
-
   deleteAdminEventsForUser(eventsToDelete: Event []) {
     var adminDocRef = this.fb.firestore().doc(`users/${this.afAuth.auth.currentUser.uid}`).collection('events').doc('admin');
     return this.fb.firestore().runTransaction(transaction => {
