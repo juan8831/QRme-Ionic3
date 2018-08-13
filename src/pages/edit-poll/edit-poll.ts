@@ -8,6 +8,7 @@ import { UserProvider } from '../../providers/user/user';
 import { Event } from '../../models/event';
 import { PollProvider } from '../../providers/poll/poll';
 import { ErrorProvider } from '../../providers/error/error';
+import { ISubscription } from '../../../node_modules/rxjs/Subscription';
 
 @IonicPage()
 @Component({
@@ -20,6 +21,7 @@ export class EditPollPage implements OnInit {
   create = true;
   poll: Poll;
   pageName = 'EditPollPage';
+  subscriptions: ISubscription [] = [];
 
   constructor(
     public navCtrl: NavController, 
@@ -41,9 +43,22 @@ export class EditPollPage implements OnInit {
       this.event = this.navParams.get('event');
     }
     else{
-      this.poll = this.navParams.get('poll');
+      let poll = this.navParams.get('poll');
+      let subs = this.pollProvider.getPoll(poll.id).subscribe(poll => {
+        if(poll){
+          this.poll = poll;
+        }
+        else{
+          this.mProv.showAlertOkMessage('Error', "Poll has been deleted.");
+          this.navCtrl.pop();
+        }
+      });
+      this.subscriptions.push(subs);
     }
+  }
 
+  ngOnDestroy(): void {
+    this.subscriptions.map(subscription => subscription.unsubscribe());
   }
 
   showPollOptionPrompt(){
@@ -84,6 +99,20 @@ export class EditPollPage implements OnInit {
 
     if(this.poll.options.length < 2){
       this.mProv.showAlertOkMessage('Error', 'Poll must have at least 2 options');
+      return;
+    }
+
+    let optionsName = [];
+    let repeatedOptionName = false;
+    this.poll.options.forEach(option => {
+      if(optionsName.indexOf(option.name) != -1){
+        this.mProv.showAlertOkMessage('Error', 'All poll option names must be unique.');
+        repeatedOptionName = true;
+      }
+      optionsName.push(option.name);
+    });
+
+    if(repeatedOptionName){
       return;
     }
 
