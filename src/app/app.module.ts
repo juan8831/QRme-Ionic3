@@ -94,6 +94,8 @@ import { ChangePasswordPageModule } from '../pages/change-password/change-passwo
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { PercentPipe } from '../../node_modules/@angular/common';
 import { AppVersion } from '@ionic-native/app-version';
+import { PrivacyPage } from '../pages/privacy/privacy';
+import { PrivacyPageModule } from '../pages/privacy/privacy.module';
 
 @NgModule({
   declarations: [
@@ -140,7 +142,8 @@ import { AppVersion } from '@ionic-native/app-version';
     PollPageModule,
     ForgotPasswordPageModule,
     ChangePasswordPageModule,
-    TutorialPageModule
+    TutorialPageModule,
+    PrivacyPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -175,7 +178,8 @@ import { AppVersion } from '@ionic-native/app-version';
     ForgotPasswordPage,
     ChangePasswordPage,
     AboutPage,
-    TutorialPage
+    TutorialPage,
+    PrivacyPage
   ],
   providers: [
     StatusBar,

@@ -15,7 +15,7 @@
       <ion-list>
         <ion-item>
           <ion-label floating>Comment</ion-label>
-          <ion-textarea [attr.rows]="7" type="text" name="message" maxLength="500" [ngModel]="comment?.message" required></ion-textarea>
+          <ion-textarea autocorrect=“on” autocomplete="on" [attr.rows]="7" type="text" name="message" maxLength="500" [ngModel]="comment?.message" required></ion-textarea>
         </ion-item>
       </ion-list>
       <button ion-button type="submit" block round [disabled]="!f.valid">{{create? 'Add New Comment' : 'Update Comment'}}</button>
